@@ -15,8 +15,18 @@
 - [ ] Calendar
 - [ ] Sub-tasks
 - [ ] Archive
-- [ ] Something like a forest to grow, cultivate and keep looking really nice that you can be proud of
+- [ ] Something like a forest to grow, cultivate and keep looking really nice that you can be proud of (this can be in either the rest or main area)
 - [ ] Really pretty UI and such
+
+
+# Other things
+- There is a relaxing place you go to as a reward (in break time) which you can make look pretty, and you can design it outside break but not enter yet.
+- Confetti on finish task
+- You can save up break time and redeem it anytime
+- You don't get coins for finishing a task, you get coins for working on it
+- Maybe have a description instead of a million subtasks
+- Should I have short/long breaks?
+- Coins are calculated to much higher precision internally (1 coin every minute, but keep seconds intact) but you are only allowed to use a rounded down amount
 
 # Inspiration
 - [Pomodoro logger](https://github.com/zxch3n/PomodoroLogger)
