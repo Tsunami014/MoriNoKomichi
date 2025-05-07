@@ -14,9 +14,8 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
         main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
+        window.cpp
+        window.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -38,6 +37,8 @@ else()
     else()
         add_executable(MoriNoKomichi
             ${PROJECT_SOURCES}
+            graphics.h graphics.cpp
+            drawWidget.h drawWidget.cpp
         )
     endif()
 endif()
