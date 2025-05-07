@@ -8,7 +8,6 @@ DrawWidget::DrawWidget(Graphic *graphics, QWidget *parent)
     : QOpenGLWidget(parent), graphics(graphics)
 {
     elapsed = 0;
-    //setFixedSize(200, 200);
     setAutoFillBackground(false);
 }
 
@@ -21,6 +20,6 @@ void DrawWidget::paintEvent(QPaintEvent *event) {
     QPainter painter;
     painter.begin(this);
     painter.setRenderHint(QPainter::Antialiasing);
-    graphics->paint(&painter, event, elapsed);
+    graphics->paint(&painter, event, size(), elapsed);
     painter.end();
 }

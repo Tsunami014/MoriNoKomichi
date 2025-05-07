@@ -4,10 +4,17 @@
 #include "graphics.h"
 #include "drawWidget.h"
 
+#include <vector>
 #include <QWidget>
 #include <QTimer>
 #include <QGridLayout>
 #include <QResizeEvent>
+
+struct Widget {
+    QWidget* wid;
+    QPoint position;
+    QSize size;
+};
 
 class Window : public QWidget
 {
@@ -25,11 +32,12 @@ protected:
     void gameMenu();
 
     void resizeEvent(QResizeEvent *event);
+    void resizeElms();
 
 private:
     Graphic graphics;
-    QGridLayout *layout = new QGridLayout();
-    DrawWidget *wid = new DrawWidget(&graphics, this);
+    DrawWidget *mainWid = new DrawWidget(&graphics, this);
+    std::vector<Widget> wids;
     QTimer *timer = new QTimer(this);
 };
 

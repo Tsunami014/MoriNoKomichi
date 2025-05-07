@@ -17,9 +17,10 @@ Graphic::Graphic() {
     textFont.setPixelSize(50);
 }
 
-void Graphic::paint(QPainter *painter, QPaintEvent *event, int elapsed) {
-    painter->fillRect(event->rect(), background);
-    painter->translate(100, 100);
+void Graphic::paint(QPainter *painter, QPaintEvent *event, QSize sze, int elapsed) {
+    QRect size = event->rect();
+    painter->fillRect(size, background);
+    painter->translate(size.width()/2, sze.height()/2);
 
     painter->save();
     painter->setBrush(circleBrush);
@@ -40,5 +41,5 @@ void Graphic::paint(QPainter *painter, QPaintEvent *event, int elapsed) {
 
     painter->setPen(textPen);
     painter->setFont(textFont);
-    painter->drawText(QRect(-50, -50, 100, 100), Qt::AlignCenter, QStringLiteral("Qt"));
+    painter->drawText(QRect(-size.width()/4, -size.height()/4, size.width()/2, size.width()/2), Qt::AlignCenter, QStringLiteral("Gameplay section here"));
 }

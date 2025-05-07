@@ -5,13 +5,14 @@
 #include <QFont>
 #include <QPen>
 #include <QWidget>
+#include <QSize>
 
 class Graphic {
 public:
     Graphic();
 
 public:
-    void paint(QPainter *painter, QPaintEvent *event, int elapsed);
+    void paint(QPainter *painter, QPaintEvent *event, QSize size, int elapsed);
 
 private:
     QBrush background;

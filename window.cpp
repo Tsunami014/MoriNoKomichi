@@ -2,6 +2,7 @@
 
 #include <QLabel>
 #include <QPushButton>
+#include <QScrollArea>
 
 Window::Window() {
     setWindowTitle(tr("Window title!"));
@@ -9,24 +10,34 @@ Window::Window() {
 
     connect(timer, &QTimer::timeout, this, &Window::tick);
 
-    wid->setGeometry(0, 0, width(), height());
-    wid->show();
+    mainWid->show();
 
     tasksMenu();
-    setLayout(layout);
 }
 
 void Window::resizeEvent(QResizeEvent *event) {
-    wid->setGeometry(0, 0, width(), height());
+    resizeElms();
+}
+void Window::resizeElms() {
+    mainWid->setGeometry(0, 0, width(), height());
+
+    float widPerc = width() / 100;
+    float heiPerc = height() / 100;
+    for (Widget wid : wids) {
+        wid.wid->setGeometry(
+            wid.position.x()*widPerc, wid.position.y()*heiPerc,
+            wid.size.width()*widPerc, wid.size.height()*heiPerc
+        );
+    }
 }
 
 void Window::reset(bool useWid) {
-    QLayoutItem* item;
-    while ( ( item = layout->layout()->takeAt( 0 ) ) != NULL ) {
-        delete item->widget();
-        delete item;
+    while (!wids.empty()) {
+        Widget wid = wids.back();
+        delete wid.wid;
+        wids.pop_back();
     }
-    wid->setVisible(useWid);
+    mainWid->setVisible(useWid);
     if (useWid) {
         timer->start(50);
     } else {
@@ -38,18 +49,24 @@ void Window::tasksMenu() {
     reset(false);
     QPushButton *btn = new QPushButton("<-", this);
     connect(btn, &QPushButton::released, this, &Window::gameMenu);
-    layout->addWidget(btn, 0, 1);
+    btn->show();
+    wids.push_back(Widget{btn, QPoint(1, 1), QSize(8, 8)});
+
+    resizeElms();
 }
 
 void Window::gameMenu() {
     reset(true);
     QPushButton *btn = new QPushButton("tasks", this);
     connect(btn, &QPushButton::released, this, &Window::tasksMenu);
-    layout->addWidget(btn, 1, 1);
+    btn->show();
+    wids.push_back(Widget{btn, QPoint(25, 25), QSize(20, 8)});
+
+    resizeElms();
 }
 
 
 void Window::tick() {
     int dt = qobject_cast<QTimer*>(sender())->interval();
-    wid->animate(dt);
+    mainWid->animate(dt);
 }
