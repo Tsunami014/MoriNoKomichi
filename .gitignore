@@ -54,4 +54,5 @@ compile_commands.json
 *_qmlcache.qrc
 
 # Other stuff
+build/*
 e2e.log
