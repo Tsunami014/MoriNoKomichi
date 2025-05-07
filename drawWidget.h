@@ -13,7 +13,7 @@ public:
 DrawWidget(Graphic *graphics, QWidget *parent);
 
 public slots:
-    void animate();
+    void animate(int dt);
 
 protected:
     void paintEvent(QPaintEvent *event) override;

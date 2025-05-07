@@ -1,21 +1,55 @@
-#include "drawWidget.h"
 #include "window.h"
 
-#include <QGridLayout>
 #include <QLabel>
-#include <QTimer>
+#include <QPushButton>
 
-Window::Window()
-{
+Window::Window() {
     setWindowTitle(tr("Window title!"));
+    showMaximized();
 
-    DrawWidget *wid = new DrawWidget(&graphics, this);
+    connect(timer, &QTimer::timeout, this, &Window::tick);
 
-    QGridLayout *layout = new QGridLayout;
-    layout->addWidget(wid, 0, 1);
+    wid->setGeometry(0, 0, width(), height());
+    wid->show();
+
+    tasksMenu();
     setLayout(layout);
+}
 
-    QTimer *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, wid, &DrawWidget::animate);
-    timer->start(50);
+void Window::resizeEvent(QResizeEvent *event) {
+    wid->setGeometry(0, 0, width(), height());
+}
+
+void Window::reset(bool useWid) {
+    QLayoutItem* item;
+    while ( ( item = layout->layout()->takeAt( 0 ) ) != NULL ) {
+        delete item->widget();
+        delete item;
+    }
+    wid->setVisible(useWid);
+    if (useWid) {
+        timer->start(50);
+    } else {
+        timer->stop();
+    }
+}
+
+void Window::tasksMenu() {
+    reset(false);
+    QPushButton *btn = new QPushButton("<-", this);
+    connect(btn, &QPushButton::released, this, &Window::gameMenu);
+    layout->addWidget(btn, 0, 1);
+}
+
+void Window::gameMenu() {
+    reset(true);
+    QPushButton *btn = new QPushButton("tasks", this);
+    connect(btn, &QPushButton::released, this, &Window::tasksMenu);
+    layout->addWidget(btn, 1, 1);
+}
+
+
+void Window::tick() {
+    int dt = qobject_cast<QTimer*>(sender())->interval();
+    wid->animate(dt);
 }

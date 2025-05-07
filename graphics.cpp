@@ -4,8 +4,7 @@
 #include <QPaintEvent>
 #include <QWidget>
 
-Graphic::Graphic()
-{
+Graphic::Graphic() {
     QLinearGradient gradient(QPointF(50, -20), QPointF(80, 20));
     gradient.setColorAt(0.0, Qt::white);
     gradient.setColorAt(1.0, QColor(0xa6, 0xce, 0x39));
@@ -18,13 +17,10 @@ Graphic::Graphic()
     textFont.setPixelSize(50);
 }
 
-void Graphic::paint(QPainter *painter, QPaintEvent *event, int elapsed)
-{
+void Graphic::paint(QPainter *painter, QPaintEvent *event, int elapsed) {
     painter->fillRect(event->rect(), background);
     painter->translate(100, 100);
-    //! [1]
 
-    //! [2]
     painter->save();
     painter->setBrush(circleBrush);
     painter->setPen(circlePen);
