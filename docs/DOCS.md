@@ -29,10 +29,42 @@ A todo app with many, many features.
 4. An onboarding process must explain how to use every feature of the app, ensuring all users will understand how to use the app. Additionally, the onboarding must be avaliable at any time if a user forgets.
 ## Use case diagram
 ## Storyboards
-## Data flow diagram
+The storyboard is very large, so please view it online [here](https://excalidraw.com/#json=0pviVfWcTNLK0z1RRgB37,hJraR8767Ax1RVhMA-3DlQ)
+## Data flow diagrams
 ### Level 0
+![Data flow level 0 diagram](image.png)
 ### Level 1
+![Data flow level 1 diagram](image-1.png)
 ## Gantt chart
+```mermaid
+gantt
+    title Schedule
+    dateFormat YYYY-MM-DD
+    section Sprint 1
+        Design idea                   :2025-05-04, 2025-05-07
+        Requirements & specifications :2025-05-05, 2025-05-08
+        Design                        :2025-05-04, 2025-05-11
+        Build & test                  :2025-05-11, 2025-05-25
+        Launch                        :milestone,  2025-05-25, 2m
+        Review                        :2025-05-25, 2025-05-27
+    section Sprint 2
+        Design                        :2025-05-25, 2025-05-28
+        Build & test                  :2025-05-28, 2025-06-10
+        Launch                        :milestone,  2025-06-10, 2m
+        Review                        :2025-06-10, 2025-06-12
+    section Sprint 3
+        Design                        :2025-06-10, 2025-06-13
+        Build & test                  :2025-06-13, 2025-06-30
+        Launch                        :milestone,  2025-06-30, 2m
+        Review                        :2025-06-30, 2025-07-02
+    section Sprint 4
+        Design                        :2025-06-30, 2025-07-04
+        Build & test                  :2025-07-04, 2025-07-18
+        Launch                        :milestone,  2025-07-18, 2m
+        Review                        :2025-07-18, 2025-07-20
+```
+(View [here](https://mermaid.live/view#pako:eNqllE1zmzAQhv-KZg89gUcSBgmOrSen-NKc2uGigQ3WFIQrRNLW4_9e4U-SOMlg73BYLfO8y74adgNFWyJkUCnjXG6ID6ddjeShWGHZ17ivlcrhXWsb5cgPH-FyGS4W-1cdFk63hjysrTaOsH11iAV2ujJEl6jI28g45XFI_TMPyCkXZ_w7_u61xQaN68gX0q2x0I-6UEO3boTHI1y-6f5OXOzORh__tdd16ds67NwHOGNnnMdn_F71pli9273RtddtDQZkhHupZjz_k8bnTwfgo_m5uHgnfLIrL0TlZFe4POJJyOgNrgz4Fa4csGPOL7oSTXTllWg00ZUBOePRba5E17kSnQYQIb3synyyKy9E5xNdEaMfUIRM3uDKgF_hygE75NzfCwRQWV1C5myPATTo995whM0gnYNb-aWUQ-bTUtlfOeRm65m1Mj_btjlitu2rFWSPqu78qV8PK3ShVWVVc6paNCXab21vHGSMx2ynAtkG_kAm6CyNRBzAX8h4ksxYyhKWShHReZJuA_i3a0ZnUsTUB6OplELGaQBYatfa5X6z7xb89j9Dk1ft))
+
 # Sprint 2
 # Sprint 3
 # Sprint 4
