@@ -1,5 +1,7 @@
 #include "window.h"
 
+#include "sections/tasksView.h"
+
 #include <QLabel>
 #include <QPushButton>
 #include <QScrollArea>
@@ -54,11 +56,7 @@ void Window::reset(bool useWid) {
 
 void Window::tasksMenu() {
     reset(false);
-    QPushButton *btn = new QPushButton("<-", this);
-    connect(btn, &QPushButton::released, this, &Window::gameMenu);
-    btn->show();
-    wids.push_back(Widget{btn, QPoint(1, 1), QSize(5, 5), HEIGHT});
-
+    taskView(this);
     resizeElms();
 }
 

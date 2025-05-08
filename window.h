@@ -30,13 +30,14 @@ class Window : public QWidget
 public:
     Window();
 
-    void tick();
+    std::vector<Widget> wids;
+    void tasksMenu();
+    void gameMenu();
 
 protected:
     void reset(bool useWid);
 
-    void tasksMenu();
-    void gameMenu();
+    void tick();
 
     void resizeEvent(QResizeEvent *event);
     void resizeElms();
@@ -44,7 +45,6 @@ protected:
 private:
     Graphic graphics;
     DrawWidget *mainWid = new DrawWidget(&graphics, this);
-    std::vector<Widget> wids;
     QTimer *timer = new QTimer(this);
 };
 
