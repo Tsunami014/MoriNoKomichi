@@ -39,9 +39,7 @@ else()
             ${PROJECT_SOURCES}
             graphics.h graphics.cpp
             drawWidget.h drawWidget.cpp
-
             sections/tasksView.h
-
         )
     endif()
 endif()
