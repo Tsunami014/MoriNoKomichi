@@ -24,9 +24,16 @@ void Window::resizeElms() {
     float widPerc = width() / 100;
     float heiPerc = height() / 100;
     for (Widget wid : wids) {
+        int width = wid.size.width()*widPerc;
+        int height = wid.size.height()*heiPerc;
+        if (wid.sizeRatio == WIDTH) {
+            height = width;
+        } else if (wid.sizeRatio == HEIGHT) {
+            width = height;
+        }
         wid.wid->setGeometry(
             wid.position.x()*widPerc, wid.position.y()*heiPerc,
-            wid.size.width()*widPerc, wid.size.height()*heiPerc
+            width, height
         );
     }
 }
@@ -50,7 +57,7 @@ void Window::tasksMenu() {
     QPushButton *btn = new QPushButton("<-", this);
     connect(btn, &QPushButton::released, this, &Window::gameMenu);
     btn->show();
-    wids.push_back(Widget{btn, QPoint(1, 1), QSize(8, 8)});
+    wids.push_back(Widget{btn, QPoint(1, 1), QSize(5, 5), HEIGHT});
 
     resizeElms();
 }

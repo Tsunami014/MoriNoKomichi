@@ -10,10 +10,17 @@
 #include <QGridLayout>
 #include <QResizeEvent>
 
+enum SizeAspect {
+    REGULAR = 0,
+    HEIGHT = 1,
+    WIDTH = 2
+};
+
 struct Widget {
     QWidget* wid;
     QPoint position;
     QSize size;
+    SizeAspect sizeRatio = REGULAR;
 };
 
 class Window : public QWidget
