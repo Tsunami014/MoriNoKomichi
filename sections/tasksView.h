@@ -8,6 +8,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsItem>
 #include <QGraphicsItemGroup>
+#include <QRandomGenerator>
 
 class TaskWidget : public QGraphicsItem {
 public:
@@ -15,7 +16,7 @@ public:
         name = nme;
     }
 
-    const static inline int width = 800;
+    const static inline int width = 600;
 
     QRectF boundingRect() const override {
         return QRectF(0, 0, width, 100);
@@ -25,11 +26,64 @@ public:
         Q_UNUSED(option);
         Q_UNUSED(widget);
 
-        painter->drawText(QPoint(0, 0), name);
+        QRandomGenerator gen = QRandomGenerator(reinterpret_cast<intptr_t>(this));
+
+        int height = boundingRect().height();
+
+        painter->setFont(textFont);
+        int fontWid = measure.horizontalAdvance(name);
+        painter->drawText(QPoint((width-fontWid)/2, 40), name);
+
+        int padding = 2;
+        int waveHei = 50;
+        int waveDiffAmnt = 5;
+        int waveMidAmnt = 12;
+
+        std::vector<QPoint> ps = {
+            QPoint(padding, padding)
+        };
+        qint16 rndAmnt = gen.generate();
+        rndAmnt = rndAmnt % waveDiffAmnt + waveMidAmnt;
+        rndAmnt = rndAmnt + (rndAmnt % 2);
+        uint8_t pos = 0;
+        float diff = (width - padding * 2) / rndAmnt;
+        for (int i = 1; i < rndAmnt; i++) {
+            pos = waveHei - pos;
+            ps.push_back(QPoint(diff * i, pos+padding));
+        }
+        ps.push_back(QPoint(width-padding, padding));
+        ps.push_back(QPoint(width-padding, height-padding));
+
+        rndAmnt = gen.generate();
+        rndAmnt = rndAmnt % waveDiffAmnt + waveMidAmnt;
+        rndAmnt = rndAmnt + (rndAmnt % 2);
+        pos = 0;
+        diff = (width - padding * 2) / rndAmnt;
+        for (int i = 1; i < rndAmnt; i++) {
+            pos = waveHei - pos;
+            ps.push_back(QPoint(width - (diff * i), height-(pos+padding)));
+        }
+        ps.push_back(QPoint(padding, height-padding));
+
+        for (QPoint& p : ps) {
+            qint16 rndX = gen.generate();
+            qint16 rndY = gen.generate();
+            p.setX(p.x()+(rndX%(padding*2))-padding);
+            p.setY(p.y()+(rndY%(padding*2))-padding);
+        }
+        QVector<QLine> lns;
+        QPoint prevP = ps.back();
+        for (QPoint p : ps) {
+            lns.push_back(QLine(prevP, p));
+            prevP = p;
+        }
+        painter->drawLines(lns);
     }
 
 private:
     QString name;
+    static inline QFont textFont = QFont("Segoe Script", 14);
+    static inline QFontMetrics measure = QFontMetrics(textFont);
 };
 
 void taskView(Window* wind) {
