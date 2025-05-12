@@ -17,9 +17,11 @@ public:
     }
 
     const static inline int width = 600;
+    const static inline int padding = 20;
+    const static inline int paddedWid = width + (padding*2);
 
     QRectF boundingRect() const override {
-        return QRectF(0, 0, width, 100);
+        return QRectF(0, 0, paddedWid, 400 + (padding*2));
     }
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override {
@@ -28,56 +30,59 @@ public:
 
         QRandomGenerator gen = QRandomGenerator(reinterpret_cast<intptr_t>(this));
 
-        int height = boundingRect().height();
+        int height = boundingRect().height() - (padding*2);
 
-        painter->setFont(textFont);
-        int fontWid = measure.horizontalAdvance(name);
-        painter->drawText(QPoint((width-fontWid)/2, 40), name);
-
-        int padding = 2;
+        // Make polygon
+        int distortPad = 2;
         int waveHei = 50;
         int waveDiffAmnt = 5;
         int waveMidAmnt = 12;
 
-        std::vector<QPoint> ps = {
-            QPoint(padding, padding)
+        QVector<QPoint> ps = {
+            QPoint(distortPad, distortPad)
         };
         qint16 rndAmnt = gen.generate();
         rndAmnt = rndAmnt % waveDiffAmnt + waveMidAmnt;
         rndAmnt = rndAmnt + (rndAmnt % 2);
         uint8_t pos = 0;
-        float diff = (width - padding * 2) / rndAmnt;
+        float diff = (width - distortPad * 2) / rndAmnt;
         for (int i = 1; i < rndAmnt; i++) {
             pos = waveHei - pos;
-            ps.push_back(QPoint(diff * i, pos+padding));
+            ps.push_back(QPoint(diff * i, pos+distortPad));
         }
-        ps.push_back(QPoint(width-padding, padding));
-        ps.push_back(QPoint(width-padding, height-padding));
+        ps.push_back(QPoint(width-distortPad, distortPad));
+        ps.push_back(QPoint(width-distortPad, height-distortPad));
 
         rndAmnt = gen.generate();
         rndAmnt = rndAmnt % waveDiffAmnt + waveMidAmnt;
         rndAmnt = rndAmnt + (rndAmnt % 2);
         pos = 0;
-        diff = (width - padding * 2) / rndAmnt;
+        diff = (width - distortPad * 2) / rndAmnt;
         for (int i = 1; i < rndAmnt; i++) {
             pos = waveHei - pos;
-            ps.push_back(QPoint(width - (diff * i), height-(pos+padding)));
+            ps.push_back(QPoint(width - (diff * i), height-(pos+distortPad)));
         }
-        ps.push_back(QPoint(padding, height-padding));
+        ps.push_back(QPoint(distortPad, height-distortPad));
 
         for (QPoint& p : ps) {
             qint16 rndX = gen.generate();
             qint16 rndY = gen.generate();
-            p.setX(p.x()+(rndX%(padding*2))-padding);
-            p.setY(p.y()+(rndY%(padding*2))-padding);
+            p.setX(p.x()+(rndX%(distortPad*2))-distortPad + padding);
+            p.setY(p.y()+(rndY%(distortPad*2))-distortPad + padding);
         }
-        QVector<QLine> lns;
-        QPoint prevP = ps.back();
-        for (QPoint p : ps) {
-            lns.push_back(QLine(prevP, p));
-            prevP = p;
-        }
-        painter->drawLines(lns);
+
+        // Display polygon
+        painter->save();
+        QPolygon poly = QPolygon(ps);
+        painter->setBrush(QBrush(QColor(245, 240, 250)));
+        painter->setPen(QPen(Qt::black, 5));
+        painter->drawPolygon(poly);
+        painter->restore();
+
+        // Display text
+        painter->setFont(textFont);
+        int fontWid = measure.horizontalAdvance(name);
+        painter->drawText(QPoint((width-fontWid)/2 + padding, 40 + padding), name);
     }
 
 private:
@@ -113,7 +118,7 @@ void taskView(Window* wind) {
             }
             QRectF tskSze = tsk->boundingRect();
             QTransform rotMat;
-            rotMat.translate(TaskWidget::width*idx, curMin);
+            rotMat.translate(TaskWidget::paddedWid*idx, curMin);
             tsk->setTransform(rotMat);
             heights[idx] = curMin+tskSze.height()+2;
             scene->addItem(tsk);
