@@ -1,6 +1,6 @@
 #include "window.h"
 
-#include "sections/tasksView.h"
+#include "sections/sections.h"
 
 #include <QLabel>
 #include <QPushButton>

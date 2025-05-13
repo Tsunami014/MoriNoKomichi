@@ -13,9 +13,9 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
-        main.cpp
-        window.cpp
-        window.h
+    main.cpp
+    window.cpp
+    window.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -39,7 +39,11 @@ else()
             ${PROJECT_SOURCES}
             graphics.h graphics.cpp
             drawWidget.h drawWidget.cpp
-            sections/tasksView.h
+
+            sections/sections.h
+            sections/tasksview.cpp
+
+            sections/widgets/taskwidget.h sections/widgets/taskwidget.cpp
         )
     endif()
 endif()
