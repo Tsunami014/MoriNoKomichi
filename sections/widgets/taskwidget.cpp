@@ -1,17 +1,7 @@
 #include "taskwidget.h"
+#include "drawtools.h"
 
 #include <QPainter>
-#include <QRandomGenerator>
-
-QPoint distort(int x, int y, QRandomGenerator gen, int distortPad, int padding) {
-    return QPoint(
-        x + (gen.generate()%(distortPad*2) - distortPad) + padding,
-        y + (gen.generate()%(distortPad*2) - distortPad) + padding
-        );
-}
-float randDec(QRandomGenerator gen) {
-    return 1+(gen.generate()%5)/10;
-}
 
 TaskWidget::TaskWidget(QString nme) {
     name = nme;
@@ -23,9 +13,8 @@ QRectF TaskWidget::boundingRect() const {
 void TaskWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(option);
     Q_UNUSED(widget);
-
     painter->setRenderHint(QPainter::Antialiasing);
-    QRandomGenerator gen = QRandomGenerator(reinterpret_cast<intptr_t>(this));
+    QRandomGenerator gen = getGen(reinterpret_cast<intptr_t>(this));
     int height = boundingRect().height() - (padding*2);
 
     // Make polygon
@@ -39,11 +28,11 @@ void TaskWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     };
 
     Corner ps1[4] = {
-                     Corner{false, false},
-                     Corner{true, false},
-                     Corner{true, true},
-                     Corner{false, true},
-                     };
+        Corner{false, false},
+        Corner{true, false},
+        Corner{true, true},
+        Corner{false, true},
+    };
 
     std::vector<QPoint> ps;
     for (int8_t idx = 0; idx < 4; idx++) {
@@ -60,6 +49,7 @@ void TaskWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
         } else {
             y = distortPad;
         }
+        QPoint p(x, y);
 
         if (gen.generate()%7 == 0) {
             int8_t xOff;
@@ -76,9 +66,9 @@ void TaskWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
             } else {
                 yOff = yOffRnd;
             }
-            QPoint first = distort(x+xOff*randDec(gen), y, gen, distortPad, padding);
-            QPoint mid = distort(x+xOff*randDec(gen), y+yOff*randDec(gen), gen, distortPad, padding);
-            QPoint last = distort(x, y+yOff*randDec(gen), gen, distortPad, padding);
+            QPoint first = distort(p, QPoint(xOff*randDec(gen), 0), gen, distortPad, padding);
+            QPoint mid = distort(p, QPoint(xOff*randDec(gen), yOff*randDec(gen)), gen, distortPad, padding);
+            QPoint last = distort(p, QPoint(0, yOff*randDec(gen)), gen, distortPad, padding);
             if (ps1[idx].x ^ ps1[idx].y) {
                 ps.push_back(first);
                 ps.push_back(mid);
@@ -89,7 +79,7 @@ void TaskWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
                 ps.push_back(first);
             }
         } else {
-            ps.push_back(distort(x, y, gen, distortPad, padding));
+            ps.push_back(distort(p, {0, 0}, gen, distortPad, padding));
         }
 
         // Rips
@@ -125,64 +115,21 @@ void TaskWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
                 }
             }
             if (gen.generate()%2 == 0) {
-                ps.push_back(distort(x + X*pos, y + Y*pos, gen, distortPad, padding));
+                ps.push_back(distort(p, {X*pos, Y*pos}, gen, distortPad, padding));
                 pos += minSpacing;
             } else {
                 int sze = gen.generate()%10+15;
                 int halfSze = sze/2;
-                ps.push_back(distort(x + X*pos, y + Y*pos, gen, distortPad, padding));
-                ps.push_back(distort(x + X*(pos+halfSze) + XY*opp*sze, y + Y*(pos+halfSze) + (!XY)*opp*sze, gen, distortPad, padding));
-                ps.push_back(distort(x + X*(pos+sze), y + Y*(pos+sze), gen, distortPad, padding));
+                ps.push_back(distort(p, {X*pos, Y*pos}, gen, distortPad, padding));
+                ps.push_back(distort(p, {X*(pos+halfSze) + XY*opp*sze, Y*(pos+halfSze) + (!XY)*opp*sze}, gen, distortPad, padding));
+                ps.push_back(distort(p, {X*(pos+sze), Y*(pos+sze)}, gen, distortPad, padding));
                 pos += sze+minSpacing;
             }
         }
     }
 
-    QPoint curPos = ps.back();
-    QPainterPath pth(curPos);
-    for (QPoint& p : ps) {
-        switch (gen.generate()%4) {
-        case 0:
-            pth.lineTo(p);
-            break;
-        case 1: {
-            int diffX = (p.x() - curPos.x()) / 3;
-            int diffY = (p.y() - curPos.y()) / 3;
-            QPoint thirdP1 = QPoint(
-                curPos.x() + diffX + gen.generate()%mayhem,
-                curPos.y() + diffY + gen.generate()%mayhem
-                );
-            QPoint thirdP2 = QPoint(
-                curPos.x() + diffX*2 + gen.generate()%mayhem,
-                curPos.y() + diffY*2 + gen.generate()%mayhem
-                );
-            pth.cubicTo(thirdP1, thirdP2, p);
-            break;
-        }
-        case 2: {
-            QPoint midP = QPoint(
-                (p.x()+curPos.x())/2,
-                (p.y()+curPos.y())/2
-                );
-            pth.cubicTo(midP.x()+gen.generate()%mayhem,
-                        midP.y()+gen.generate()%mayhem,
-                        midP.x()+gen.generate()%mayhem,
-                        midP.y()+gen.generate()%mayhem,
-                        p.x(), p.y()
-                        );
-            break;
-        }
-        case 3: {
-            QPoint midP = QPoint(
-                (p.x()+curPos.x())/2 + gen.generate()%mayhem,
-                (p.y()+curPos.y())/2 + gen.generate()%mayhem
-                );
-            pth.quadTo(midP, p);
-            break;
-        }
-        }
-        curPos = p;
-    }
+    // Make path
+    QPainterPath pth = genPath(ps, gen, true, mayhem);
 
     // Display polygon
     painter->save();
