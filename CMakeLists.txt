@@ -45,6 +45,7 @@ else()
         ${PROJECT_WIDGETS}
         ${PROJECT_RESOURCES}
         sections/widgets/svgbtnwidget.h sections/widgets/svgbtnwidget.cpp
+        sections/widgets/graphicsviewcanvas.h sections/widgets/graphicsviewcanvas.cpp
     )
 endif()
 
