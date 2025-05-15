@@ -62,11 +62,11 @@ void taskView(Window* wind) {
     QGraphicsView *view = new QGraphicsView(scene, wind);
     view->show();
     view->ensureVisible(QRectF(0, 0, 50, 50), 0, 0);
-    wind->wids.push_back(Widget{view, QPoint(0, 0), QSize(100, 100)});
+    wind->wids.push_back(Widget{view, QPoint(0, 0), QSize(80, 100)});
 
     playerViewWidget *playerView = new playerViewWidget(wind);
     playerView->show();
-    wind->wids.push_back(Widget{playerView, QPoint(80, 20), QSize(20, 60)});
+    wind->wids.push_back(Widget{playerView, QPoint(81, 1), QSize(18, 48)});
 
     QPushButton *btn = new QPushButton("<-", wind);
     wind->connect(btn, &QPushButton::released, wind, &Window::gameMenu);

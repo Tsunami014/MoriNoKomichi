@@ -6,14 +6,14 @@
 playerViewWidget::playerViewWidget(QWidget *parent)
     : QWidget(parent)
 {
-    rend = new QSvgRenderer(QString(":/assets/Player.svg"));
+    bg = new QSvgRenderer(QString(":/assets/bg.svg"));
+    rend = new QSvgRenderer(QString(":/assets/player.svg"));
 }
 
 void playerViewWidget::paintEvent(QPaintEvent *event) {
     QPainter painter;
     painter.begin(this);
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.setBrush(QBrush(QColor(244, 222, 200)));
     painter.setPen(QPen(Qt::black, 5));
     QRandomGenerator gen = getGen(reinterpret_cast<intptr_t>(this));
 
@@ -58,7 +58,13 @@ void playerViewWidget::paintEvent(QPaintEvent *event) {
         state = !state;
     }
 
+    painter.setClipPath(pth);
+    bg->render(&painter, QRectF(QPointF(0, 0), size()));
+
+    QRectF paintR(QPointF(padding, padding), thisSze);
+    rend->render(&painter, paintR);
+
+    painter.setClipRect(QRect(), Qt::NoClip); // Remove clipping
     painter.drawPath(pth);
-    rend->render(&painter, QRectF(QPointF(padding, padding), thisSze));
     painter.end();
 }

@@ -15,6 +15,7 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
+    QSvgRenderer* bg = nullptr;
     QSvgRenderer* rend = nullptr;
 };
 

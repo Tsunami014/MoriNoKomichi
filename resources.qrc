@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>assets/Player.svg</file>
+        <file>assets/player.svg</file>
+        <file>assets/bg.svg</file>
     </qresource>
 </RCC>
