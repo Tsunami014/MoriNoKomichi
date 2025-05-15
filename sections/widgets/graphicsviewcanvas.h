@@ -12,13 +12,14 @@ public:
     explicit GraphicsViewCanvas(QGraphicsScene *scene, QWidget *parent = nullptr);
 
 protected:
+    void offsetPos(int x, int y);
     void startMousePoll();
     void endMousePoll();
+    void mousePoll();
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
-    void mousePoll();
     void zoom(int delta);
     void wheelEvent(QWheelEvent *event) override;
 

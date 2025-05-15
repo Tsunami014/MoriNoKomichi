@@ -18,8 +18,8 @@ enum SizeAspect {
 
 struct Widget {
     QWidget* wid;
-    QPoint position;
-    QSize size;
+    QPointF position;
+    QSizeF size;
     SizeAspect sizeRatio = REGULAR;
 };
 

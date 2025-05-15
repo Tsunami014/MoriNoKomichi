@@ -23,8 +23,8 @@ void Window::resizeEvent(QResizeEvent *event) {
 void Window::resizeElms() {
     mainWid->setGeometry(0, 0, width(), height());
 
-    float widPerc = width() / 100;
-    float heiPerc = height() / 100;
+    float widPerc = width() / 100.0f;
+    float heiPerc = height() / 100.0f;
     for (Widget wid : wids) {
         int width = wid.size.width()*widPerc;
         int height = wid.size.height()*heiPerc;
