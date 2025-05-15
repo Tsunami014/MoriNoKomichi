@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
-        <file>assets/player.svg</file>
-        <file>assets/bg.svg</file>
+        <file>assets/player/bg.svg</file>
+        <file>assets/player/player.svg</file>
+        <file>assets/UI/backBtn.svg</file>
     </qresource>
 </RCC>

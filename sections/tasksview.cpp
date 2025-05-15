@@ -1,5 +1,6 @@
 #include "widgets/taskwidget.h"
 #include "widgets/playerviewwidget.h"
+#include "widgets/svgbtnwidget.h"
 #include "../window.h"
 
 #include <QPushButton>
@@ -68,8 +69,8 @@ void taskView(Window* wind) {
     playerView->show();
     wind->wids.push_back(Widget{playerView, QPoint(81, 1), QSize(18, 48)});
 
-    QPushButton *btn = new QPushButton("<-", wind);
+    svgBtnWidget *btn = new svgBtnWidget(":/assets/UI/backBtn.svg", wind);
     wind->connect(btn, &QPushButton::released, wind, &Window::gameMenu);
     btn->show();
-    wind->wids.push_back(Widget{btn, QPoint(1, 1), QSize(5, 5), HEIGHT});
+    wind->wids.push_back(Widget{btn, QPoint(1, 1), QSize(8, 8), HEIGHT});
 }

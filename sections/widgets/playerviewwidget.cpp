@@ -6,8 +6,8 @@
 playerViewWidget::playerViewWidget(QWidget *parent)
     : QWidget(parent)
 {
-    bg = new QSvgRenderer(QString(":/assets/bg.svg"));
-    rend = new QSvgRenderer(QString(":/assets/player.svg"));
+    bg = new QSvgRenderer(QString(":/assets/player/bg.svg"));
+    rend = new QSvgRenderer(QString(":/assets/player/player.svg"));
 }
 
 void playerViewWidget::paintEvent(QPaintEvent *event) {

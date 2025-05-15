@@ -44,6 +44,7 @@ else()
         ${PROJECT_SOURCES}
         ${PROJECT_WIDGETS}
         ${PROJECT_RESOURCES}
+        sections/widgets/svgbtnwidget.h sections/widgets/svgbtnwidget.cpp
     )
 endif()
 
