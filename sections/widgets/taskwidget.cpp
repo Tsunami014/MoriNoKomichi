@@ -1,12 +1,16 @@
 #include "taskwidget.h"
 #include "drawtools.h"
+#include "../sections.h"
 
 #include <QPainter>
 #include <QCursor>
+#include <QDebug>
 
-TaskWidget::TaskWidget(QString nme) {
+TaskWidget::TaskWidget(QString nme, Window* window) {
     setAcceptHoverEvents(true);
+    setAcceptedMouseButtons(Qt::LeftButton);
     name = nme;
+    wind = window;
     makePath();
 }
 QRectF TaskWidget::boundingRect() const {
@@ -27,6 +31,13 @@ void TaskWidget::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
     isHover = false;
     unsetCursor();
     update(); // force repaint
+}
+
+void TaskWidget::mousePressEvent(QGraphicsSceneMouseEvent* event) {} // Needs to not be the default or else release won't be called
+void TaskWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+    isHover = false;
+    unsetCursor();
+    taskOverlay(wind);
 }
 
 void TaskWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {

@@ -15,6 +15,11 @@ void GraphicsViewCanvas::offsetPos(int x, int y) {
     verticalScrollBar()->setValue(verticalScrollBar()->value() + y);
 }
 
+void GraphicsViewCanvas::gotoTopLeft() {
+    horizontalScrollBar()->setValue(0);
+    verticalScrollBar()->setValue(0);
+}
+
 void GraphicsViewCanvas::startMousePoll() {
     if (pollRequires++ == 0) {
         lastMousePos = mapFromGlobal(QCursor::pos());

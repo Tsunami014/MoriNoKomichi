@@ -10,6 +10,7 @@ class GraphicsViewCanvas : public QGraphicsView {
 
 public:
     explicit GraphicsViewCanvas(QGraphicsScene *scene, QWidget *parent = nullptr);
+    void gotoTopLeft();
 
 protected:
     void offsetPos(int x, int y);

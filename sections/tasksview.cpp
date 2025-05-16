@@ -9,32 +9,40 @@
 #include <QGraphicsScene>
 #include <QGraphicsItem>
 #include <QGraphicsItemGroup>
+#include <QtMath>
 
 void taskView(Window* wind) {
     QGraphicsScene* scene = new QGraphicsScene();
     scene->setBackgroundBrush(QBrush(QColor(250, 230, 200)));
 
     std::vector<TaskWidget*> sections[4] = {
-        {new TaskWidget("Hello group 1"), new TaskWidget("Goodbye group 1"), new TaskWidget("Hello again, group 1"), new TaskWidget("Goodbye again, group 1")},
-        {new TaskWidget("Hello group 2"), new TaskWidget("Goodbye group 2"), new TaskWidget("Hello again, group 2"), new TaskWidget("Goodbye again, group 2")},
-        {new TaskWidget("Hello group 3"), new TaskWidget("Goodbye group 3"), new TaskWidget("Hello again, group 3"), new TaskWidget("Goodbye again, group 3")},
-        {new TaskWidget("Hello group 4"), new TaskWidget("Goodbye group 4"), new TaskWidget("Hello again, group 4"), new TaskWidget("Goodbye again, group 4")}
+        {new TaskWidget("Hello group 1", wind), new TaskWidget("Goodbye group 1", wind), new TaskWidget("Hello again, group 1", wind), new TaskWidget("Goodbye again, group 1", wind)},
+        {new TaskWidget("Hello group 2", wind), new TaskWidget("Goodbye group 2", wind), new TaskWidget("Hello again, group 2", wind), new TaskWidget("Goodbye again, group 2", wind)},
+        {new TaskWidget("Hello group 3", wind), new TaskWidget("Goodbye group 3", wind), new TaskWidget("Hello again, group 3", wind), new TaskWidget("Goodbye again, group 3", wind)},
+        {new TaskWidget("Hello group 4", wind), new TaskWidget("Goodbye group 4", wind), new TaskWidget("Hello again, group 4", wind), new TaskWidget("Goodbye again, group 4", wind)}
     };
 
-    int sectPadding = 10;
-    int sectWid = 0;
-    int sectHei = 0;
+    int sectPadding = 50;
+    qreal sectWid = 0;
+    qreal sectHei = 0;
+
+    QGraphicsItemGroup* group1;
 
     for (int i = 0;i < 4;i++) {
         QGraphicsItemGroup* group = new QGraphicsItemGroup();
         // Don't intercept requests to children
         group->setHandlesChildEvents(false);
         group->setAcceptHoverEvents(false);
-        std::vector<int> heights = {2, 2};
+        group->setAcceptedMouseButtons(Qt::NoButton);
+
+        scene->addItem(group);
+        group->show();
+
+        std::vector<unsigned int> heights = {2, 2};
         for (TaskWidget* tsk : sections[i]) {
-            int idx = 0;
-            uint16_t curMin = 0;
-            for (int i = 0; i < heights.size(); i++) {
+            uint16_t idx = 0;
+            unsigned int curMin = 0;
+            for (uint16_t i = 0; i < heights.size(); i++) {
                 if (curMin == 0 || heights[i] < curMin) {
                     curMin = heights[i];
                     idx = i;
@@ -46,26 +54,36 @@ void taskView(Window* wind) {
             scene->addItem(tsk);
             group->addToGroup(tsk);
         }
-        scene->addItem(group);
-        if (i == 0) {
-            QRectF rect = group->boundingRect();
-            sectWid = rect.width();// + sectPadding;
-            sectHei = rect.height();// + sectPadding;
+
+        if (i == 1)  {
+            group1 = group; // Update position after to get correct position
         } else {
-            QPoint pos;
-            if (i == 1 || i == 3) {
-                pos.setX(sectWid);
+            QPoint offset;
+            if (i == 3) {
+                offset.setX(sectWid);
             }
             if (i == 2 || i == 3) {
-                pos.setY(sectHei);
+                offset.setY(sectHei);
             }
-            group->setPos(pos);
+            group->setPos(offset);
+        }
+
+        if (i != 3) {
+            QRectF rect = group->boundingRect();
+            if (i == 0 || i == 2) {
+                sectWid = qMax(sectWid, rect.width() + sectPadding);
+            } else if (i == 0 || i == 1) {
+                sectHei = qMax(sectHei, rect.height() + sectPadding);
+            }
         }
     }
 
+    // Update the sections[1] after to have the correct x value
+    group1->setPos(sectWid, 0);
+
     GraphicsViewCanvas *view = new GraphicsViewCanvas(scene, wind);
     view->show();
-    view->ensureVisible(QRectF(0, 0, 50, 50), 0, 0);
+    view->gotoTopLeft();
     wind->wids.push_back(Widget{view, QPoint(13, 0), QSize(67, 100)});
 
     playerViewWidget *playerView = new playerViewWidget(wind);

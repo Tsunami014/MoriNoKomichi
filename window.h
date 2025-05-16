@@ -33,6 +33,7 @@ public:
     std::vector<Widget> wids;
     void tasksMenu();
     void gameMenu();
+    void resizeElms();
 
 protected:
     void reset(bool useWid);
@@ -40,7 +41,6 @@ protected:
     void tick();
 
     void resizeEvent(QResizeEvent *event);
-    void resizeElms();
 
 private:
     Graphic graphics;

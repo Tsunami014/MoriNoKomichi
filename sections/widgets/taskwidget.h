@@ -1,6 +1,8 @@
 #ifndef TASKSVIEW_H
 #define TASKSVIEW_H
 
+#include "../../window.h"
+
 #include <QFont>
 #include <QFontMetrics>
 #include <QGraphicsItem>
@@ -8,7 +10,7 @@
 
 class TaskWidget : public QGraphicsItem {
 public:
-    TaskWidget(QString nme);
+    TaskWidget(QString nme, Window* window);
 
     const static inline int width = 600;
     const static inline int padding = 20;
@@ -23,10 +25,13 @@ protected:
     QPainterPath shape() const override;
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
+    void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
     QString name;
     QPainterPath path;
+    Window* wind = nullptr;
     bool isHover = false;
     static inline QFont textFont = QFont("Segoe Script", 14);
     static inline QFontMetrics measure = QFontMetrics(textFont);
