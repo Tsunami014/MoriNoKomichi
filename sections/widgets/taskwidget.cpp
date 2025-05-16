@@ -2,18 +2,70 @@
 #include "drawtools.h"
 
 #include <QPainter>
+#include <QCursor>
 
 TaskWidget::TaskWidget(QString nme) {
+    setAcceptHoverEvents(true);
     name = nme;
+    makePath();
 }
 QRectF TaskWidget::boundingRect() const {
     return QRectF(0, 0, paddedWid, 400 + (padding*2));
+}
+QPainterPath TaskWidget::shape() const {
+    return path;
+}
+
+void TaskWidget::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
+    Q_UNUSED(event)
+    isHover = true;
+    setCursor(Qt::PointingHandCursor);
+    update(); // force repaint
+}
+void TaskWidget::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
+    Q_UNUSED(event)
+    isHover = false;
+    unsetCursor();
+    update(); // force repaint
 }
 
 void TaskWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(option);
     Q_UNUSED(widget);
     painter->setRenderHint(QPainter::Antialiasing);
+
+    // Apply a scaling to everything beyond this point if hovering
+    QTransform prevTrans = painter->transform();
+    if (isHover) {
+        QTransform transform;
+        int hoverAmnt = 5;
+        QRectF pthBBx = path.boundingRect();
+        QPointF center = pthBBx.center();
+
+        transform.translate(center.x(), center.y());
+        transform.scale(static_cast<qreal>(hoverAmnt*2) / pthBBx.width() + 1, static_cast<qreal>(hoverAmnt*2) / pthBBx.height() + 1);
+        transform.translate(-center.x(), -center.y());
+
+        painter->setTransform(transform * prevTrans);
+    }
+
+    // Display polygon
+    painter->save();
+    painter->setBrush(QBrush(QColor(255, 235, 210)));
+    painter->setPen(QPen(Qt::black, 5));
+    painter->drawPath(path);
+    painter->restore();
+
+    // Display text
+    painter->setFont(textFont);
+    int fontWid = measure.horizontalAdvance(name);
+    painter->drawText(QPoint((width-fontWid)/2 + padding, 40 + padding), name);
+
+    // Reset transform
+    painter->setTransform(prevTrans);
+}
+
+void TaskWidget::makePath() {
     QRandomGenerator gen = getGen(reinterpret_cast<intptr_t>(this));
     int height = boundingRect().height() - (padding*2);
 
@@ -129,17 +181,5 @@ void TaskWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     }
 
     // Make path
-    QPainterPath pth = genPath(ps, gen, true, mayhem);
-
-    // Display polygon
-    painter->save();
-    painter->setBrush(QBrush(QColor(255, 235, 210)));
-    painter->setPen(QPen(Qt::black, 5));
-    painter->drawPath(pth);
-    painter->restore();
-
-    // Display text
-    painter->setFont(textFont);
-    int fontWid = measure.horizontalAdvance(name);
-    painter->drawText(QPoint((width-fontWid)/2 + padding, 40 + padding), name);
+    path = genPath(ps, gen, true, mayhem);
 }

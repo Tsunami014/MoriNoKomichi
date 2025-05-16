@@ -21,11 +21,15 @@ void taskView(Window* wind) {
         {new TaskWidget("Hello group 4"), new TaskWidget("Goodbye group 4"), new TaskWidget("Hello again, group 4"), new TaskWidget("Goodbye again, group 4")}
     };
 
+    int sectPadding = 10;
     int sectWid = 0;
     int sectHei = 0;
 
     for (int i = 0;i < 4;i++) {
         QGraphicsItemGroup* group = new QGraphicsItemGroup();
+        // Don't intercept requests to children
+        group->setHandlesChildEvents(false);
+        group->setAcceptHoverEvents(false);
         std::vector<int> heights = {2, 2};
         for (TaskWidget* tsk : sections[i]) {
             int idx = 0;
@@ -37,9 +41,7 @@ void taskView(Window* wind) {
                 }
             }
             QRectF tskSze = tsk->boundingRect();
-            QTransform rotMat;
-            rotMat.translate(TaskWidget::paddedWid*idx, curMin);
-            tsk->setTransform(rotMat);
+            tsk->setPos(TaskWidget::paddedWid*idx, curMin);
             heights[idx] = curMin+tskSze.height()+2;
             scene->addItem(tsk);
             group->addToGroup(tsk);
@@ -47,17 +49,17 @@ void taskView(Window* wind) {
         scene->addItem(group);
         if (i == 0) {
             QRectF rect = group->boundingRect();
-            sectWid = rect.width();
-            sectHei = rect.height();
+            sectWid = rect.width();// + sectPadding;
+            sectHei = rect.height();// + sectPadding;
         } else {
-            QTransform rotMat;
+            QPoint pos;
             if (i == 1 || i == 3) {
-                rotMat.translate(sectWid, 0);
+                pos.setX(sectWid);
             }
             if (i == 2 || i == 3) {
-                rotMat.translate(0, sectHei);
+                pos.setY(sectHei);
             }
-            group->setTransform(rotMat);
+            group->setPos(pos);
         }
     }
 

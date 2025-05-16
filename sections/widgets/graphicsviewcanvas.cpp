@@ -4,6 +4,7 @@
 #include <QtCore/qmath.h>
 GraphicsViewCanvas::GraphicsViewCanvas(QGraphicsScene *scene, QWidget *parent)
     : QGraphicsView(scene, parent) {
+    setMouseTracking(true);
     setDragMode(QGraphicsView::NoDrag);
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
     connect(pollTimer, &QTimer::timeout, this, &GraphicsViewCanvas::mousePoll);
