@@ -2,9 +2,10 @@
 
 #include <QPainter>
 
-svgBtnWidget::svgBtnWidget(QString path, QWidget *parent)
+svgBtnWidget::svgBtnWidget(QString path, QWidget *parent, int expandAmount)
     : QPushButton(parent)
 {
+    expandAmnt = expandAmount;
     svg = new QSvgRenderer(QString(path));
     setMouseTracking(true);
     setCursor(QCursor(Qt::PointingHandCursor));
@@ -25,10 +26,17 @@ bool svgBtnWidget::hitButton(const QPoint &pos) const {
 void svgBtnWidget::mouseMoveEvent(QMouseEvent *event) {
     if (hitButton(event->pos())) {
         setCursor(Qt::PointingHandCursor);
+        touching = true;
     } else {
+        touching = false;
         unsetCursor();
     }
     QPushButton::mouseMoveEvent(event);
+}
+void svgBtnWidget::leaveEvent(QEvent *event) {
+    unsetCursor();
+    touching = false;
+    QPushButton::leaveEvent(event);
 }
 
 void svgBtnWidget::paintEvent(QPaintEvent *event) {
@@ -36,7 +44,18 @@ void svgBtnWidget::paintEvent(QPaintEvent *event) {
     painter.begin(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    svg->render(&painter, QRectF(QPoint(0, 0), size()));
+    if (touching) {
+        QTransform transform;
+        QPointF center(width()/2, height()/2);
+
+        transform.translate(center.x(), center.y());
+        transform.scale(static_cast<qreal>(expandAmnt*2) / width() + 1, static_cast<qreal>(expandAmnt*2) / height() + 1);
+        transform.translate(-center.x(), -center.y());
+
+        painter.setTransform(transform);
+    }
+
+    svg->render(&painter, QRectF(expandAmnt, expandAmnt, width()-(expandAmnt*2), height()-(expandAmnt*2)));
 
     painter.end();
 }

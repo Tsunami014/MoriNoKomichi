@@ -7,7 +7,8 @@
 #include <QScrollArea>
 
 Window::Window() {
-    setWindowTitle(tr("Window title!"));
+    setWindowTitle(tr("森の小道 : Forest Path"));
+    resize(900, 600);
     showMaximized();
 
     connect(timer, &QTimer::timeout, this, &Window::tick);
