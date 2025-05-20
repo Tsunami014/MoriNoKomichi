@@ -7,7 +7,7 @@ playerViewWidget::playerViewWidget(QWidget *parent)
     : QWidget(parent)
 {
     bg = new QSvgRenderer(QString(":/assets/player/bg.svg"));
-    rend = new QSvgRenderer(QString(":/assets/player/player.svg"));
+    rend = new QSvgRenderer(QString(path));
 }
 
 void playerViewWidget::paintEvent(QPaintEvent *event) {
@@ -15,7 +15,7 @@ void playerViewWidget::paintEvent(QPaintEvent *event) {
     painter.begin(this);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setPen(QPen(Qt::black, 5));
-    QRandomGenerator gen = getGen(reinterpret_cast<intptr_t>(this));
+    QRandomGenerator gen = getGen(path);
 
     int padding = 10;
     QSize thisSze(width()-(padding*2), height()-(padding*2));

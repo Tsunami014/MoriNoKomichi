@@ -8,33 +8,40 @@
 #include <QGraphicsItem>
 #include <QMouseEvent>
 
+class bigTaskWidget; // Forward reference
+
 class TaskWidget : public QGraphicsItem {
 public:
     TaskWidget(QString nme, Window* window);
+    virtual void makePath();
 
-    const static inline int width = 600;
+    int width = 600;
     const static inline int padding = 20;
-    const static inline int paddedWid = width + (padding*2);
 
-    QRectF boundingRect() const final override;
+    QRectF boundingRect() const override;
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
+    bigTaskWidget* toBigWidget();
+
 protected:
-    void makePath();
     QPainterPath shape() const override;
+
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
+    QPainterPath path;
+
 private:
     QString name;
-    QPainterPath path;
     Window* wind = nullptr;
     bool isHover = false;
     static inline QFont textFont = QFont("Segoe Script", 14);
     static inline QFontMetrics measure = QFontMetrics(textFont);
 };
+
+TaskWidget* MakeTaskWidget(QString nme, Window* window);
 
 #endif // TASKSVIEW_H

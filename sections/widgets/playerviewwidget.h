@@ -15,6 +15,7 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
+    QString path = ":/assets/player/player.svg";
     QSvgRenderer* bg = nullptr;
     QSvgRenderer* rend = nullptr;
 };

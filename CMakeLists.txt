@@ -47,6 +47,7 @@ else()
         sections/widgets/svgbtnwidget.h sections/widgets/svgbtnwidget.cpp
         sections/widgets/graphicsviewcanvas.h sections/widgets/graphicsviewcanvas.cpp
         sections/taskoverlay.cpp
+        sections/widgets/bigtaskwidget.h sections/widgets/bigtaskwidget.cpp
     )
 endif()
 

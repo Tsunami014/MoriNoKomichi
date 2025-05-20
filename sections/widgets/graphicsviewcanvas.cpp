@@ -79,6 +79,9 @@ void GraphicsViewCanvas::keyReleaseEvent(QKeyEvent *event) {
 }
 
 void GraphicsViewCanvas::zoom(int delta) {
+    if (delta == 0) {
+        return;
+    }
     double factor = qPow(1.2, delta/qAbs(delta));
     scale(factor, factor);
 }
@@ -92,6 +95,8 @@ void GraphicsViewCanvas::wheelEvent(QWheelEvent *event) {
         offsetPos(-delta.y()/2, -delta.x()/2);
     }
     else {
-        QGraphicsView::wheelEvent(event);
+        // Don't use original method; call offsetPos so *it* handles everything
+        QPoint delta = event->angleDelta();
+        offsetPos(-delta.x()/2, -delta.y()/2);
     }
 }

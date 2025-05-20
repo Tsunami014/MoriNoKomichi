@@ -1,7 +1,8 @@
 #include "drawtools.h"
 
-QRandomGenerator getGen(intptr_t seed) {
-    return QRandomGenerator(seed);
+QRandomGenerator getGen(QString seed) {
+    std::hash<QString> h;
+    return QRandomGenerator(static_cast<uint32_t>(h(seed)));
 }
 
 QPoint distort(QPoint p, QPoint offset, QRandomGenerator gen, int distortPad, int padding) {

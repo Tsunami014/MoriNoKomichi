@@ -5,7 +5,7 @@
 #include <QPainterPath>
 #include <QPoint>
 
-QRandomGenerator getGen(intptr_t seed);
+QRandomGenerator getGen(QString seed);
 QPoint distort(QPoint p, QPoint offset, QRandomGenerator gen, int distortPad = 10, int padding = 0);
 float randDec(QRandomGenerator gen);
 

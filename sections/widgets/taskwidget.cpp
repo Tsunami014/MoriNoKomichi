@@ -1,20 +1,34 @@
 #include "taskwidget.h"
 #include "drawtools.h"
+#include "bigtaskwidget.h"
 #include "../sections.h"
 
 #include <QPainter>
 #include <QCursor>
 #include <QDebug>
 
+TaskWidget* MakeTaskWidget(QString nme, Window* window) {
+    TaskWidget* tw = new TaskWidget(nme, window);
+    tw->makePath();
+    return tw;
+}
+
 TaskWidget::TaskWidget(QString nme, Window* window) {
     setAcceptHoverEvents(true);
     setAcceptedMouseButtons(Qt::LeftButton);
     name = nme;
     wind = window;
-    makePath();
 }
+
+bigTaskWidget* TaskWidget::toBigWidget() {
+    bigTaskWidget* newWid = new bigTaskWidget(name, wind);
+    newWid->makePath();
+    newWid->show();
+    return newWid;
+}
+
 QRectF TaskWidget::boundingRect() const {
-    return QRectF(0, 0, paddedWid, 400 + (padding*2));
+    return QRectF(0, 0, width + (padding*2), 400 + (padding*2));
 }
 QPainterPath TaskWidget::shape() const {
     return path;
@@ -37,7 +51,7 @@ void TaskWidget::mousePressEvent(QGraphicsSceneMouseEvent* event) {} // Needs to
 void TaskWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     isHover = false;
     unsetCursor();
-    taskOverlay(wind);
+    taskOverlay(wind, this);
 }
 
 void TaskWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
@@ -50,11 +64,11 @@ void TaskWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     if (isHover) {
         QTransform transform;
         int hoverAmnt = 5;
-        QRectF pthBBx = path.boundingRect();
-        QPointF center = pthBBx.center();
+        QRectF BBx = boundingRect();
+        QPointF center = BBx.center();
 
         transform.translate(center.x(), center.y());
-        transform.scale(static_cast<qreal>(hoverAmnt*2) / pthBBx.width() + 1, static_cast<qreal>(hoverAmnt*2) / pthBBx.height() + 1);
+        transform.scale(static_cast<qreal>(hoverAmnt*2) / BBx.width() + 1, static_cast<qreal>(hoverAmnt*2) / BBx.height() + 1);
         transform.translate(-center.x(), -center.y());
 
         painter->setTransform(transform * prevTrans);
@@ -77,7 +91,7 @@ void TaskWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 }
 
 void TaskWidget::makePath() {
-    QRandomGenerator gen = getGen(reinterpret_cast<intptr_t>(this));
+    QRandomGenerator gen = getGen(name);
     int height = boundingRect().height() - (padding*2);
 
     // Make polygon

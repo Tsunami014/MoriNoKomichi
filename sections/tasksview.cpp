@@ -16,10 +16,10 @@ void taskView(Window* wind) {
     scene->setBackgroundBrush(QBrush(QColor(250, 230, 200)));
 
     std::vector<TaskWidget*> sections[4] = {
-        {new TaskWidget("Hello group 1", wind), new TaskWidget("Goodbye group 1", wind), new TaskWidget("Hello again, group 1", wind), new TaskWidget("Goodbye again, group 1", wind)},
-        {new TaskWidget("Hello group 2", wind), new TaskWidget("Goodbye group 2", wind), new TaskWidget("Hello again, group 2", wind), new TaskWidget("Goodbye again, group 2", wind)},
-        {new TaskWidget("Hello group 3", wind), new TaskWidget("Goodbye group 3", wind), new TaskWidget("Hello again, group 3", wind), new TaskWidget("Goodbye again, group 3", wind)},
-        {new TaskWidget("Hello group 4", wind), new TaskWidget("Goodbye group 4", wind), new TaskWidget("Hello again, group 4", wind), new TaskWidget("Goodbye again, group 4", wind)}
+        {MakeTaskWidget("Hello group 1", wind), MakeTaskWidget("Goodbye group 1", wind), MakeTaskWidget("Hello again, group 1", wind), MakeTaskWidget("Goodbye again, group 1", wind)},
+        {MakeTaskWidget("Hello group 2", wind), MakeTaskWidget("Goodbye group 2", wind), MakeTaskWidget("Hello again, group 2", wind), MakeTaskWidget("Goodbye again, group 2", wind)},
+        {MakeTaskWidget("Hello group 3", wind), MakeTaskWidget("Goodbye group 3", wind), MakeTaskWidget("Hello again, group 3", wind), MakeTaskWidget("Goodbye again, group 3", wind)},
+        {MakeTaskWidget("Hello group 4", wind), MakeTaskWidget("Goodbye group 4", wind), MakeTaskWidget("Hello again, group 4", wind), MakeTaskWidget("Goodbye again, group 4", wind)}
     };
 
     int sectPadding = 50;
@@ -49,7 +49,7 @@ void taskView(Window* wind) {
                 }
             }
             QRectF tskSze = tsk->boundingRect();
-            tsk->setPos(TaskWidget::paddedWid*idx, curMin);
+            tsk->setPos(tskSze.width()*idx, curMin);
             heights[idx] = curMin+tskSze.height()+2;
             scene->addItem(tsk);
             group->addToGroup(tsk);

@@ -13,7 +13,7 @@ public:
     void gotoTopLeft();
 
 protected:
-    void offsetPos(int x, int y);
+    virtual void offsetPos(int x, int y);
     void startMousePoll();
     void endMousePoll();
     void mousePoll();
