@@ -29,17 +29,6 @@ private:
     std::function<void()> clickFunc;
 };
 
-void removeOverlay(Window* wind) {
-    bool wasOverlay = false;
-    while (!wind->wids.empty() && !wasOverlay) {
-        QWidget* back = wind->wids.back().wid;
-        wasOverlay = dynamic_cast<const OverlayWid*>(back) != nullptr;
-        delete back;
-        wind->wids.pop_back();
-    }
-    wind->resizeElms();
-}
-
 class NewGraphicsView : public GraphicsViewCanvas {
 public:
     NewGraphicsView(QGraphicsScene* scene, std::function<void()> clickFun, Window* wind) : GraphicsViewCanvas(scene, wind) {
@@ -72,21 +61,60 @@ private:
     std::function<void()> clickFunc;
 };
 
+void removeOverlay(Window* wind, std::vector<QWidget*>* wids) {
+    if (wids->empty()) {
+        delete wids;
+        return;
+    }
+    for (int i = wind->wids.size()-1; i >= 0; i--) {
+        auto wid = wind->wids[i].wid;
+        int start = wids->size()-1;
+        for (int j = start; j >= 0; j--) {
+            if (wids->at(j) == wid) {
+                if (j == start) {
+                    delete wids->back();
+                    wids->pop_back();
+                } else {
+                    delete wids->at(j);
+                    wids->erase(wids->begin() + j);
+                }
+                if (i == wind->wids.size()-1) {
+                    wind->wids.pop_back();
+                } else {
+                    wind->wids.erase(wind->wids.begin() + j);
+                }
+                break;
+            }
+        }
+        if (wids->empty()) {
+            break;
+        }
+    }
+    delete wids;
+    wind->resizeElms();
+}
+
 void taskOverlay(Window* wind, TaskWidget* task) {
-    auto backFun = [wind](){removeOverlay(wind);};
+    std::vector<QWidget*>* rmWids = new std::vector<QWidget*>;
+    auto backFun = [wind, rmWids](){removeOverlay(wind, rmWids);};
+
     OverlayWid *overlay = new OverlayWid(backFun, wind);
     overlay->show();
-    wind->wids.push_back(Widget{overlay, QPoint(-1, -1), QSize(102, 102)});
 
     QGraphicsScene* scene = new QGraphicsScene();
     scene->addItem(task->toBigWidget());
     NewGraphicsView *view = new NewGraphicsView(scene, backFun, wind);
     view->show();
-    wind->wids.push_back(Widget{view, QPoint(25, 0), QSize(50, 100)});
 
     svgBtnWidget *btn = new svgBtnWidget(":/assets/UI/backBtn.svg", wind);
     wind->connect(btn, &QPushButton::released, wind, backFun);
     btn->show();
+
+    rmWids->push_back(overlay);
+    rmWids->push_back(view);
+    rmWids->push_back(btn);
+    wind->wids.push_back(Widget{overlay, QPoint(-1, -1), QSize(102, 102)});
+    wind->wids.push_back(Widget{view, QPoint(25, 0), QSize(50, 100)});
     wind->wids.push_back(Widget{btn, QPoint(1, 1), QSize(8, 8), HEIGHT});
 
     wind->resizeElms();
