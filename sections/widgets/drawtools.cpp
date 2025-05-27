@@ -16,6 +16,47 @@ float randDec(QRandomGenerator gen) {
     return 1+(gen.generate()%5)/10;
 }
 
+QPainterPath* roughRect(QRandomGenerator gen, QSize thisSze, int padding, int corner_radius) {
+    struct corner1 {
+        QPoint p;
+        int8_t move_x;
+        int8_t move_y;
+        int8_t multip;
+    };
+    corner1 ps1[4] = {
+        {{padding, padding}, 0, 1, 1},
+        {{padding, thisSze.height()}, 1, 0, -1},
+        {{thisSze.width(), thisSze.height()}, 0, -1, 1},
+        {{thisSze.width(), padding}, -1, 0, -1}
+    };
+
+    struct corner2 {
+        QPoint p;
+        int8_t move_x;
+        int8_t move_y;
+    };
+    QPoint ps2[8];
+    for (int idx = 0; idx < 4; idx++) {
+        ps2[idx*2] = distort(ps1[idx].p, {ps1[idx].move_y*corner_radius*ps1[idx].multip, ps1[idx].move_x*corner_radius*ps1[idx].multip}, gen);
+        ps2[idx*2+1] = distort(ps1[idx].p, {ps1[idx].move_x*corner_radius, ps1[idx].move_y*corner_radius}, gen);
+    }
+
+    QPainterPath* pth = new QPainterPath(ps2[0]);
+    bool state = true; // Corner (true) or edge (false)
+    uint8_t edge = 0;
+    for (int idx = 0; idx < 8; idx++) {
+        QPoint next = ps2[(idx+1)%8];
+        if (state) {
+            QPoint control = distort(ps1[edge++].p, {0, 0}, gen);
+            pth->quadTo(control, next);
+        } else {
+            continuePath(pth, std::vector<QPoint>{next}, gen);
+        }
+        state = !state;
+    }
+    return pth;
+}
+
 void continuePath(QPainterPath* pth, std::vector<QPoint> ps, QRandomGenerator gen, int mayhem) {
     QPointF curPos = pth->currentPosition();
 

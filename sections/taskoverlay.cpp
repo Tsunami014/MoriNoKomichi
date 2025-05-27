@@ -11,7 +11,9 @@
 
 class OverlayWid : public QWidget {
 public:
-    OverlayWid(std::function<void()> clickFun, QWidget* parent = nullptr) : QWidget(parent) {clickFunc = clickFun;}
+    OverlayWid(std::function<void()> clickFun, QWidget* parent = nullptr) : QWidget(parent) {
+        clickFunc = clickFun;
+    }
 
 protected:
     void mouseReleaseEvent(QMouseEvent *event) override {
@@ -31,8 +33,10 @@ private:
 
 class NewGraphicsView : public GraphicsViewCanvas {
 public:
-    NewGraphicsView(QGraphicsScene* scene, std::function<void()> clickFun, Window* wind) : GraphicsViewCanvas(scene, wind) {
+    NewGraphicsView(QGraphicsScene* scene, std::function<void()> clickFun, bigTaskWidget* wid, Window* wind)
+    : GraphicsViewCanvas(scene, wind) {
         clickFunc = clickFun;
+        bigW = wid;
         setStyleSheet("background: transparent");
         setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     }
@@ -53,12 +57,13 @@ protected:
         GraphicsViewCanvas::offsetPos(0, y);
     }
     void resizeEvent(QResizeEvent *event) override {
-        dynamic_cast<bigTaskWidget*>(scene()->items()[0])->updatePath(event->size().width());
+        bigW->updatePath(event->size().width());
         GraphicsViewCanvas::resizeEvent(event);
     }
     void zoom(int delta) {} // Remove zoom
 private:
     std::function<void()> clickFunc;
+    bigTaskWidget* bigW = nullptr;
 };
 
 void removeOverlay(Window* wind, std::vector<QWidget*>* wids) {
@@ -102,8 +107,9 @@ void taskOverlay(Window* wind, TaskWidget* task) {
     overlay->show();
 
     QGraphicsScene* scene = new QGraphicsScene();
-    scene->addItem(task->toBigWidget());
-    NewGraphicsView *view = new NewGraphicsView(scene, backFun, wind);
+    bigTaskWidget* bigW = task->toBigWidget();
+    scene->addItem(bigW);
+    NewGraphicsView *view = new NewGraphicsView(scene, backFun, bigW, wind);
     view->show();
 
     svgBtnWidget *btn = new svgBtnWidget(":/assets/UI/backBtn.svg", wind);

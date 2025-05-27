@@ -5,14 +5,15 @@
 
 #include <QFont>
 #include <QFontMetrics>
-#include <QGraphicsItem>
+#include <QGraphicsObject>
 #include <QMouseEvent>
 
 class bigTaskWidget; // Forward reference
 
-class TaskWidget : public QGraphicsItem {
+class TaskWidget : public QGraphicsObject {
+    Q_OBJECT
 public:
-    TaskWidget(QString nme, Window* window);
+    TaskWidget(QString nme, Window* window, QGraphicsItem* parent = nullptr);
     virtual void makePath();
 
     int width = 600;
@@ -26,6 +27,8 @@ public:
 
 protected:
     QPainterPath shape() const override;
+
+    QTransform paintOutline(QPainter *painter);
 
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
@@ -42,6 +45,6 @@ private:
     static inline QFontMetrics measure = QFontMetrics(textFont);
 };
 
-TaskWidget* MakeTaskWidget(QString nme, Window* window);
+TaskWidget* MakeTaskWidget(QString nme, Window* window, QGraphicsItem* parent = nullptr);
 
 #endif // TASKSVIEW_H

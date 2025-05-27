@@ -7,13 +7,15 @@
 #include <QCursor>
 #include <QDebug>
 
-TaskWidget* MakeTaskWidget(QString nme, Window* window) {
-    TaskWidget* tw = new TaskWidget(nme, window);
+TaskWidget* MakeTaskWidget(QString nme, Window* window, QGraphicsItem* parent) {
+    TaskWidget* tw = new TaskWidget(nme, window, parent);
     tw->makePath();
     return tw;
 }
 
-TaskWidget::TaskWidget(QString nme, Window* window) {
+TaskWidget::TaskWidget(QString nme, Window* window, QGraphicsItem* parent)
+    : QGraphicsObject(parent)
+{
     setAcceptHoverEvents(true);
     setAcceptedMouseButtons(Qt::LeftButton);
     name = nme;
@@ -21,7 +23,7 @@ TaskWidget::TaskWidget(QString nme, Window* window) {
 }
 
 bigTaskWidget* TaskWidget::toBigWidget() {
-    bigTaskWidget* newWid = new bigTaskWidget(name, wind);
+    bigTaskWidget* newWid = new bigTaskWidget(name, wind, nullptr);
     newWid->makePath();
     newWid->show();
     return newWid;
@@ -57,6 +59,18 @@ void TaskWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 void TaskWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(option);
     Q_UNUSED(widget);
+
+    QTransform prevTrans = paintOutline(painter);
+
+    // Display text
+    painter->setFont(textFont);
+    int fontWid = measure.horizontalAdvance(name);
+    painter->drawText(QPoint((width-fontWid)/2 + padding, 40 + padding), name);
+
+    // Reset transform
+    painter->setTransform(prevTrans);
+}
+QTransform TaskWidget::paintOutline(QPainter *painter) {
     painter->setRenderHint(QPainter::Antialiasing);
 
     // Apply a scaling to everything beyond this point if hovering
@@ -81,13 +95,7 @@ void TaskWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     painter->drawPath(path);
     painter->restore();
 
-    // Display text
-    painter->setFont(textFont);
-    int fontWid = measure.horizontalAdvance(name);
-    painter->drawText(QPoint((width-fontWid)/2 + padding, 40 + padding), name);
-
-    // Reset transform
-    painter->setTransform(prevTrans);
+    return prevTrans;
 }
 
 void TaskWidget::makePath() {
