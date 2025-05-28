@@ -1,17 +1,32 @@
 #include "taskwidget.h"
 #include "tools/drawtools.h"
+#include "tools/texttools.h"
 #include "bigtaskwidget.h"
 #include "../sections.h"
 
 #include <QPainter>
 #include <QCursor>
-#include <QDebug>
 
-TaskWidget* MakeTaskWidget(QString nme, Window* window, QGraphicsItem* parent) {
-    TaskWidget* tw = new TaskWidget(nme, window, parent);
-    tw->makePath();
-    return tw;
-}
+class myText : public QGraphicsTextItem {
+public:
+    myText(const QString &text, TaskWidget* parent) : QGraphicsTextItem(text, parent) {
+        widparent = parent;
+    };
+protected:
+    bool event(QEvent *ev) override {
+        // If you pressed a key, update the sizing and positioning of all the elements
+        bool ret = QGraphicsTextItem::event(ev);
+        if (ev->type() == QEvent::KeyPress) {
+            QTimer::singleShot(0, this, [this](){
+                widparent->updateChildren();
+            });
+        }
+        return ret;
+    }
+private:
+    TaskWidget* widparent;
+};
+
 
 TaskWidget::TaskWidget(QString nme, Window* window, QGraphicsItem* parent)
     : QGraphicsObject(parent)
@@ -20,13 +35,24 @@ TaskWidget::TaskWidget(QString nme, Window* window, QGraphicsItem* parent)
     setAcceptedMouseButtons(Qt::LeftButton);
     name = nme;
     wind = window;
+
+    myText *it = new myText(nme, this);
+    it->setFont(getAFont({"Kalam", "Comic Neue", "Segoe Print", "Amatic SC", "DejaVu Sans Mono"}, 24));
+    it->show();
+    extras.push_back(it);
+}
+TaskWidget* MakeTaskWidget(QString nme, Window* window, QGraphicsItem* parent) {
+    TaskWidget* tw = new TaskWidget(nme, window, parent);
+    tw->makePath();
+    tw->updateChildren();
+    return tw;
 }
 
 bigTaskWidget* TaskWidget::toBigWidget() {
     bigTaskWidget* newWid = new bigTaskWidget(name, wind, nullptr);
     newWid->makePath();
     newWid->show();
-    newWid->updatePath();
+    newWid->updateChildren();
     return newWid;
 }
 
@@ -39,14 +65,26 @@ QPainterPath TaskWidget::shape() const {
 
 void TaskWidget::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
     Q_UNUSED(event)
+    if (!isHover) {
+        // Set all transforms on children here
+        QTransform transform = getExpansionTransform();
+        extras[0]->setTransform(transform, true);
+    }
     isHover = true;
     setCursor(Qt::PointingHandCursor);
+
     update(); // force repaint
 }
 void TaskWidget::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
     Q_UNUSED(event)
+    if (isHover) {
+        // Unset all transforms on children here by transforming them the opposite of what they were
+        QTransform transform = getExpansionTransform().inverted();
+        extras[0]->setTransform(transform, true);
+    }
     isHover = false;
     unsetCursor();
+
     update(); // force repaint
 }
 
@@ -57,36 +95,50 @@ void TaskWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     taskOverlay(wind, this);
 }
 
+void TaskWidget::updateChildren(bool prepare) {
+    if (prepare) { prepareGeometryChange(); }
+
+    // Position the heading text in the correct spot and with the correct width
+    auto *txt = static_cast<myText*>(extras[0]);
+
+    txt->setTextWidth(-1);
+    qreal max = static_cast<qreal>(width - (padding)*2 - 90);
+    qreal min = qMin(max, txt->boundingRect().width());
+    if (min < max) { // If text is smaller than width - padding*2, let it auto-resize - else, stick to the max defined
+        txt->setTextWidth(-1);
+    } else {
+        txt->setTextWidth(max);
+    }
+
+    QRectF bbx = txt->boundingRect();
+    txt->setPos(QPoint((width-bbx.width())/2 + 10, padding+30));
+
+    if (prepare) { update(); }
+}
+
+QTransform TaskWidget::getExpansionTransform() {
+    QTransform transform;
+    int hoverAmnt = 5;
+    QRectF BBx = boundingRect();
+    QPointF center = BBx.center();
+
+    transform.translate(center.x(), center.y());
+    transform.scale(static_cast<qreal>(hoverAmnt*2) / BBx.width() + 1, static_cast<qreal>(hoverAmnt*2) / BBx.height() + 1);
+    transform.translate(-center.x(), -center.y());
+
+    return transform;
+}
+
 void TaskWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    QTransform prevTrans = paintOutline(painter);
-
-    // Display text
-    painter->setFont(textFont);
-    int fontWid = measure.horizontalAdvance(name);
-    painter->drawText(QPoint((width-fontWid)/2 + padding, 40 + padding), name);
-
-    // Reset transform
-    painter->setTransform(prevTrans);
-}
-QTransform TaskWidget::paintOutline(QPainter *painter) {
     painter->setRenderHint(QPainter::Antialiasing);
 
     // Apply a scaling to everything beyond this point if hovering
     QTransform prevTrans = painter->transform();
     if (isHover) {
-        QTransform transform;
-        int hoverAmnt = 5;
-        QRectF BBx = boundingRect();
-        QPointF center = BBx.center();
-
-        transform.translate(center.x(), center.y());
-        transform.scale(static_cast<qreal>(hoverAmnt*2) / BBx.width() + 1, static_cast<qreal>(hoverAmnt*2) / BBx.height() + 1);
-        transform.translate(-center.x(), -center.y());
-
-        painter->setTransform(transform * prevTrans);
+        painter->setTransform(getExpansionTransform() * prevTrans);
     }
 
     // Display polygon
@@ -96,7 +148,8 @@ QTransform TaskWidget::paintOutline(QPainter *painter) {
     painter->drawPath(path);
     painter->restore();
 
-    return prevTrans;
+    // Reset transform
+    painter->setTransform(prevTrans);
 }
 
 void TaskWidget::makePath() {

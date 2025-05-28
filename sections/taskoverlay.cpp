@@ -64,7 +64,7 @@ protected:
                 if (item && item->type() == QGraphicsTextItem::Type) {
                     auto *txtItem = static_cast<QGraphicsTextItem*>(item);
                     txtItem->textCursor().insertText(" ");
-                    bigW->updatePath(); // Don't forget to update the path!
+                    bigW->updateChildren(); // Don't forget to update the children!
                     return true;
                 }
             }

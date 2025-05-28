@@ -25,6 +25,8 @@ public:
 
     bigTaskWidget* toBigWidget();
 
+    void updateChildren(bool prepare = true);
+
 protected:
     QPainterPath shape() const override;
 
@@ -35,14 +37,15 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
+    QTransform getExpansionTransform();
+
     QPainterPath path;
+    std::vector<QGraphicsItem*> extras;
 
 private:
     QString name;
     Window* wind = nullptr;
     bool isHover = false;
-    static inline QFont textFont = QFont("Segoe Script", 14);
-    static inline QFontMetrics measure = QFontMetrics(textFont);
 };
 
 TaskWidget* MakeTaskWidget(QString nme, Window* window, QGraphicsItem* parent = nullptr);
