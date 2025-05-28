@@ -8,6 +8,7 @@
 #include <QPainter>
 #include <QGraphicsScene>
 #include <QApplication>
+#include <QTextCursor>
 
 class OverlayWid : public QWidget {
 public:
@@ -52,6 +53,24 @@ protected:
             clickFunc();
             event->accept();
         }
+    }
+    bool event(QEvent *ev) override {
+        // As the space key for some reason does not like being passed to the text items,
+        // We have to manually insert the space ourselves.
+        if (ev->type() == QEvent::KeyPress) {
+            auto *keyEv = static_cast<QKeyEvent*>(ev);
+            if (keyEv->key() == Qt::Key_Space) {
+                auto *item = scene()->focusItem();
+                if (item && item->type() == QGraphicsTextItem::Type) {
+                    auto *txtItem = static_cast<QGraphicsTextItem*>(item);
+                    txtItem->textCursor().insertText(" ");
+                    bigW->updatePath(); // Don't forget to update the path!
+                    return true;
+                }
+            }
+        }
+        return QGraphicsView::event(ev);
+
     }
     void offsetPos(int x, int y) override { // Remove x scrolling
         GraphicsViewCanvas::offsetPos(0, y);

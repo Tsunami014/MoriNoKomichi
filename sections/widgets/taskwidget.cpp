@@ -1,5 +1,5 @@
 #include "taskwidget.h"
-#include "drawtools.h"
+#include "tools/drawtools.h"
 #include "bigtaskwidget.h"
 #include "../sections.h"
 

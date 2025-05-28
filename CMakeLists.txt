@@ -21,11 +21,18 @@ set(PROJECT_SOURCES
 
     sections/sections.h
     sections/tasksview.cpp
+    sections/taskoverlay.cpp
 )
 set(PROJECT_WIDGETS
     sections/widgets/taskwidget.h sections/widgets/taskwidget.cpp
     sections/widgets/playerviewwidget.h sections/widgets/playerviewwidget.cpp
-    sections/widgets/drawtools.h sections/widgets/drawtools.cpp
+    sections/widgets/svgbtnwidget.h sections/widgets/svgbtnwidget.cpp
+    sections/widgets/graphicsviewcanvas.h sections/widgets/graphicsviewcanvas.cpp
+    sections/widgets/bigtaskwidget.h sections/widgets/bigtaskwidget.cpp
+)
+set(PROJECT_TOOLS
+    sections/widgets/tools/drawtools.h sections/widgets/tools/drawtools.cpp
+    sections/widgets/tools/texttools.h sections/widgets/tools/texttools.cpp
 )
 set(PROJECT_RESOURCES
     resources.qrc
@@ -36,6 +43,7 @@ if(ANDROID)
         ${PROJECT_SOURCES}
         ${PROJECT_WIDGETS}
         ${PROJECT_RESOURCES}
+        ${PROJECT_TOOLS}
     )
 # Define properties for Android with Qt 5 after find_package() calls as:
 #    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
@@ -44,10 +52,7 @@ else()
         ${PROJECT_SOURCES}
         ${PROJECT_WIDGETS}
         ${PROJECT_RESOURCES}
-        sections/widgets/svgbtnwidget.h sections/widgets/svgbtnwidget.cpp
-        sections/widgets/graphicsviewcanvas.h sections/widgets/graphicsviewcanvas.cpp
-        sections/taskoverlay.cpp
-        sections/widgets/bigtaskwidget.h sections/widgets/bigtaskwidget.cpp
+        ${PROJECT_TOOLS}
     )
 endif()
 
