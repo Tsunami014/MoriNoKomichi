@@ -26,6 +26,7 @@ bigTaskWidget* TaskWidget::toBigWidget() {
     bigTaskWidget* newWid = new bigTaskWidget(name, wind, nullptr);
     newWid->makePath();
     newWid->show();
+    newWid->updatePath();
     return newWid;
 }
 

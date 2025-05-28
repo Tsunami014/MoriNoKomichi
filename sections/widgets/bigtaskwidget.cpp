@@ -70,16 +70,17 @@ void bigTaskWidget::updatePath(bool prepare) {
     // Position the heading text in the correct spot and with the correct width
     auto *txt = static_cast<myText*>(extras[0]);
 
-    qreal max = static_cast<qreal>(width - padding*2);
+    txt->setTextWidth(-1);
+    qreal max = static_cast<qreal>(width - (padding)*2 - 90);
     qreal min = qMin(max, txt->boundingRect().width());
     if (min < max) { // If text is smaller than width - padding*2, let it auto-resize - else, stick to the max defined
         txt->setTextWidth(-1);
     } else {
-        txt->setTextWidth(min);
+        txt->setTextWidth(max);
     }
 
     QRectF bbx = txt->boundingRect();
-    txt->setPos(QPoint((width-bbx.width())/2, padding+20));
+    txt->setPos(QPoint((width-bbx.width())/2 + 10, padding+30));
 
     if (prepare) { update(); }
 }
