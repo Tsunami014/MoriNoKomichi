@@ -2,6 +2,7 @@
 A todo app with many, many features.
 
 # Sprint 1
+In this sprint, the goal is to define the requirements and set out a layout and general idea for what the app will look like, encorporating some final UI to get a feel for what the outcome will look like. The app at this stage will have all the screens set out, with transitional and interactive elements completed. There will be some UI elements that are made to look pretty, to ensure that the looks are what is desired before continuing.
 ## Requirements outline
 ### Functional requirements
 1. The user must be able to view, edit and delete tasks and subtasks that the system will store
@@ -44,27 +45,35 @@ gantt
         Design idea                   :2025-05-04, 2025-05-07
         Requirements & specifications :2025-05-05, 2025-05-08
         Design                        :2025-05-04, 2025-05-11
-        Build & test                  :2025-05-11, 2025-05-25
-        Launch                        :milestone,  2025-05-25, 2m
-        Review                        :2025-05-25, 2025-05-27
+        Build & test                  :2025-05-11, 2025-06-04
+        Launch                        :milestone,  2025-06-04, 2m
+        Review                        :2025-06-04, 2025-06-06
     section Sprint 2
-        Design                        :2025-05-25, 2025-05-28
-        Build & test                  :2025-05-28, 2025-06-10
-        Launch                        :milestone,  2025-06-10, 2m
-        Review                        :2025-06-10, 2025-06-12
-    section Sprint 3
-        Design                        :2025-06-10, 2025-06-13
-        Build & test                  :2025-06-13, 2025-06-30
+        Design                        :2025-06-04, 2025-06-08
+        Build & test                  :2025-06-08, 2025-06-30
         Launch                        :milestone,  2025-06-30, 2m
         Review                        :2025-06-30, 2025-07-02
+    section Sprint 3
+        Diagrams                      :2025-06-30, 2025-07-04
     section Sprint 4
-        Design                        :2025-06-30, 2025-07-04
-        Build & test                  :2025-07-04, 2025-07-18
-        Launch                        :milestone,  2025-07-18, 2m
-        Review                        :2025-07-18, 2025-07-20
+        Design                        :2025-07-02, 2025-07-05
+        Build & test                  :2025-07-05, 2025-07-16
+        Launch                        :milestone,  2025-07-16, 2m
+        Review                        :2025-07-16, 2025-07-18
+
 ```
-(View [here](https://mermaid.live/view#pako:eNqllE1zmzAQhv-KZg89gUcSBgmOrSen-NKc2uGigQ3WFIQrRNLW4_9e4U-SOMlg73BYLfO8y74adgNFWyJkUCnjXG6ID6ddjeShWGHZ17ivlcrhXWsb5cgPH-FyGS4W-1cdFk63hjysrTaOsH11iAV2ujJEl6jI28g45XFI_TMPyCkXZ_w7_u61xQaN68gX0q2x0I-6UEO3boTHI1y-6f5OXOzORh__tdd16ds67NwHOGNnnMdn_F71pli9273RtddtDQZkhHupZjz_k8bnTwfgo_m5uHgnfLIrL0TlZFe4POJJyOgNrgz4Fa4csGPOL7oSTXTllWg00ZUBOePRba5E17kSnQYQIb3synyyKy9E5xNdEaMfUIRM3uDKgF_hygE75NzfCwRQWV1C5myPATTo995whM0gnYNb-aWUQ-bTUtlfOeRm65m1Mj_btjlitu2rFWSPqu78qV8PK3ShVWVVc6paNCXab21vHGSMx2ynAtkG_kAm6CyNRBzAX8h4ksxYyhKWShHReZJuA_i3a0ZnUsTUB6OplELGaQBYatfa5X6z7xb89j9Dk1ft))
+(View [here](https://mermaid.live/view#pako:eNqllE1P4zAQhv-KNQdOSeV8pz6yFSd6WU6gXKx4mlokdtdxYHer_neclFILyq4CoxzGTp537NfO7KHWAoFBw5W1lSIurLQtkrt6i2Jo8TgnuMUbbTpuyb2LcL0OV6vjqx5rK7UidzsjlSXRcXaMFfayUUQK5ORjsJjGWUjdkwbkLS_O-E_8NUiDHSrbkyvS77CWG1nzsVrv4ZmHlx-qfxIXq0fe4q8H2QpX1mJv_4FH0QnPndQZv-WDqrefVu9k63S1woB4uJPq_P0_SXz-zwZybwMuzy-eSTzTlXei5UxXRuSMJ_RbriT0S65M2JQXIY0vupJ4rkjeGN71c0TTi6LpTKvH1Xmi2UyrC-_6F2GUf8PqEf-C1a_YKXd3BQJojBTArBkwgA5d2xiHsB-lK7Bb909XwFwquHmsoFIHx-y4etC6O2FGD80W2Ia3vRsNu7EDvR7T2yeoBJofelAWWDYpANvDb2AFXSyTIs2XaRmncVSWAfwBFufJIkuXUZIklBZlFGeHAP5ONemiLJwCCmm1WR9b4tQZDy8AMjCd))
+
+Time split reasoning:
+- Most of the time will be spent in sprints 1 and 2;
+    - In sprint 1, we will create the entire app for all but functionality; the basics of the UI (with some fancy parts to ensure the design theme chosen is OK).
+    - In sprint 2, we will make the app function by adding all the code that wasn't created in sprint 1, integrating it with the UI already created.
+- Sprint 3 is just diagrams
+- Sprint 4 is finishing touches - not much is to be done compared to the other sprints, the bulk of the app is already complete
 
 # Sprint 2
+In this sprint, we will make the app functional by implementing the chosen functions set out to be created in sprint 1, ensuring they connect with the UI created in sprint 1.
 # Sprint 3
+In this sprint, we will design OOP charts and diagrams.
 # Sprint 4
+In this sprint, we will add final touches and polish off the program, ensuring it's exactly as required. Additionally, 
