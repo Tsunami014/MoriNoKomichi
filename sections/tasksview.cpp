@@ -16,10 +16,15 @@ void taskView(Window* wind) {
     scene->setBackgroundBrush(QBrush(QColor(250, 230, 200)));
 
     std::vector<TaskWidget*> sections[4] = {
-        {MakeTaskWidget("Hello group 1", wind), MakeTaskWidget("Reallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallylongname", wind), MakeTaskWidget("This name here is quite an extremely super long name for a task, wouldn't you agree?", wind), MakeTaskWidget("Goodbye again, group 1", wind)},
-        {MakeTaskWidget("Hello group 2", wind), MakeTaskWidget("Goodbye group 2", wind), MakeTaskWidget("Hello again, group 2", wind), MakeTaskWidget("Goodbye again, group 2", wind)},
-        {MakeTaskWidget("Hello group 3", wind), MakeTaskWidget("Goodbye group 3", wind), MakeTaskWidget("Hello again, group 3", wind), MakeTaskWidget("Goodbye again, group 3", wind)},
-        {MakeTaskWidget("Hello group 4", wind), MakeTaskWidget("Goodbye group 4", wind), MakeTaskWidget("Hello again, group 4", wind), MakeTaskWidget("Goodbye again, group 4", wind)}
+        {
+            MakeTaskWidget("Hello group 1", wind, {"Task 1", "Task 2"}),
+            MakeTaskWidget("Reallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallylongname", wind, {"Task 1"}),
+            MakeTaskWidget("This name here is quite an extremely super long name for a task, wouldn't you agree?", wind, {"Task 1", "Task 2", "Task 3", "Task 4"}),
+            MakeTaskWidget("Goodbye again, group 1", wind, {})
+        },
+        {MakeTaskWidget("Hello group 2", wind, {}), MakeTaskWidget("Goodbye group 2", wind, {}), MakeTaskWidget("Hello again, group 2", wind, {}), MakeTaskWidget("Goodbye again, group 2", wind, {})},
+        {MakeTaskWidget("Hello group 3", wind, {}), MakeTaskWidget("Goodbye group 3", wind, {}), MakeTaskWidget("Hello again, group 3", wind, {}), MakeTaskWidget("Goodbye again, group 3", wind, {})},
+        {MakeTaskWidget("Hello group 4", wind, {}), MakeTaskWidget("Goodbye group 4", wind, {}), MakeTaskWidget("Hello again, group 4", wind, {}), MakeTaskWidget("Goodbye again, group 4", wind, {})}
     };
 
     int sectPadding = 50;

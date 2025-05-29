@@ -4,16 +4,30 @@
 #include "../../window.h"
 
 #include <QFont>
-#include <QFontMetrics>
 #include <QGraphicsObject>
 #include <QMouseEvent>
 
 class bigTaskWidget; // Forward reference
+class TaskWidget; // Forward reference
+
+class TodoGraphicObject : public QGraphicsObject {
+public:
+    TodoGraphicObject(QString name, TaskWidget* parent);
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+
+    QString name;
+
+private:
+    static inline QFont* font = nullptr;
+    const static inline int padding = 5;
+    const static inline float boxDiff = 0.8f;
+};
 
 class TaskWidget : public QGraphicsObject {
     Q_OBJECT
 public:
-    TaskWidget(QString nme, Window* window, QGraphicsItem* parent = nullptr);
+    TaskWidget(QString nme, Window* window, std::vector<QString> todos, QGraphicsItem* parent = nullptr);
     virtual void makePath();
 
     int width = 600;
@@ -40,14 +54,16 @@ protected:
     QTransform getExpansionTransform();
 
     QPainterPath path;
-    std::vector<QGraphicsItem*> extras;
+    std::vector<QGraphicsItem*> extras; //< [0]: title
+    std::vector<TodoGraphicObject*> todos;
 
 private:
     QString name;
     Window* wind = nullptr;
     bool isHover = false;
+    unsigned int lastHei = 0;
 };
 
-TaskWidget* MakeTaskWidget(QString nme, Window* window, QGraphicsItem* parent = nullptr);
+TaskWidget* MakeTaskWidget(QString nme, Window* window, std::vector<QString> todos, QGraphicsItem* parent = nullptr);
 
 #endif // TASKSVIEW_H

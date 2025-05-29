@@ -6,6 +6,37 @@
 
 #include <QPainter>
 #include <QCursor>
+#include <QFontMetrics>
+
+TodoGraphicObject::TodoGraphicObject(QString nme, TaskWidget* parent)
+    : QGraphicsObject(parent)
+{
+    name = nme;
+    if (font == nullptr) {
+        font = new QFont();
+        font->setPointSize(14);
+    }
+}
+QRectF TodoGraphicObject::boundingRect() const {
+    QRectF bbx = QFontMetrics(*font).boundingRect(name);
+    bbx.setWidth(bbx.width() + bbx.height()*boxDiff + padding*2);
+    return bbx;
+}
+void TodoGraphicObject::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
+    QRectF bbx = QFontMetrics(*font).boundingRect(name);
+    int boxHei = bbx.height()*boxDiff;
+    painter->setFont(*font);
+    painter->drawText(QPoint(boxHei + padding*2, 0), name);
+
+    painter->save();
+    painter->setPen(QPen(Qt::black, 4));
+    painter->setBrush(QBrush(QColor(255, 244, 247)));
+    painter->drawRoundedRect(QRect(padding, (bbx.height()*(1-boxDiff))/2, boxHei, boxHei), 3, 3);
+    painter->restore();
+}
 
 class myText : public QGraphicsTextItem {
 public:
@@ -28,7 +59,7 @@ private:
 };
 
 
-TaskWidget::TaskWidget(QString nme, Window* window, QGraphicsItem* parent)
+TaskWidget::TaskWidget(QString nme, Window* window, std::vector<QString> inptodos, QGraphicsItem* parent)
     : QGraphicsObject(parent)
 {
     setAcceptHoverEvents(true);
@@ -37,19 +68,27 @@ TaskWidget::TaskWidget(QString nme, Window* window, QGraphicsItem* parent)
     wind = window;
 
     myText *it = new myText(nme, this);
-    it->setFont(getAFont({"Kalam", "Comic Neue", "Segoe Print", "Amatic SC", "DejaVu Sans Mono"}, 24));
+    it->setFont(getAFont({"Kalam", "Comic Neue", "Segoe Print", "Amatic SC", "DejaVu Sans Mono"}, 18));
     it->show();
     extras.push_back(it);
+
+    for (auto str : inptodos) {
+        todos.push_back(new TodoGraphicObject(str, this));
+    }
 }
-TaskWidget* MakeTaskWidget(QString nme, Window* window, QGraphicsItem* parent) {
-    TaskWidget* tw = new TaskWidget(nme, window, parent);
-    tw->makePath();
+TaskWidget* MakeTaskWidget(QString nme, Window* window, std::vector<QString> todos, QGraphicsItem* parent) {
+    TaskWidget* tw = new TaskWidget(nme, window, todos, parent);
     tw->updateChildren();
+    tw->makePath();
     return tw;
 }
 
 bigTaskWidget* TaskWidget::toBigWidget() {
-    bigTaskWidget* newWid = new bigTaskWidget(name, wind, nullptr);
+    std::vector<QString> strtodos;
+    for (auto t : todos) {
+        strtodos.push_back(t->name);
+    }
+    bigTaskWidget* newWid = new bigTaskWidget(name, wind, strtodos, nullptr);
     newWid->makePath();
     newWid->show();
     newWid->updateChildren();
@@ -57,7 +96,12 @@ bigTaskWidget* TaskWidget::toBigWidget() {
 }
 
 QRectF TaskWidget::boundingRect() const {
-    return QRectF(0, 0, width + (padding*2), 400 + (padding*2));
+    unsigned int hei = lastHei - (padding * 2);
+    unsigned int minHei = 170; // HACK: Gotten from other manually set variables in makePath func
+    if (hei <= minHei) {
+        hei = minHei + 1;
+    }
+    return QRectF(0, 0, width + (padding*2), hei);
 }
 QPainterPath TaskWidget::shape() const {
     return path;
@@ -68,7 +112,12 @@ void TaskWidget::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
     if (!isHover) {
         // Set all transforms on children here
         QTransform transform = getExpansionTransform();
-        extras[0]->setTransform(transform, true);
+        for (auto ex : extras) {
+            ex->setTransform(transform, true);
+        }
+        for (auto t : todos) {
+            t->setTransform(transform, true);
+        }
     }
     isHover = true;
     setCursor(Qt::PointingHandCursor);
@@ -80,7 +129,12 @@ void TaskWidget::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
     if (isHover) {
         // Unset all transforms on children here by transforming them the opposite of what they were
         QTransform transform = getExpansionTransform().inverted();
-        extras[0]->setTransform(transform, true);
+        for (auto ex : extras) {
+            ex->setTransform(transform, true);
+        }
+        for (auto t : todos) {
+            t->setTransform(transform, true);
+        }
     }
     isHover = false;
     unsetCursor();
@@ -111,7 +165,16 @@ void TaskWidget::updateChildren(bool prepare) {
     }
 
     QRectF bbx = txt->boundingRect();
-    txt->setPos(QPoint((width-bbx.width())/2 + 10, padding+30));
+    unsigned int y = padding+30;
+    txt->setPos(QPoint((width-bbx.width())/2 + 10, y));
+
+    y += bbx.height() + padding;
+    for (auto t : todos) {
+        QRectF tBbx = t->boundingRect();
+        t->setPos(QPoint((width-tBbx.width())/2, y));
+        y += tBbx.height() + padding;
+    }
+    lastHei = y + padding;
 
     if (prepare) { update(); }
 }
@@ -132,6 +195,10 @@ QTransform TaskWidget::getExpansionTransform() {
 void TaskWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(option);
     Q_UNUSED(widget);
+
+    if (lastHei == 0) {
+        updateChildren();
+    }
 
     painter->setRenderHint(QPainter::Antialiasing);
 

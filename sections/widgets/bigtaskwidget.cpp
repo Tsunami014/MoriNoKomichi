@@ -4,17 +4,18 @@
 #include <QPainter>
 
 #include <QGraphicsTextItem>
-#include <QTextCursor>
-#include <QtMath>
 
-
-bigTaskWidget::bigTaskWidget(QString nme, Window* window, QGraphicsItem *parent)
-    :TaskWidget(nme, window, parent)
+bigTaskWidget::bigTaskWidget(QString nme, Window* window, std::vector<QString> inptodos, QGraphicsItem *parent)
+    :TaskWidget(nme, window, inptodos, parent)
 {
     setAcceptHoverEvents(false);
     setAcceptedMouseButtons(Qt::NoButton);
 
-    static_cast<QGraphicsTextItem*>(extras[0])->setTextInteractionFlags(Qt::TextEditorInteraction);
+    auto *it = static_cast<QGraphicsTextItem*>(extras[0]);
+    it->setTextInteractionFlags(Qt::TextEditorInteraction);
+    QFont newFont = it->font();
+    newFont.setPointSize(24);
+    it->setFont(newFont);
 }
 
 void bigTaskWidget::makePath() {
