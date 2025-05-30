@@ -5,7 +5,7 @@
 #include <QTimer>
 
 DrawWidget::DrawWidget(Graphic *graphics, QWidget *parent)
-    : QOpenGLWidget(parent), graphics(graphics)
+    : QWidget(parent), graphics(graphics)
 {
     elapsed = 0;
     setAutoFillBackground(false);

@@ -11,6 +11,65 @@
 #include <QGraphicsItemGroup>
 #include <QtMath>
 
+class BetterGroup : public QGraphicsItemGroup {
+public:
+    BetterGroup(QGraphicsItem *parent = nullptr) : QGraphicsItemGroup(parent) {}
+    QRectF boundingRect() const
+    {
+        // must be overloaded, otherwise the boundingrect will only be actualized on
+        // additem is actualized. This leads to the fact that the boundingrect
+        // will not close around the word items after e.g., moving them.
+        return childrenBoundingRect();
+    }
+};
+
+void updatePoss(std::vector<TaskWidget*> sections[4], BetterGroup* groups[4]) {
+    int sectPadding = 50;
+    qreal sectWid = 0;
+    qreal sectHei = 0;
+
+    groups[1]->setPos(0, 0);
+
+    for (int i = 0;i < 4;i++) {
+        std::vector<unsigned int> heights = {2, 2};
+        for (TaskWidget* tsk : sections[i]) {
+            uint16_t idx = 0;
+            unsigned int curMin = 0;
+            for (uint16_t i = 0; i < heights.size(); i++) {
+                if (curMin == 0 || heights[i] < curMin) {
+                    curMin = heights[i];
+                    idx = i;
+                }
+            }
+            QRectF tskSze = tsk->boundingRect();
+            tsk->setPos(tskSze.width()*idx, curMin);
+            heights[idx] = curMin+tskSze.height()+2;
+        }
+
+        if (i != 3) {
+            QRectF rect = groups[i]->boundingRect();
+            if (i == 0 || i == 2) {
+                sectWid = qMax(sectWid, rect.width() + sectPadding);
+            }
+            if (i == 0 || i == 1) {
+                sectHei = qMax(sectHei, rect.height() + sectPadding);
+            }
+        }
+
+        if (i > 1)  {
+            QPoint offset;
+            if (i == 3) {
+                offset.setX(sectWid);
+            }
+            offset.setY(sectHei);
+            groups[i]->setPos(offset);
+        }
+    }
+
+    // Update the section 1 after to have the correct x value
+    groups[1]->setPos(sectWid, 0);
+}
+
 void taskView(Window* wind) {
     QGraphicsScene* scene = new QGraphicsScene();
     scene->setBackgroundBrush(QBrush(QColor(250, 230, 200)));
@@ -27,64 +86,25 @@ void taskView(Window* wind) {
         {MakeTaskWidget("Hello group 4", wind, {}), MakeTaskWidget("Goodbye group 4", wind, {}), MakeTaskWidget("Hello again, group 4", wind, {}), MakeTaskWidget("Goodbye again, group 4", wind, {})}
     };
 
-    int sectPadding = 50;
-    qreal sectWid = 0;
-    qreal sectHei = 0;
-
-    QGraphicsItemGroup* group1;
-
+    BetterGroup* groups[4];
     for (int i = 0;i < 4;i++) {
-        QGraphicsItemGroup* group = new QGraphicsItemGroup();
+        BetterGroup* group = new BetterGroup();
         // Don't intercept requests to children
         group->setHandlesChildEvents(false);
         group->setAcceptHoverEvents(false);
         group->setAcceptedMouseButtons(Qt::NoButton);
 
-        scene->addItem(group);
-        group->show();
-
-        std::vector<unsigned int> heights = {2, 2};
         for (TaskWidget* tsk : sections[i]) {
-            uint16_t idx = 0;
-            unsigned int curMin = 0;
-            for (uint16_t i = 0; i < heights.size(); i++) {
-                if (curMin == 0 || heights[i] < curMin) {
-                    curMin = heights[i];
-                    idx = i;
-                }
-            }
-            QRectF tskSze = tsk->boundingRect();
-            tsk->setPos(tskSze.width()*idx, curMin);
-            heights[idx] = curMin+tskSze.height()+2;
             scene->addItem(tsk);
             group->addToGroup(tsk);
         }
+        groups[i] = group;
 
-        if (i == 1)  {
-            group1 = group; // Update position after to get correct position
-        } else {
-            QPoint offset;
-            if (i == 3) {
-                offset.setX(sectWid);
-            }
-            if (i == 2 || i == 3) {
-                offset.setY(sectHei);
-            }
-            group->setPos(offset);
-        }
-
-        if (i != 3) {
-            QRectF rect = group->boundingRect();
-            if (i == 0 || i == 2) {
-                sectWid = qMax(sectWid, rect.width() + sectPadding);
-            } else if (i == 0 || i == 1) {
-                sectHei = qMax(sectHei, rect.height() + sectPadding);
-            }
-        }
+        scene->addItem(group);
+        group->show();
     }
 
-    // Update the sections[1] after to have the correct x value
-    group1->setPos(sectWid, 0);
+    updatePoss(sections, groups);
 
     GraphicsViewCanvas *view = new GraphicsViewCanvas(scene, wind);
     view->show();
