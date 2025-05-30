@@ -45,24 +45,24 @@ gantt
         Design idea                   :2025-05-04, 2025-05-07
         Requirements & specifications :2025-05-05, 2025-05-08
         Design                        :2025-05-04, 2025-05-11
-        Build & test                  :2025-05-11, 2025-06-04
-        Launch                        :milestone,  2025-06-04, 2m
-        Review                        :2025-06-04, 2025-06-06
+        Build & test                  :2025-05-11, 2025-05-30
+        Launch                        :milestone,  2025-05-30, 2m
+        Review                        :2025-05-30, 2025-05-31
     section Sprint 2
-        Design                        :2025-06-04, 2025-06-08
-        Build & test                  :2025-06-08, 2025-06-30
-        Launch                        :milestone,  2025-06-30, 2m
-        Review                        :2025-06-30, 2025-07-02
+        Design                        :2025-05-30, 2025-06-01
+        Build & test                  :2025-06-01, 2025-06-10
+        Launch                        :milestone,  2025-06-10, 2m
+        Review                        :2025-06-09, 2025-06-10
     section Sprint 3
-        Diagrams                      :2025-06-30, 2025-07-04
+        Diagrams                      :2025-06-10, 2025-06-12
     section Sprint 4
-        Design                        :2025-07-02, 2025-07-05
-        Build & test                  :2025-07-05, 2025-07-16
-        Launch                        :milestone,  2025-07-16, 2m
-        Review                        :2025-07-16, 2025-07-18
+        Design                        :2025-06-11, 2025-06-12
+        Build & test                  :2025-06-12, 2025-06-16
+        Launch                        :milestone,  2025-06-16, 2m
+        Review                        :2025-06-16, 2025-06-18
 
 ```
-(View [here](https://mermaid.live/view#pako:eNqllE1P4zAQhv-KNQdOSeV8pz6yFSd6WU6gXKx4mlokdtdxYHer_neclFILyq4CoxzGTp537NfO7KHWAoFBw5W1lSIurLQtkrt6i2Jo8TgnuMUbbTpuyb2LcL0OV6vjqx5rK7UidzsjlSXRcXaMFfayUUQK5ORjsJjGWUjdkwbkLS_O-E_8NUiDHSrbkyvS77CWG1nzsVrv4ZmHlx-qfxIXq0fe4q8H2QpX1mJv_4FH0QnPndQZv-WDqrefVu9k63S1woB4uJPq_P0_SXz-zwZybwMuzy-eSTzTlXei5UxXRuSMJ_RbriT0S65M2JQXIY0vupJ4rkjeGN71c0TTi6LpTKvH1Xmi2UyrC-_6F2GUf8PqEf-C1a_YKXd3BQJojBTArBkwgA5d2xiHsB-lK7Bb909XwFwquHmsoFIHx-y4etC6O2FGD80W2Ia3vRsNu7EDvR7T2yeoBJofelAWWDYpANvDb2AFXSyTIs2XaRmncVSWAfwBFufJIkuXUZIklBZlFGeHAP5ONemiLJwCCmm1WR9b4tQZDy8AMjCd))
+(View [here](https://mermaid.live/view#pako:eNqllE1vozAQhv-KNYeeSISBAPFxN-ppc2lPXXGx8IRYAjs19u62Uf77GtIUq0lbpR1x8Nfzjv0azx5qLRAYNFxZWyniw0rbIrmvtyhci8cxwS3eatNxSx58zNbr2Wp1nOqxtlIrcr8zUllCj6NDrLCXjSJSICfnwZI4Wcxi_2UReW0XE36Hj04a7FDZntyQfoe13MiaD9n6AF8EeHmW_Z24mJ0Gm__hZCt8Wou9_QCndMLTeMJ_cafq7bvZO9l6Xa0wIgHupbrw_H8k_v30ACN2atOLd5Jc7cokms_ia10ZkAmn33FlwL_git_B8nwHb1xJA1ckbwzv-k9EaeAKTS6KZldanQd_0CR6hdU0CfD8e1bnX7J6xE5t_wAhgsZIAcwahxF06MvG0IX9IF2B3fo3XQHzTYEb7lpbQaUOHttx9Vvr7kQa7ZotsA1ve99zu6EIvdzU6xJUAs1P7ZQFthgVgO3hH7B0OU-ypQ9Ky8xH6mefgCV5Ol_mKV0UWV6URZkdIngec8bzsvBrUEirzfpYFcfiePgPbOgx1g))
 
 Time split reasoning:
 - Most of the time will be spent in sprints 1 and 2;

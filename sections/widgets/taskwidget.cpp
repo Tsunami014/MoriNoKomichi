@@ -89,6 +89,7 @@ bigTaskWidget* TaskWidget::toBigWidget() {
         strtodos.push_back(t->name);
     }
     bigTaskWidget* newWid = new bigTaskWidget(name, wind, strtodos, nullptr);
+    newWid->updateChildren();
     newWid->makePath();
     newWid->show();
     newWid->updateChildren();
@@ -97,7 +98,7 @@ bigTaskWidget* TaskWidget::toBigWidget() {
 
 QRectF TaskWidget::boundingRect() const {
     unsigned int hei = lastHei - (padding * 2);
-    unsigned int minHei = 170; // HACK: Gotten from other manually set variables in makePath func
+    unsigned int minHei = 170;
     if (hei <= minHei) {
         hei = minHei + 1;
     }
@@ -174,7 +175,7 @@ void TaskWidget::updateChildren(bool prepare) {
         t->setPos(QPoint((width-tBbx.width())/2, y));
         y += tBbx.height() + padding;
     }
-    lastHei = y + padding;
+    lastHei = y + padding * 3;
 
     if (prepare) { update(); }
 }
@@ -221,7 +222,7 @@ void TaskWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 
 void TaskWidget::makePath() {
     QRandomGenerator gen = getGen(name);
-    int height = boundingRect().height() - (padding*2);
+    int height = boundingRect().height();
 
     // Make polygon
     int8_t distortPad = 10;
