@@ -1,9 +1,6 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include "graphics.h"
-#include "drawWidget.h"
-
 #include <vector>
 #include <QWidget>
 #include <QTimer>
@@ -32,20 +29,11 @@ public:
 
     std::vector<Widget> wids;
     void tasksMenu();
-    void gameMenu();
     void resizeElms();
 
 protected:
-    void reset(bool useWid);
-
-    void tick();
-
+    void reset();
     void resizeEvent(QResizeEvent *event);
-
-private:
-    Graphic graphics;
-    DrawWidget *mainWid = new DrawWidget(&graphics, this);
-    QTimer *timer = new QTimer(this);
 };
 
 #endif

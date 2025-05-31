@@ -16,16 +16,12 @@ set(PROJECT_SOURCES
     main.cpp
     window.cpp window.h
 
-    graphics.h graphics.cpp
-    drawWidget.h drawWidget.cpp
-
     sections/sections.h
     sections/tasksview.cpp
     sections/taskoverlay.cpp
 )
 set(PROJECT_WIDGETS
     sections/widgets/taskwidget.h sections/widgets/taskwidget.cpp
-    sections/widgets/playerviewwidget.h sections/widgets/playerviewwidget.cpp
     sections/widgets/svgbtnwidget.h sections/widgets/svgbtnwidget.cpp
     sections/widgets/graphicsviewcanvas.h sections/widgets/graphicsviewcanvas.cpp
     sections/widgets/bigtaskwidget.h sections/widgets/bigtaskwidget.cpp

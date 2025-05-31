@@ -131,7 +131,7 @@ void taskOverlay(Window* wind, TaskWidget* task) {
     NewGraphicsView *view = new NewGraphicsView(scene, backFun, bigW, wind);
     view->show();
 
-    svgBtnWidget *btn = new svgBtnWidget(":/assets/UI/backBtn.svg", wind);
+    svgBtnWidget *btn = new svgBtnWidget(":/assets/backBtn.svg", wind);
     wind->connect(btn, &QPushButton::released, wind, backFun);
     btn->show();
 

@@ -19,7 +19,7 @@ TodoGraphicObject::TodoGraphicObject(QString nme, TaskWidget* parent)
 }
 QRectF TodoGraphicObject::boundingRect() const {
     QRectF bbx = QFontMetrics(*font).boundingRect(name);
-    bbx.setWidth(bbx.width() + bbx.height()*boxDiff + padding*2);
+    bbx.setWidth(bbx.width() + bbx.height()*boxDiff + thickness*2);
     return bbx;
 }
 void TodoGraphicObject::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
@@ -28,14 +28,15 @@ void TodoGraphicObject::paint(QPainter *painter, const QStyleOptionGraphicsItem 
 
     QRectF bbx = QFontMetrics(*font).boundingRect(name);
     int boxHei = bbx.height()*boxDiff;
-    painter->setFont(*font);
-    painter->drawText(QPoint(boxHei + padding*2, 0), name);
 
     painter->save();
-    painter->setPen(QPen(Qt::black, 4));
+    painter->setPen(QPen(Qt::black, thickness));
     painter->setBrush(QBrush(QColor(255, 244, 247)));
-    painter->drawRoundedRect(QRect(padding, (bbx.height()*(1-boxDiff))/2, boxHei, boxHei), 3, 3);
+    painter->drawRoundedRect(QRect(thickness, (bbx.height()-boxHei)/2, boxHei, boxHei), 3, 3); // QRect(thickness, (bbx.height()*(1-boxDiff))/2, boxHei, boxHei)
     painter->restore();
+
+    painter->setFont(*font);
+    painter->drawText(QPoint(boxHei + thickness*2, 0), name);
 }
 
 class myText : public QGraphicsTextItem {
@@ -97,7 +98,7 @@ bigTaskWidget* TaskWidget::toBigWidget() {
 }
 
 QRectF TaskWidget::boundingRect() const {
-    unsigned int hei = lastHei - (padding * 2);
+    unsigned int hei = lastHei;
     unsigned int minHei = 170;
     if (hei <= minHei) {
         hei = minHei + 1;
@@ -222,7 +223,7 @@ void TaskWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 
 void TaskWidget::makePath() {
     QRandomGenerator gen = getGen(name);
-    int height = boundingRect().height();
+    int height = boundingRect().height() - (padding * 2);
 
     // Make polygon
     int8_t distortPad = 10;

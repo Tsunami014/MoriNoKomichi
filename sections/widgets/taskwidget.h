@@ -20,7 +20,7 @@ public:
 
 private:
     static inline QFont* font = nullptr;
-    const static inline int padding = 5;
+    const static inline int thickness = 3;
     const static inline float boxDiff = 0.8f;
 };
 

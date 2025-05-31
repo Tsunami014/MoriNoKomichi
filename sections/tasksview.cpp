@@ -1,6 +1,4 @@
 #include "widgets/taskwidget.h"
-#include "widgets/playerviewwidget.h"
-#include "widgets/svgbtnwidget.h"
 #include "widgets/graphicsviewcanvas.h"
 #include "../window.h"
 
@@ -109,14 +107,5 @@ void taskView(Window* wind) {
     GraphicsViewCanvas *view = new GraphicsViewCanvas(scene, wind);
     view->show();
     view->gotoTopLeft();
-    wind->wids.push_back(Widget{view, QPoint(13, 0), QSize(67, 100)});
-
-    playerViewWidget *playerView = new playerViewWidget(wind);
-    playerView->show();
-    wind->wids.push_back(Widget{playerView, QPoint(81, 1), QSize(19, 48)});
-
-    svgBtnWidget *btn = new svgBtnWidget(":/assets/UI/backBtn.svg", wind);
-    wind->connect(btn, &QPushButton::released, wind, &Window::gameMenu);
-    btn->show();
-    wind->wids.push_back(Widget{btn, QPoint(1, 1), QSize(8, 8), HEIGHT});
+    wind->wids.push_back(Widget{view, QPoint(0, 0), QSize(100, 100)});
 }
