@@ -6,22 +6,30 @@
 #include <QFont>
 #include <QGraphicsObject>
 #include <QMouseEvent>
+#include <QGraphicsTextItem>
+#include <qgraphicsproxywidget.h>
+#include <qlineedit.h>
 
 class bigTaskWidget; // Forward reference
 class TaskWidget; // Forward reference
 
-class TodoGraphicObject : public QGraphicsObject {
+class MyLabel : public QLineEdit {
+    Q_OBJECT
 public:
-    TodoGraphicObject(QString name, TaskWidget* parent);
-    QRectF boundingRect() const override;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    MyLabel(const QString& text, QWidget* parent = nullptr);
+signals:
+    void clicked();
+protected:
+    void mousePressEvent(QMouseEvent *);
+    void mouseDoubleClickEvent(QMouseEvent *);
+};
+
+class TodoGraphicObject : public QGraphicsProxyWidget {
+    Q_OBJECT
+public:
+    TodoGraphicObject(QString nme, TaskWidget* parent);
 
     QString name;
-
-private:
-    static inline QFont* font = nullptr;
-    const static inline int thickness = 3;
-    const static inline float boxDiff = 0.8f;
 };
 
 class TaskWidget : public QGraphicsObject {

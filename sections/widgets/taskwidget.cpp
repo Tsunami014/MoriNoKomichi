@@ -7,36 +7,45 @@
 #include <QPainter>
 #include <QCursor>
 #include <QFontMetrics>
+#include <QLineEdit>
+#include <QCheckBox>
+#include <QGraphicsObject>
+#include <QGraphicsProxyWidget>
 
-TodoGraphicObject::TodoGraphicObject(QString nme, TaskWidget* parent)
-    : QGraphicsObject(parent)
+MyLabel::MyLabel(const QString& text, QWidget* parent)
+    : QLineEdit(text, parent)
 {
+    setReadOnly(true);
+    setStyleSheet("QLineEdit:read-only {"
+                  "    border: none;"
+                  "    background: rgb(255, 235, 210); }"
+                  "QLineEdit {"
+                  "    background: white; }");
+    connect(this, &QLineEdit::editingFinished, [this]{
+        this->unsetCursor();
+        this->setSelection(0,0);
+        this->setReadOnly(true);});
+}
+void MyLabel::mousePressEvent(QMouseEvent *) { emit clicked(); }
+void MyLabel::mouseDoubleClickEvent(QMouseEvent *) {
+    this->setReadOnly(false);
+    this->selectAll();
+}
+
+TodoGraphicObject::TodoGraphicObject(QString nme, TaskWidget* parent) : QGraphicsProxyWidget(parent) {
     name = nme;
-    if (font == nullptr) {
-        font = new QFont();
-        font->setPointSize(14);
-    }
-}
-QRectF TodoGraphicObject::boundingRect() const {
-    QRectF bbx = QFontMetrics(*font).boundingRect(name);
-    bbx.setWidth(bbx.width() + bbx.height()*boxDiff + thickness*2);
-    return bbx;
-}
-void TodoGraphicObject::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-    Q_UNUSED(option);
-    Q_UNUSED(widget);
-
-    QRectF bbx = QFontMetrics(*font).boundingRect(name);
-    int boxHei = bbx.height()*boxDiff;
-
-    painter->save();
-    painter->setPen(QPen(Qt::black, thickness));
-    painter->setBrush(QBrush(QColor(255, 244, 247)));
-    painter->drawRoundedRect(QRect(thickness, (bbx.height()-boxHei)/2, boxHei, boxHei), 3, 3); // QRect(thickness, (bbx.height()*(1-boxDiff))/2, boxHei, boxHei)
-    painter->restore();
-
-    painter->setFont(*font);
-    painter->drawText(QPoint(boxHei + thickness*2, 0), name);
+    QWidget* widget = new QWidget();
+    QHBoxLayout* layout = new QHBoxLayout();
+    widget->setLayout(layout);
+    QCheckBox* checkbox = new QCheckBox();
+    checkbox->setStyleSheet("QWidget { background: rgb(255, 235, 210); }");
+    MyLabel* label = new MyLabel(nme);
+    connect(label, &MyLabel::clicked, checkbox, &QCheckBox::toggle);
+    layout->addWidget(checkbox);
+    layout->addWidget(label);
+    widget->setStyleSheet("QWidget { background: rgb(255, 235, 210); }");
+    widget->show();
+    setWidget(widget);
 }
 
 class myText : public QGraphicsTextItem {
