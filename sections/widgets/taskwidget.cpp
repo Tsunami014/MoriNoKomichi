@@ -12,10 +12,11 @@
 #include <QGraphicsObject>
 #include <QGraphicsProxyWidget>
 
-MyLabel::MyLabel(const QString& text, QWidget* parent)
+MyLabel::MyLabel(const QString& text, bool en, QWidget* parent)
     : QLineEdit(text, parent)
 {
     setReadOnly(true);
+    enabled = en;
     setStyleSheet("QLineEdit:read-only {"
                   "    border: none;"
                   "    background: rgb(255, 235, 210); }"
@@ -28,19 +29,24 @@ MyLabel::MyLabel(const QString& text, QWidget* parent)
 }
 void MyLabel::mousePressEvent(QMouseEvent *) { emit clicked(); }
 void MyLabel::mouseDoubleClickEvent(QMouseEvent *) {
-    this->setReadOnly(false);
-    this->selectAll();
+    if (enabled) {
+        this->setReadOnly(false);
+        this->selectAll();
+    }
 }
 
-TodoGraphicObject::TodoGraphicObject(QString nme, TaskWidget* parent) : QGraphicsProxyWidget(parent) {
+TodoGraphicObject::TodoGraphicObject(QString nme, bool editable, TaskWidget* parent) : QGraphicsProxyWidget(parent) {
     name = nme;
     QWidget* widget = new QWidget();
     QHBoxLayout* layout = new QHBoxLayout();
     widget->setLayout(layout);
     QCheckBox* checkbox = new QCheckBox();
     checkbox->setStyleSheet("QWidget { background: rgb(255, 235, 210); }");
-    MyLabel* label = new MyLabel(nme);
-    connect(label, &MyLabel::clicked, checkbox, &QCheckBox::toggle);
+    MyLabel* label = new MyLabel(nme, editable);
+    if (editable) {
+        connect(label, &MyLabel::clicked, checkbox, &QCheckBox::toggle);
+    }
+    checkbox->setEnabled(editable);
     layout->addWidget(checkbox);
     layout->addWidget(label);
     widget->setStyleSheet("QWidget { background: rgb(255, 235, 210); }");
@@ -69,7 +75,7 @@ private:
 };
 
 
-TaskWidget::TaskWidget(QString nme, Window* window, std::vector<QString> inptodos, QGraphicsItem* parent)
+TaskWidget::TaskWidget(QString nme, Window* window, std::vector<QString> inptodos, QGraphicsItem* parent, bool editable)
     : QGraphicsObject(parent)
 {
     setAcceptHoverEvents(true);
@@ -83,11 +89,11 @@ TaskWidget::TaskWidget(QString nme, Window* window, std::vector<QString> inptodo
     extras.push_back(it);
 
     for (auto str : inptodos) {
-        todos.push_back(new TodoGraphicObject(str, this));
+        todos.push_back(new TodoGraphicObject(str, editable, this));
     }
 }
 TaskWidget* MakeTaskWidget(QString nme, Window* window, std::vector<QString> todos, QGraphicsItem* parent) {
-    TaskWidget* tw = new TaskWidget(nme, window, todos, parent);
+    TaskWidget* tw = new TaskWidget(nme, window, todos, parent, false);
     tw->updateChildren();
     tw->makePath();
     return tw;

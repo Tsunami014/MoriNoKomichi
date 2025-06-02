@@ -6,7 +6,7 @@
 #include <QGraphicsTextItem>
 
 bigTaskWidget::bigTaskWidget(QString nme, Window* window, std::vector<QString> inptodos, QGraphicsItem *parent)
-    :TaskWidget(nme, window, inptodos, parent)
+    :TaskWidget(nme, window, inptodos, parent, true)
 {
     setAcceptHoverEvents(false);
     setAcceptedMouseButtons(Qt::NoButton);

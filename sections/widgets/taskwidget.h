@@ -16,18 +16,20 @@ class TaskWidget; // Forward reference
 class MyLabel : public QLineEdit {
     Q_OBJECT
 public:
-    MyLabel(const QString& text, QWidget* parent = nullptr);
+    MyLabel(const QString& text, bool enabled = true, QWidget* parent = nullptr);
 signals:
     void clicked();
 protected:
     void mousePressEvent(QMouseEvent *);
     void mouseDoubleClickEvent(QMouseEvent *);
+private:
+    bool enabled;
 };
 
 class TodoGraphicObject : public QGraphicsProxyWidget {
     Q_OBJECT
 public:
-    TodoGraphicObject(QString nme, TaskWidget* parent);
+    TodoGraphicObject(QString nme, bool editable, TaskWidget* parent);
 
     QString name;
 };
@@ -35,7 +37,7 @@ public:
 class TaskWidget : public QGraphicsObject {
     Q_OBJECT
 public:
-    TaskWidget(QString nme, Window* window, std::vector<QString> todos, QGraphicsItem* parent = nullptr);
+    TaskWidget(QString nme, Window* window, std::vector<QString> todos, QGraphicsItem* parent = nullptr, bool editable = false);
     virtual void makePath();
 
     int width = 600;
