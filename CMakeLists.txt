@@ -16,8 +16,9 @@ set(PROJECT_SOURCES
     main.cpp
     window.cpp window.h
 
-    sections/sections.h
+    sections/sections.cpp sections/sections.h
     sections/tasksview.cpp
+    sections/newoverlay.cpp
     sections/taskoverlay.cpp
 )
 set(PROJECT_WIDGETS

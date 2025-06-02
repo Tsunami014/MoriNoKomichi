@@ -2,6 +2,7 @@
 #include "widgets/bigtaskwidget.h" // It is used plz no one remove this line
 #include "widgets/svgbtnwidget.h"
 #include "widgets/graphicsviewcanvas.h"
+#include "sections.h"
 #include "../window.h"
 
 #include <QWidget>
@@ -35,7 +36,7 @@ private:
 class NewGraphicsView : public GraphicsViewCanvas {
 public:
     NewGraphicsView(QGraphicsScene* scene, std::function<void()> clickFun, bigTaskWidget* wid, Window* wind)
-    : GraphicsViewCanvas(scene, wind) {
+        : GraphicsViewCanvas(scene, wind) {
         clickFunc = clickFun;
         bigW = wid;
         setStyleSheet("background: transparent");
@@ -84,39 +85,6 @@ private:
     std::function<void()> clickFunc;
     bigTaskWidget* bigW = nullptr;
 };
-
-void removeOverlay(Window* wind, std::vector<QWidget*>* wids) {
-    if (wids->empty()) {
-        delete wids;
-        return;
-    }
-    for (int i = wind->wids.size()-1; i >= 0; i--) {
-        auto wid = wind->wids[i].wid;
-        int start = wids->size()-1;
-        for (int j = start; j >= 0; j--) {
-            if (wids->at(j) == wid) {
-                if (j == start) {
-                    delete wids->back();
-                    wids->pop_back();
-                } else {
-                    delete wids->at(j);
-                    wids->erase(wids->begin() + j);
-                }
-                if (i == wind->wids.size()-1) {
-                    wind->wids.pop_back();
-                } else {
-                    wind->wids.erase(wind->wids.begin() + j);
-                }
-                break;
-            }
-        }
-        if (wids->empty()) {
-            break;
-        }
-    }
-    delete wids;
-    wind->resizeElms();
-}
 
 void taskOverlay(Window* wind, TaskWidget* task) {
     std::vector<QWidget*>* rmWids = new std::vector<QWidget*>;

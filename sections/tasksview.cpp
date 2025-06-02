@@ -1,5 +1,7 @@
 #include "widgets/taskwidget.h"
+#include "widgets/svgbtnwidget.h"
 #include "widgets/graphicsviewcanvas.h"
+#include "sections.h"
 #include "../window.h"
 
 #include <QPushButton>
@@ -108,4 +110,10 @@ void taskView(Window* wind) {
     view->show();
     view->gotoTopLeft();
     wind->wids.push_back(Widget{view, QPoint(0, 0), QSize(100, 100)});
+
+
+    svgBtnWidget *btn = new svgBtnWidget(":/assets/backBtn.svg", wind);
+    wind->connect(btn, &QPushButton::released, wind, [wind](){newOverlay(wind);});
+    btn->show();
+    wind->wids.push_back(Widget{btn, QPoint(91, 91), QSize(8, 8), HEIGHT});
 }
