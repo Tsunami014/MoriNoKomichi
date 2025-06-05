@@ -5,6 +5,11 @@
 #include <QMouseEvent>
 #include <QPushButton>
 
+/*!
+    \brief An svg widget that acts like a button
+
+    You can connect to it like a button and it has a neat hover animation.
+*/
 class svgBtnWidget: public QPushButton
 {
     Q_OBJECT
@@ -14,6 +19,9 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+    /*!
+        \brief Check if the pixel of the image under your cursor is transparent
+    */
     bool hitButton(const QPoint &pos) const override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void leaveEvent(QEvent *event) override;

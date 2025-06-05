@@ -1,5 +1,28 @@
 #include "sections.h"
+#include <QPainter>
 
+OverlayWid::OverlayWid(std::function<void()> clickFun, QWidget* parent)
+    : QWidget(parent)
+{
+    clickFunc = clickFun;
+}
+
+void OverlayWid::mouseReleaseEvent(QMouseEvent *event) {
+    clickFunc();
+    event->accept();
+}
+void OverlayWid::paintEvent(QPaintEvent *event) {
+    QPainter painter(this);
+    painter.setBrush(QBrush(QColor(50, 10, 10, 125)));
+    painter.drawRect(QRect(QPoint(), size()));
+    painter.end();
+}
+
+/*!
+    \brief Remove specified widgets from a window
+
+    This is used for the overlay views, hence it's name.
+*/
 void removeOverlay(Window* wind, std::vector<QWidget*>* wids) {
     if (wids->empty()) {
         delete wids;
@@ -10,6 +33,7 @@ void removeOverlay(Window* wind, std::vector<QWidget*>* wids) {
         int start = wids->size()-1;
         for (int j = start; j >= 0; j--) {
             if (wids->at(j) == wid) {
+                // Ensure that if the widget is at the back, use the much faster pop_back operation
                 if (j == start) {
                     delete wids->back();
                     wids->pop_back();

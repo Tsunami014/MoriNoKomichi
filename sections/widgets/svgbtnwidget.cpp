@@ -2,6 +2,8 @@
 
 #include <QPainter>
 
+// See .h file for docstrings
+
 svgBtnWidget::svgBtnWidget(QString path, QWidget *parent, int expandAmount)
     : QPushButton(parent)
 {
@@ -24,6 +26,7 @@ bool svgBtnWidget::hitButton(const QPoint &pos) const {
 }
 
 void svgBtnWidget::mouseMoveEvent(QMouseEvent *event) {
+    // Only show that you're touching it when your mouse is over the *svg*, not just the button itself
     if (hitButton(event->pos())) {
         setCursor(Qt::PointingHandCursor);
         touching = true;
@@ -44,10 +47,12 @@ void svgBtnWidget::paintEvent(QPaintEvent *event) {
     painter.begin(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    if (touching) {
+    if (touching && expandAmnt > 0) {
+        // Transform the svg to expand
         QTransform transform;
         QPointF center(width()/2, height()/2);
 
+        // Transform so the centre is in the middle, scale out and transform back. So it should be scaling where the centre of scaling is the centre.
         transform.translate(center.x(), center.y());
         transform.scale(static_cast<qreal>(expandAmnt*2) / width() + 1, static_cast<qreal>(expandAmnt*2) / height() + 1);
         transform.translate(-center.x(), -center.y());
@@ -55,7 +60,8 @@ void svgBtnWidget::paintEvent(QPaintEvent *event) {
         painter.setTransform(transform);
     }
 
+    // Paint the svg!
     svg->render(&painter, QRectF(expandAmnt, expandAmnt, width()-(expandAmnt*2), height()-(expandAmnt*2)));
 
-    painter.end();
+    painter.end(); // Clean up
 }

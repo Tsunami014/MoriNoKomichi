@@ -5,6 +5,15 @@
 #include <QMouseEvent>
 #include <QTimer>
 
+/*!
+    \brief A more interactive GraphicsView
+
+    Includes:
+    - Shift+scroll = inverse (vertical->horizontal)
+    - Ctrl+scroll = zoom
+    - Middle mouse click+drag = move canvas with mouse
+    - Space+move mouse = move canvas with mouse
+*/
 class GraphicsViewCanvas : public QGraphicsView {
     Q_OBJECT
 

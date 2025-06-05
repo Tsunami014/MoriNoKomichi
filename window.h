@@ -7,12 +7,22 @@
 #include <QGridLayout>
 #include <QResizeEvent>
 
+/*!
+    \brief Size aspect ratio
+
+    If not REGULAR, sets the other value to this. E.g. if WIDTH, sets height to width.
+*/
 enum SizeAspect {
     REGULAR = 0,
     HEIGHT = 1,
     WIDTH = 2
 };
 
+/*!
+    \brief A positioned widget
+    
+    Positioned using my positioning; percent of screen
+*/
 struct Widget {
     QWidget* wid;
     QPointF position;

@@ -21,10 +21,10 @@ void continuePath(QPainterPath* pth, std::vector<QPoint> ps, QRandomGenerator ge
 
     for (QPoint& p : ps) {
         switch (gen.generate()%4) {
-        case 0:
+        case 0: // Line
             pth->lineTo(p);
             break;
-        case 1: {
+        case 1: { // Cubic curve; 2 handles at third intervals slightly offset
             int diffX = (p.x() - curPos.x()) / 3;
             int diffY = (p.y() - curPos.y()) / 3;
             QPoint thirdP1 = QPoint(
@@ -38,7 +38,7 @@ void continuePath(QPainterPath* pth, std::vector<QPoint> ps, QRandomGenerator ge
             pth->cubicTo(thirdP1, thirdP2, p);
             break;
         }
-        case 2: {
+        case 2: { // Cubic curve; 2 handles at the half mark, slightly offset
             QPoint midP = QPoint(
                 (p.x()+curPos.x())/2,
                 (p.y()+curPos.y())/2
@@ -51,7 +51,7 @@ void continuePath(QPainterPath* pth, std::vector<QPoint> ps, QRandomGenerator ge
             );
             break;
         }
-        case 3: {
+        case 3: { // Quad curve; 1 handle at the half mark slightly offser
             QPoint midP = QPoint(
                 (p.x()+curPos.x())/2 + gen.generate()%mayhem,
                 (p.y()+curPos.y())/2 + gen.generate()%mayhem
@@ -64,6 +64,7 @@ void continuePath(QPainterPath* pth, std::vector<QPoint> ps, QRandomGenerator ge
     }
 }
 QPainterPath genPath(std::vector<QPoint> ps, QRandomGenerator gen, bool closed, int mayhem) {
+    // Just 'continue' a new path.
     QPainterPath pth(ps.back());
     if (!closed) {
         ps.pop_back();

@@ -10,16 +10,17 @@ GraphicsViewCanvas::GraphicsViewCanvas(QGraphicsScene *scene, QWidget *parent)
     connect(pollTimer, &QTimer::timeout, this, &GraphicsViewCanvas::mousePoll);
 }
 
-void GraphicsViewCanvas::offsetPos(int x, int y) {
+void GraphicsViewCanvas::offsetPos(int x, int y) { // Use this instead of regular methods so subclasses can override it
     horizontalScrollBar()->setValue(horizontalScrollBar()->value() + x);
     verticalScrollBar()->setValue(verticalScrollBar()->value() + y);
 }
 
-void GraphicsViewCanvas::gotoTopLeft() {
+void GraphicsViewCanvas::gotoTopLeft() { // Override values to set to top left
     horizontalScrollBar()->setValue(0);
     verticalScrollBar()->setValue(0);
 }
 
+// Constantly poll the mouse for mouse buttons pressed and mouse positioning. Only runs when needed.
 void GraphicsViewCanvas::startMousePoll() {
     if (pollRequires++ == 0) {
         lastMousePos = mapFromGlobal(QCursor::pos());

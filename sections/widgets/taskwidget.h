@@ -13,6 +13,9 @@
 class bigTaskWidget; // Forward reference
 class TaskWidget; // Forward reference
 
+/*!
+    \brief This is the editable label for todo objects (below)
+*/
 class MyLabel : public QLineEdit {
     Q_OBJECT
 public:
@@ -26,6 +29,11 @@ private:
     bool enabled;
 };
 
+/*!
+    \brief This is the todo object, containing the name and QWidgets that compose of a todo
+
+    It turns the QWidgets into QGraphicsWidgets through its parent QGraphicsProxyWidget.
+*/
 class TodoGraphicObject : public QGraphicsProxyWidget {
     Q_OBJECT
 public:
@@ -34,6 +42,9 @@ public:
     QString name;
 };
 
+/*!
+    A QGraphicsObject which is a task; a title with a bunch of todos and a fancy border, that has a fancy hover animation and on click launches a taskOverlay to display the task in detail.
+*/
 class TaskWidget : public QGraphicsObject {
     Q_OBJECT
 public:
@@ -47,12 +58,17 @@ public:
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
+    /*!
+        \brief Convert this widget to a bigTaskWidget
+
+        This is for displaying in the taskOverlay
+    */
     bigTaskWidget* toBigWidget();
 
     void updateChildren(bool prepare = true);
 
 protected:
-    QPainterPath shape() const override;
+    QPainterPath shape() const override; //< For click detection
 
     QTransform paintOutline(QPainter *painter);
 
@@ -61,6 +77,11 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
+    /*!
+        \brief Get the transform applied when hovering.
+
+        This is one that expands everything outwards from the centre.
+    */
     QTransform getExpansionTransform();
 
     QPainterPath path;
@@ -74,6 +95,9 @@ private:
     unsigned int lastHei = 0;
 };
 
+/*!
+    \brief Helper func for making taskWidget objects
+*/
 TaskWidget* MakeTaskWidget(QString nme, Window* window, std::vector<QString> todos, QGraphicsItem* parent = nullptr);
 
 #endif // TASKSVIEW_H

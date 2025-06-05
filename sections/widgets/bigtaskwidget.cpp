@@ -18,6 +18,7 @@ bigTaskWidget::bigTaskWidget(QString nme, Window* window, std::vector<QString> i
     it->setFont(newFont);
 }
 
+// Make the purePath that is used when updating so updates to the path can't make the path go all wonky
 void bigTaskWidget::makePath() {
     TaskWidget::makePath();
     purePath = path;
@@ -28,6 +29,7 @@ void bigTaskWidget::updatePath(int newWid) {
     prepareGeometryChange();
     width = newWid - (padding * 2);
 
+    // Set the new path to the old path but with the position differing by a good ratio
     QSizeF nsze = boundingRect().size();
     float diffX = nsze.width() / pureSze.width();
     float diffY = nsze.height() / pureSze.height();

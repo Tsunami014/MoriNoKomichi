@@ -11,28 +11,11 @@
 #include <QApplication>
 #include <QTextCursor>
 
-class OverlayWid : public QWidget {
-public:
-    OverlayWid(std::function<void()> clickFun, QWidget* parent = nullptr) : QWidget(parent) {
-        clickFunc = clickFun;
-    }
-
-protected:
-    void mouseReleaseEvent(QMouseEvent *event) override {
-        clickFunc();
-        event->accept();
-    }
-    void paintEvent(QPaintEvent *event) override {
-        QPainter painter(this);
-        painter.setBrush(QBrush(QColor(50, 10, 10, 125)));
-        painter.drawRect(QRect(QPoint(), size()));
-        painter.end();
-    }
-
-private:
-    std::function<void()> clickFunc;
-};
-
+// We create our own graphics view for multiple reasons:
+// 1. To have a transparent background; where on click, it goes back to the previous screen
+// 2. Because the space key has issues
+// 3. So resizing the window affects the big task widget display
+// 4. To remove horizontal scrolling and zoom
 class NewGraphicsView : public GraphicsViewCanvas {
 public:
     NewGraphicsView(QGraphicsScene* scene, std::function<void()> clickFun, bigTaskWidget* wid, Window* wind)
@@ -44,7 +27,7 @@ public:
     }
 
 protected:
-    void mousePressEvent(QMouseEvent* event) override {
+    void mousePressEvent(QMouseEvent* event) override { // If click on bg, run the click func (goes back to prev page)
         QPointF scenePos = mapToScene(event->pos());
         QGraphicsItem* item = scene()->itemAt(scenePos, transform());
 
@@ -76,7 +59,7 @@ protected:
     void offsetPos(int x, int y) override { // Remove x scrolling
         GraphicsViewCanvas::offsetPos(0, y);
     }
-    void resizeEvent(QResizeEvent *event) override {
+    void resizeEvent(QResizeEvent *event) override { // Update bg sizing on resize
         bigW->updatePath(event->size().width());
         GraphicsViewCanvas::resizeEvent(event);
     }
@@ -87,22 +70,26 @@ private:
 };
 
 void taskOverlay(Window* wind, TaskWidget* task) {
-    std::vector<QWidget*>* rmWids = new std::vector<QWidget*>;
-    auto backFun = [wind, rmWids](){removeOverlay(wind, rmWids);};
+    std::vector<QWidget*>* rmWids = new std::vector<QWidget*>;     //< The list of widgets to remove when going back to the prev page (all of the ones to be created)
+    auto backFun = [wind, rmWids](){removeOverlay(wind, rmWids);}; //< Define a func for 'going back to the prev page' which is used in multiple spots
 
+    // Make the overlay
     OverlayWid *overlay = new OverlayWid(backFun, wind);
     overlay->show();
 
+    // Make the graphics scene with the big task widget
     QGraphicsScene* scene = new QGraphicsScene();
     bigTaskWidget* bigW = task->toBigWidget();
     scene->addItem(bigW);
     NewGraphicsView *view = new NewGraphicsView(scene, backFun, bigW, wind);
     view->show();
 
+    // Make the back btn
     svgBtnWidget *btn = new svgBtnWidget(":/assets/backBtn.svg", wind);
     wind->connect(btn, &QPushButton::released, wind, backFun);
     btn->show();
 
+    // Add all the widgets to the rmWids and wind->wids lists
     rmWids->push_back(overlay);
     rmWids->push_back(view);
     rmWids->push_back(btn);
@@ -110,5 +97,5 @@ void taskOverlay(Window* wind, TaskWidget* task) {
     wind->wids.push_back(Widget{view, QPoint(25, 0), QSize(50, 100)});
     wind->wids.push_back(Widget{btn, QPoint(1, 1), QSize(8, 8), HEIGHT});
 
-    wind->resizeElms();
+    wind->resizeElms(); // Update all the positionings!
 }
