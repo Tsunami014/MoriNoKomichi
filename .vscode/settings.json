@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "*.py": "python",
+        "*.txt": "plaintext",
+        "*.ldtk": "json",
+        ".format": "yaml",
+        "README": "markdown",
+        "qgraphicsscene": "cpp",
+        "qwidget": "cpp",
+        "qapplication": "cpp",
+        "qtextcursor": "cpp",
+        "qpainter": "cpp"
+    }
+}

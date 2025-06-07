@@ -12,7 +12,7 @@
 #include <QGraphicsObject>
 #include <QGraphicsProxyWidget>
 
-// See .h file for more doccstrings
+// See .h file for more docstrings
 
 MyLabel::MyLabel(const QString& text, bool en, QWidget* parent)
     : QLineEdit(text, parent)
@@ -77,7 +77,7 @@ protected:
         bool ret = QGraphicsTextItem::event(ev);
         if (ev->type() == QEvent::KeyPress) {
             QTimer::singleShot(0, this, [this](){
-                widparent->updateChildren();
+                widparent->updateChildren(true, true);
             });
         }
         return ret;
@@ -122,10 +122,10 @@ bigTaskWidget* TaskWidget::toBigWidget() {
     }
     // Create the new widget, ensuring all the appropriate construction functions are called
     bigTaskWidget* newWid = new bigTaskWidget(name, wind, strtodos, nullptr);
+    newWid->parent = this;
     newWid->updateChildren();
     newWid->makePath();
     newWid->show();
-    newWid->updateChildren();
     return newWid;
 }
 
@@ -183,8 +183,18 @@ void TaskWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     taskOverlay(wind, this);
 }
 
-void TaskWidget::updateChildren(bool prepare) {
+void TaskWidget::updateChildren(bool prepare, bool updateAll) {
     if (prepare) { prepareGeometryChange(); }
+
+    if (parent != nullptr) { // This would be any bigTaskWidgets
+        // Update parent's children so text gets updated!
+        QString txt = static_cast<myText*>(extras[0])->toPlainText();
+        static_cast<myText*>(parent->extras[0])->setPlainText(txt);
+        parent->name = txt;
+
+        parent->updateChildren();
+        parent->updatePath(); // Fix height
+    }
 
     // Position the heading text in the correct spot and with the correct width
     auto *txt = static_cast<myText*>(extras[0]);
@@ -210,8 +220,11 @@ void TaskWidget::updateChildren(bool prepare) {
         y += tBbx.height() + padding;
     }
     lastHei = y + padding * 3;
+    updatePath(); // Fix height
 
     if (prepare) { update(); }
+
+    if (updateAll) { updateTaskPoss(wind); }
 }
 
 QTransform TaskWidget::getExpansionTransform() {
@@ -228,14 +241,20 @@ QTransform TaskWidget::getExpansionTransform() {
     return transform;
 }
 
+void TaskWidget::updatePath() {
+    // Set the new path to the old path but with the position differing by a good ratio
+    QSizeF nsze = boundingRect().size();
+    float diffX = nsze.width() / pureSze.width();
+    float diffY = nsze.height() / pureSze.height();
+    for (int idx = 0; idx < path.elementCount(); idx++) {
+        QPointF point = purePath.elementAt(idx);
+        path.setElementPositionAt(idx, point.x()*diffX, point.y()*diffY);
+    }
+}
+
 void TaskWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(option);
     Q_UNUSED(widget);
-
-    // Update if height is 0 (which it shuold never be)
-    if (lastHei == 0) {
-        updateChildren();
-    }
 
     painter->setRenderHint(QPainter::Antialiasing);
 
@@ -383,4 +402,8 @@ void TaskWidget::makePath() {
 
     // Make path
     path = genPath(ps, gen, true, mayhem);
+
+    // Save the pure path
+    purePath = path;
+    pureSze = boundingRect().size();
 }

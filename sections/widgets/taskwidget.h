@@ -49,7 +49,7 @@ class TaskWidget : public QGraphicsObject {
     Q_OBJECT
 public:
     TaskWidget(QString nme, Window* window, std::vector<QString> todos, QGraphicsItem* parent = nullptr, bool editable = false);
-    virtual void makePath();
+    void makePath();
 
     int width = 600;
     const static inline int padding = 20;
@@ -65,7 +65,7 @@ public:
     */
     bigTaskWidget* toBigWidget();
 
-    void updateChildren(bool prepare = true);
+    void updateChildren(bool prepare = true, bool updateAll = false);
 
 protected:
     QPainterPath shape() const override; //< For click detection
@@ -85,8 +85,15 @@ protected:
     QTransform getExpansionTransform();
 
     QPainterPath path;
+    void updatePath();
+
     std::vector<QGraphicsItem*> extras; //< [0]: title
     std::vector<TodoGraphicObject*> todos;
+
+    TaskWidget* parent = nullptr;
+
+    QSizeF pureSze;
+    QPainterPath purePath;
 
 private:
     QString name;

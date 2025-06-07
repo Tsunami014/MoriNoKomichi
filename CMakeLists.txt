@@ -16,6 +16,8 @@ set(PROJECT_SOURCES
     main.cpp
     window.cpp window.h
 
+    taskloading.h taskloading.cpp
+
     sections/sections.cpp sections/sections.h
     sections/tasksview.cpp
     sections/newoverlay.cpp

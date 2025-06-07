@@ -1,4 +1,5 @@
 #include "window.h"
+#include "taskloading.h"
 #include "sections/sections.h"
 
 #include <QLabel>
@@ -11,6 +12,9 @@ Window::Window() {
     // The resize then maximise ensures that on minimise the window will be the correct size, not some random incorrect value
     resize(900, 600);
     showMaximized();
+
+    // Get the tasks
+    sections = getSections(this);
 
     // Start by displaying the tasksMenu
     tasksMenu();
@@ -42,15 +46,6 @@ void Window::resizeElms() {
         );
     }
 }
-
-/*!
-    \brief This is a brief description of MyClass.
-    \param value The value to use.
-    \return The result of the operation.
-
-    This is a more detailed description of MyClass. It can include
-    multiple paragraphs and additional information.
-*/
 
 /*!
     \brief Delete all widgets in preparation for creating a screen

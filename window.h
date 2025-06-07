@@ -7,6 +7,8 @@
 #include <QGridLayout>
 #include <QResizeEvent>
 
+class TaskWidget; // Forward reference
+
 /*!
     \brief Size aspect ratio
 
@@ -40,6 +42,8 @@ public:
     std::vector<Widget> wids;
     void tasksMenu();
     void resizeElms();
+
+    std::array<std::vector<TaskWidget*>, 4> sections;
 
 protected:
     void reset();

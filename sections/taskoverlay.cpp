@@ -48,7 +48,7 @@ protected:
                 if (item && item->type() == QGraphicsTextItem::Type) {
                     auto *txtItem = static_cast<QGraphicsTextItem*>(item);
                     txtItem->textCursor().insertText(" ");
-                    bigW->updateChildren(); // Don't forget to update the children!
+                    bigW->updateChildren(true, true); // Don't forget to update the children!
                     return true;
                 }
             }
@@ -60,7 +60,7 @@ protected:
         GraphicsViewCanvas::offsetPos(0, y);
     }
     void resizeEvent(QResizeEvent *event) override { // Update bg sizing on resize
-        bigW->updatePath(event->size().width());
+        bigW->updateWidth(event->size().width());
         GraphicsViewCanvas::resizeEvent(event);
     }
     void zoom(int delta) {} // Remove zoom

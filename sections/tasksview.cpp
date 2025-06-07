@@ -10,6 +10,7 @@
 #include <QGraphicsItem>
 #include <QGraphicsItemGroup>
 #include <QtMath>
+#include <array>
 
 /*!
     \brief A QGraphicsItemGroup but with a fixed bounding box
@@ -28,7 +29,7 @@ public:
 /*!
     \brief Update the positioning of all the tasks and groups
 */
-void updatePoss(std::vector<TaskWidget*> sections[4], BetterGroup* groups[4]) {
+void updatePoss(std::array<std::vector<TaskWidget*>, 4> sections, BetterGroup* groups[4]) {
     const int sectPadding = 50;
     qreal sectWid = 0;
     qreal sectHei = 0;
@@ -88,25 +89,21 @@ void updatePoss(std::vector<TaskWidget*> sections[4], BetterGroup* groups[4]) {
     groups[1]->setPos(sectWid, 0);
 }
 
+static BetterGroup* groups[4];
+static QGraphicsScene* scene = nullptr;
+
+void updateTaskPoss(Window* wind) {
+    updatePoss(wind->sections, groups);
+    // Update the entire scene so nothing is looking smudged
+    scene->invalidate(scene->sceneRect(), QGraphicsScene::ForegroundLayer);
+    scene->update();
+}
+
 void taskView(Window* wind) {
-    QGraphicsScene* scene = new QGraphicsScene();
+    scene = new QGraphicsScene();
     scene->setBackgroundBrush(QBrush(QColor(250, 230, 200)));
 
-    // Temporary example sections
-    std::vector<TaskWidget*> sections[4] = {
-        {
-            MakeTaskWidget("Hello group 1", wind, {"Task 1", "Task 2"}),
-            MakeTaskWidget("Reallyreallyreallyreallyreallyreallyreallyreallyreallyreallyreallylongname", wind, {"Task 1"}),
-            MakeTaskWidget("This name here is quite an extremely super long name for a task, wouldn't you agree?", wind, {"Task 1", "Task 2", "Task 3", "Task 4"}),
-            MakeTaskWidget("Goodbye again, group 1", wind, {})
-        },
-        {MakeTaskWidget("Hello group 2", wind, {}), MakeTaskWidget("Goodbye group 2", wind, {}), MakeTaskWidget("Hello again, group 2", wind, {}), MakeTaskWidget("Goodbye again, group 2", wind, {})},
-        {MakeTaskWidget("Hello group 3", wind, {}), MakeTaskWidget("Goodbye group 3", wind, {}), MakeTaskWidget("Hello again, group 3", wind, {}), MakeTaskWidget("Goodbye again, group 3", wind, {})},
-        {MakeTaskWidget("Hello group 4", wind, {}), MakeTaskWidget("Goodbye group 4", wind, {}), MakeTaskWidget("Hello again, group 4", wind, {}), MakeTaskWidget("Goodbye again, group 4", wind, {})}
-    };
-
     // Add items to groups, and everything to the screen
-    BetterGroup* groups[4];
     for (int i = 0;i < 4;i++) {
         BetterGroup* group = new BetterGroup();
         // Don't intercept requests to children
@@ -114,7 +111,7 @@ void taskView(Window* wind) {
         group->setAcceptHoverEvents(false);
         group->setAcceptedMouseButtons(Qt::NoButton);
 
-        for (TaskWidget* tsk : sections[i]) {
+        for (TaskWidget* tsk : wind->sections[i]) {
             scene->addItem(tsk);
             group->addToGroup(tsk);
         }
@@ -125,7 +122,7 @@ void taskView(Window* wind) {
     }
 
     // Update the positions!
-    updatePoss(sections, groups);
+    updatePoss(wind->sections, groups);
 
     // Add the widgets to the screen
 
