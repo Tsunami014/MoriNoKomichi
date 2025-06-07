@@ -1,6 +1,8 @@
 # Mori no komichi (森の小道); Forest path
 A todo app with many, many features.
 
+Please note that the excalidraw diagrams included have images rendered for dark mode. Light mode is also supported, but requires you to open the excalidraw file yourself. This can also be helpful for diagrams that are quite large.
+
 # Sprint 1
 In this sprint, the goal is to define the requirements and create the UI. The app at this stage will have all the layout set out, with transitional and interactive elements completed. Additionally, the UI will look polished; as this sprint is entirely focussed on the UI, it should look like the final product by the end.
 ## Requirements outline
@@ -36,14 +38,14 @@ Main Flow:
 Postconditions: Updated tasks and sub-tasks have been stored
 ```
 ### Diagram
-![Use case diagram](image-3.png)
+![UseCaseD.excalidraw](image-3.png)
 ## Storyboards
-![Storyboard](image-2.png)
+![Storyboard.excalidraw](image-2.png)
 ## Data flow diagrams
 ### Level 0
-![Data flow level 0 diagram](image.png)
+![Data flow level 0 diagram (too small to require saving)](image.png)
 ### Level 1
-![Data flow level 1 diagram](image-1.png)
+![DFDlvl1.excalidraw](image-1.png)
 ## Gantt chart
 ```mermaid
 gantt
@@ -70,7 +72,7 @@ gantt
         Review                        :2025-06-16, 2025-06-18
 
 ```
-(View [here](https://mermaid.live/view#pako:eNqllE1vozAQhv-KNYeeSISBAPFxN-ppc2lPXXGx8IRYAjs19u62Uf77GtIUq0lbpR1x8Nfzjv0azx5qLRAYNFxZWyniw0rbIrmvtyhci8cxwS3eatNxSx58zNbr2Wp1nOqxtlIrcr8zUllCj6NDrLCXjSJSICfnwZI4Wcxi_2UReW0XE36Hj04a7FDZntyQfoe13MiaD9n6AF8EeHmW_Z24mJ0Gm__hZCt8Wou9_QCndMLTeMJ_cafq7bvZO9l6Xa0wIgHupbrw_H8k_v30ACN2atOLd5Jc7cokms_ia10ZkAmn33FlwL_git_B8nwHb1xJA1ckbwzv-k9EaeAKTS6KZldanQd_0CR6hdU0CfD8e1bnX7J6xE5t_wAhgsZIAcwahxF06MvG0IX9IF2B3fo3XQHzTYEb7lpbQaUOHttx9Vvr7kQa7ZotsA1ve99zu6EIvdzU6xJUAs1P7ZQFthgVgO3hH7B0OU-ypQ9Ky8xH6mefgCV5Ol_mKV0UWV6URZkdIngec8bzsvBrUEirzfpYFcfiePgPbOgx1g))
+(You can also view it [here](https://mermaid.live/view#pako:eNqllE1vozAQhv-KNYeeSISBAPFxN-ppc2lPXXGx8IRYAjs19u62Uf77GtIUq0lbpR1x8Nfzjv0azx5qLRAYNFxZWyniw0rbIrmvtyhci8cxwS3eatNxSx58zNbr2Wp1nOqxtlIrcr8zUllCj6NDrLCXjSJSICfnwZI4Wcxi_2UReW0XE36Hj04a7FDZntyQfoe13MiaD9n6AF8EeHmW_Z24mJ0Gm__hZCt8Wou9_QCndMLTeMJ_cafq7bvZO9l6Xa0wIgHupbrw_H8k_v30ACN2atOLd5Jc7cokms_ia10ZkAmn33FlwL_git_B8nwHb1xJA1ckbwzv-k9EaeAKTS6KZldanQd_0CR6hdU0CfD8e1bnX7J6xE5t_wAhgsZIAcwahxF06MvG0IX9IF2B3fo3XQHzTYEb7lpbQaUOHttx9Vvr7kQa7ZotsA1ve99zu6EIvdzU6xJUAs1P7ZQFthgVgO3hH7B0OU-ypQ9Ky8xH6mefgCV5Ol_mKV0UWV6URZkdIngec8bzsvBrUEirzfpYFcfiePgPbOgx1g))
 
 Time split reasoning:
 - Most of the time will be spent in sprints 1 and 2;
@@ -91,8 +93,45 @@ My code is mostly readable, with comments and docstrings explaining hard to unde
 
 For the next stage of development, the requirements and specifications should be completly satisfied and the use case able to be realised; as the next sprint will focus on adding functionality to the UI. Additionally, the code quality will be improved to allow for better readability through creating a consistant naming convention and fixing the existing and new code to follow it.
 # Sprint 2
-In this sprint, we will make the app functional by implementing the chosen functions set out to be created in sprint 1, ensuring they connect with the UI created in sprint 1.
+In this sprint, we will make the app functional by implementing functionality to the current UI skeleton.
+## Procedural structure chart
+![StructureChart.excalidraw](image-4.png)
+## Psuedocode and flow charts
+```js
+BEGIN
+    tasks = GetTasks()
+    SetupView(tasks)
+    WHILE true
+        IF window was closed THEN
+            BREAK
+        ENDIF
+        IF a task widget was clicked THEN
+            clicked = task widget that was clicked
+            LaunchBigViewOverlay(clicked)
+        ENDIF
+        INPUT events
+        HandleEvents(events)
+    ENDWHILE
+END
+BEGIN GetTasks()
+    IF config file exists THEN
+        fileContents = get config file contents
+        RETURN fileContents
+    ELSE
+        RETURN []
+    ENDIF
+END GetTasks()
+BEGIN SetupView(tasks)
+    FOR i = 0 TO tasks length
+        AddTaskWidget(tasks[i])
+    NEXT i
+END SetupView(tasks)
+```
+![FlowCharts.excalidraw](image-5.png)
 # Sprint 3
-In this sprint, we will design OOP charts and diagrams.
+In this sprint, we will design a UML class diagram.
+## UML class diagram
+## Final evaluation
+Since nothing changed, this is redundant.
 # Sprint 4
-In this sprint, we will add final touches and polish off the program, ensuring it's exactly as required. Additionally, 
+In this sprint, we will add final touches and polish off the program, ensuring it's exactly as required.
