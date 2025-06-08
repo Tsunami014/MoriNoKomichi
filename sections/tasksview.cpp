@@ -100,6 +100,12 @@ void updateTaskPoss(Window* wind) {
     scene->update();
 }
 
+void addItem(TaskWidget* it, uint8_t groupNum, Window* wind) {
+    scene->addItem(it);
+    groups[groupNum]->addToGroup(it);
+    wind->sections[groupNum].push_back(it);
+}
+
 void taskView(Window* wind) {
     scene = new QGraphicsScene();
     scene->setBackgroundBrush(QBrush(QColor(250, 230, 200)));

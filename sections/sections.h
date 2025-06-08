@@ -29,5 +29,7 @@ void newOverlay(Window* wind);                     // Located in newoverlay.cpp
 void taskOverlay(Window* wind, TaskWidget* task);  // Located in taskoverlay.cpp
 /*! \brief Update the positions of all the tasks */
 void updateTaskPoss(Window* wind);                 // Located in taskoverlay.cpp
+/*! \brief Add a taskwidget to a group */
+void addItem(TaskWidget* it, uint8_t groupNum, Window* wind); // Located in taskoverlay.cpp
 
 #endif // SECTIONS_H
