@@ -79,6 +79,8 @@ public:
     */
     bigTaskWidget* toBigWidget();
 
+    std::vector<TodoGraphicObject*> todos;
+
     void updateChildren(bool prepare = true, bool updateAll = false);
 
 protected:
@@ -102,7 +104,6 @@ protected:
     void updatePath();
 
     std::vector<QGraphicsItem*> extras; //< [0]: title
-    std::vector<TodoGraphicObject*> todos;
 
     TaskWidget* parent = nullptr;
 

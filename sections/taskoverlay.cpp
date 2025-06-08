@@ -10,6 +10,7 @@
 #include <QGraphicsScene>
 #include <QApplication>
 #include <QTextCursor>
+#include <QLineEdit>
 
 // We create our own graphics view for multiple reasons:
 // 1. To have a transparent background; where on click, it goes back to the previous screen
@@ -69,6 +70,11 @@ private:
     bigTaskWidget* bigW = nullptr;
 };
 
+void addNewSubtask(Window* wind, bigTaskWidget* bigW, QString txt) {
+    bigW->todos.push_back(new TodoGraphicObject(txt, true, bigW));
+    bigW->updateChildren(true, true);
+}
+
 void taskOverlay(Window* wind, TaskWidget* task) {
     // Make the overlay
     OverlayWid *overlay = new OverlayWid(wind);
@@ -86,13 +92,24 @@ void taskOverlay(Window* wind, TaskWidget* task) {
     wind->connect(btn, &QPushButton::released, wind, [wind](){backFun(wind);});
     btn->show();
 
+    // Make the add sub-task input box
+    QLineEdit* newSubtask = new QLineEdit(wind);
+    newSubtask->setPlaceholderText("New subtask");
+    QObject::connect(newSubtask, &QLineEdit::returnPressed, [wind, bigW, newSubtask](){
+        addNewSubtask(wind, bigW, newSubtask->text());
+        newSubtask->setText("");
+    });
+    newSubtask->show();
+
     // Add all the widgets to the rmWids and wind->wids lists
     rmWids->push_back(overlay);
     rmWids->push_back(view);
     rmWids->push_back(btn);
-    wind->wids.push_back(Widget{overlay, QPoint(-1, -1), QSize(102, 102)});
+    rmWids->push_back(newSubtask);
+    wind->wids.push_back(Widget{overlay, QPoint(0, 0), QSize(100, 100)});
     wind->wids.push_back(Widget{view, QPoint(25, 0), QSize(50, 100)});
     wind->wids.push_back(Widget{btn, QPoint(1, 1), QSize(8, 8), HEIGHT});
+    wind->wids.push_back(Widget{newSubtask, QPoint(81, 47), QSize(18, 6)});
 
     wind->resizeElms(); // Update all the positionings!
 }
