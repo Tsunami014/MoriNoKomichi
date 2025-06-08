@@ -9,16 +9,13 @@
 #include <QTextCursor>
 
 void newOverlay(Window* wind) {
-    std::vector<QWidget*>* rmWids = new std::vector<QWidget*>;     //< The list of widgets to remove when going back to the prev page (all of the ones to be created)
-    auto backFun = [wind, rmWids](){removeOverlay(wind, rmWids);}; //< Define a func for 'going back to the prev page' which is used in multiple spots
-
     // Make the overlay
-    OverlayWid *overlay = new OverlayWid(backFun, wind);
+    OverlayWid *overlay = new OverlayWid(wind);
     overlay->show();
 
     // Make the back button
     svgBtnWidget *btn = new svgBtnWidget(":/assets/backBtn.svg", wind);
-    wind->connect(btn, &QPushButton::released, wind, backFun);
+    wind->connect(btn, &QPushButton::released, wind, [wind](){backFun(wind);});
     btn->show();
 
     // Add all the widgets to both the lists

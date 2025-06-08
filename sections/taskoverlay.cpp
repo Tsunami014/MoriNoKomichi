@@ -18,9 +18,9 @@
 // 4. To remove horizontal scrolling and zoom
 class NewGraphicsView : public GraphicsViewCanvas {
 public:
-    NewGraphicsView(QGraphicsScene* scene, std::function<void()> clickFun, bigTaskWidget* wid, Window* wind)
-        : GraphicsViewCanvas(scene, wind) {
-        clickFunc = clickFun;
+    NewGraphicsView(QGraphicsScene* scene, bigTaskWidget* wid, Window* window)
+    : GraphicsViewCanvas(scene, window) {
+        wind = window;
         bigW = wid;
         setStyleSheet("background: transparent");
         setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -34,7 +34,7 @@ protected:
         if (item) {
             QGraphicsView::mousePressEvent(event);
         } else {
-            clickFunc();
+            backFun(wind);
             event->accept();
         }
     }
@@ -65,28 +65,25 @@ protected:
     }
     void zoom(int delta) {} // Remove zoom
 private:
-    std::function<void()> clickFunc;
+    Window* wind;
     bigTaskWidget* bigW = nullptr;
 };
 
 void taskOverlay(Window* wind, TaskWidget* task) {
-    std::vector<QWidget*>* rmWids = new std::vector<QWidget*>;     //< The list of widgets to remove when going back to the prev page (all of the ones to be created)
-    auto backFun = [wind, rmWids](){removeOverlay(wind, rmWids);}; //< Define a func for 'going back to the prev page' which is used in multiple spots
-
     // Make the overlay
-    OverlayWid *overlay = new OverlayWid(backFun, wind);
+    OverlayWid *overlay = new OverlayWid(wind);
     overlay->show();
 
     // Make the graphics scene with the big task widget
     QGraphicsScene* scene = new QGraphicsScene();
     bigTaskWidget* bigW = task->toBigWidget();
     scene->addItem(bigW);
-    NewGraphicsView *view = new NewGraphicsView(scene, backFun, bigW, wind);
+    NewGraphicsView *view = new NewGraphicsView(scene, bigW, wind);
     view->show();
 
     // Make the back btn
     svgBtnWidget *btn = new svgBtnWidget(":/assets/backBtn.svg", wind);
-    wind->connect(btn, &QPushButton::released, wind, backFun);
+    wind->connect(btn, &QPushButton::released, wind, [wind](){backFun(wind);});
     btn->show();
 
     // Add all the widgets to the rmWids and wind->wids lists

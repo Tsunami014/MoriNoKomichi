@@ -1,14 +1,15 @@
 #include "sections.h"
 #include <QPainter>
 
-OverlayWid::OverlayWid(std::function<void()> clickFun, QWidget* parent)
-    : QWidget(parent)
-{
-    clickFunc = clickFun;
+std::vector<QWidget*>* rmWids = new std::vector<QWidget*>;
+std::function<void(Window*)> backFun = [](Window* wind){removeOverlay(wind, rmWids);};
+
+OverlayWid::OverlayWid(Window* window) : QWidget(window) {
+    wind = window;
 }
 
 void OverlayWid::mouseReleaseEvent(QMouseEvent *event) {
-    clickFunc();
+    backFun(wind);
     event->accept();
 }
 void OverlayWid::paintEvent(QPaintEvent *event) {
@@ -25,7 +26,6 @@ void OverlayWid::paintEvent(QPaintEvent *event) {
 */
 void removeOverlay(Window* wind, std::vector<QWidget*>* wids) {
     if (wids->empty()) {
-        delete wids;
         return;
     }
     for (int i = wind->wids.size()-1; i >= 0; i--) {
@@ -53,6 +53,6 @@ void removeOverlay(Window* wind, std::vector<QWidget*>* wids) {
             break;
         }
     }
-    delete wids;
+    wids->clear();
     wind->resizeElms();
 }

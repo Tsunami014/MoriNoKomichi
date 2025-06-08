@@ -8,6 +8,7 @@
 #include <QCursor>
 #include <QFontMetrics>
 #include <QLineEdit>
+#include <QGraphicsScene>
 #include <QGraphicsObject>
 #include <QGraphicsProxyWidget>
 
@@ -87,7 +88,7 @@ TodoGraphicObject::TodoGraphicObject(QString nme, bool iseditable, TaskWidget* t
 
 void TodoGraphicObject::updateParentlab(QString str) {
     Q_UNUSED(str);
-    parent->updateChildren();
+    parent->updateChildren(true, true);
 }
 void TodoGraphicObject::updateParentchk(int state) {
     Q_UNUSED(state);
@@ -222,26 +223,72 @@ void TaskWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     taskOverlay(wind, this);
 }
 
+struct TODOstate {
+    QString nme;
+    bool checked;
+};
+
 void TaskWidget::updateChildren(bool prepare, bool updateAll) {
     if (prepare) { prepareGeometryChange(); }
 
     if (parent != nullptr) { // This would be any bigTaskWidgets
         // Update parent's children so text gets updated!
         QString txt = static_cast<myText*>(extras[0])->toPlainText();
+        if (txt == "") {
+            // Delete parent from sections
+            for (auto& s : wind->sections) {
+                auto result = std::find(s.begin(), s.end(), parent);
+                if (result != std::end(s)) {
+                    s.erase(result);
+                    break;
+                }
+            }
+            // Remove overlay
+            backFun(wind);
+            // Delete, update and return
+            delete parent;
+            updateTaskPoss(wind);
+            delete this;
+            return;
+        }
         static_cast<myText*>(parent->extras[0])->setPlainText(txt);
         parent->name = txt;
 
-        unsigned int idx;
-        for (idx = 0; idx < todos.size(); idx++) {
-            if (parent->todos.size() > idx) {
-                parent->todos[idx]->setName(todos[idx]->getname());
-                parent->todos[idx]->checkbox->setChecked(todos[idx]->checkbox->isChecked());
-            } else {
-                parent->todos.push_back(new TodoGraphicObject(todos[idx]->getname(), false, parent));
+        // Create a list of what the todos should be
+        std::vector<TODOstate> outtodos;
+        for (unsigned int idx = 0; idx < todos.size(); idx++) {
+            QString nme = todos[idx]->getname();
+            if (nme != "") {
+                outtodos.push_back({nme, todos[idx]->checkbox->isChecked()});
             }
         }
-        for (;idx < parent->todos.size();) {
-            delete parent->todos.back();
+        // Update existing todos or add new ones if not enough to match the outtodos list
+        unsigned int todoslen = outtodos.size();
+        for (unsigned int idx = 0; idx < todoslen; idx++) {
+            auto outT = outtodos[idx];
+            if (todos.size() > idx) {
+                todos[idx]->setName(outT.nme);
+            } else {
+                todos.push_back(new TodoGraphicObject(outT.nme, false, parent));
+            }
+            todos[idx]->checkbox->setChecked(outT.checked);
+
+            if (parent->todos.size() > idx) {
+                parent->todos[idx]->setName(outT.nme);
+            } else {
+                parent->todos.push_back(new TodoGraphicObject(outT.nme, false, parent));
+            }
+            parent->todos[idx]->checkbox->setChecked(outT.checked);
+        }
+        // Remove extra todos
+        while (todos.size() > todoslen) {
+            todos.back()->setParent(nullptr);
+            todos.back()->deleteLater();
+            todos.pop_back();
+        }
+        while (parent->todos.size() > todoslen) {
+            parent->todos.back()->setParent(nullptr);
+            parent->todos.back()->deleteLater();
             parent->todos.pop_back();
         }
 
@@ -263,7 +310,7 @@ void TaskWidget::updateChildren(bool prepare, bool updateAll) {
 
     // Just add the rest of the todos one at a time underneath
     QRectF bbx = txt->boundingRect();
-    unsigned int y = padding+30;
+    unsigned int y = padding*2 + bbx.height()/10;
     txt->setPos(QPoint((width-bbx.width())/2 + 10, y));
 
     y += bbx.height() + padding;

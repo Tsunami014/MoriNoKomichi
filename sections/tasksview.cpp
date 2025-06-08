@@ -26,6 +26,9 @@ public:
     }
 };
 
+static BetterGroup* groups[4];
+static QGraphicsScene* scene = nullptr;
+
 /*!
     \brief Update the positioning of all the tasks and groups
 */
@@ -89,13 +92,11 @@ void updatePoss(std::array<std::vector<TaskWidget*>, 4> sections, BetterGroup* g
     groups[1]->setPos(sectWid, 0);
 }
 
-static BetterGroup* groups[4];
-static QGraphicsScene* scene = nullptr;
-
 void updateTaskPoss(Window* wind) {
     updatePoss(wind->sections, groups);
     // Update the entire scene so nothing is looking smudged
     scene->invalidate(scene->sceneRect(), QGraphicsScene::ForegroundLayer);
+    scene->setSceneRect(scene->itemsBoundingRect());
     scene->update();
 }
 
