@@ -8,7 +8,6 @@
 #include <QCursor>
 #include <QFontMetrics>
 #include <QLineEdit>
-#include <QCheckBox>
 #include <QGraphicsObject>
 #include <QGraphicsProxyWidget>
 
@@ -24,14 +23,20 @@ MyLabel::MyLabel(const QString& text, bool en, QWidget* parent)
                   "    background: rgb(255, 235, 210); }"
                   "QLineEdit {"
                   "    background: white; }");
-    // When finished editing, become read-only again
-    connect(this, &QLineEdit::editingFinished, [this]{
+
+    if (en) {
+        setCursor(Qt::IBeamCursor);
+    }
+}
+// When finished editing, become read-only again
+void MyLabel::focusOutEvent(QFocusEvent *event) {
+    if (!isReadOnly()) {
         this->unsetCursor();
         this->setSelection(0,0);
         this->setReadOnly(true);
-    });
+    }
+    QLineEdit::focusOutEvent(event);
 }
-void MyLabel::mousePressEvent(QMouseEvent *) { emit clicked(); } // If single click, just toggle checkbox
 void MyLabel::mouseDoubleClickEvent(QMouseEvent *) {
     // Become editable if double click
     if (enabled) {
@@ -40,27 +45,60 @@ void MyLabel::mouseDoubleClickEvent(QMouseEvent *) {
     }
 }
 
-TodoGraphicObject::TodoGraphicObject(QString nme, bool editable, TaskWidget* parent) : QGraphicsProxyWidget(parent) {
-    name = nme;
+TodoGraphicObject::TodoGraphicObject(QString nme, bool iseditable, TaskWidget* taskparent) : QGraphicsProxyWidget(taskparent) {
     QWidget* widget = new QWidget();
     QHBoxLayout* layout = new QHBoxLayout();
     widget->setLayout(layout);
 
+    editable = iseditable;
+    parent = taskparent;
+
     // Add a checkbox and label
-    QCheckBox* checkbox = new QCheckBox();
+    checkbox = new QCheckBox();
     checkbox->setStyleSheet("QWidget { background: rgb(255, 235, 210); }");
-    MyLabel* label = new MyLabel(nme, editable);
-    if (editable) {
-        connect(label, &MyLabel::clicked, checkbox, &QCheckBox::toggle);
+    checkbox->setEnabled(iseditable);
+    if (iseditable) {
+        checkbox->setCursor(Qt::PointingHandCursor);
     }
-    checkbox->setEnabled(editable);
+    label = new MyLabel(nme, iseditable);
+
+    if (iseditable) {
+        // Ensure that when they get updated, so to does the parent
+        QObject::connect(label, &QLineEdit::textChanged,
+                         this,  &TodoGraphicObject::updateParentlab);
+        QObject::connect(checkbox, &QCheckBox::clicked,
+                         this,     &TodoGraphicObject::updateParentchk);
+    }
 
     // Add the things to the layout and widget
     layout->addWidget(checkbox);
     layout->addWidget(label);
     widget->setStyleSheet("QWidget { background: rgb(255, 235, 210); }");
     widget->show();
+    if (!iseditable) {
+        widget->setCursor(Qt::PointingHandCursor);
+        label->setCursor(Qt::PointingHandCursor);
+        setAttribute(Qt::WA_TransparentForMouseEvents, true);
+        checkbox->setAttribute(Qt::WA_TransparentForMouseEvents, true);
+        label->setAttribute(Qt::WA_TransparentForMouseEvents, true);
+    }
     setWidget(widget);
+}
+
+void TodoGraphicObject::updateParentlab(QString str) {
+    Q_UNUSED(str);
+    parent->updateChildren();
+}
+void TodoGraphicObject::updateParentchk(int state) {
+    Q_UNUSED(state);
+    parent->updateChildren();
+}
+
+QString TodoGraphicObject::getname() {
+    return label->text();
+}
+void TodoGraphicObject::setName(QString newName) {
+    label->setText(newName);
 }
 
 /*!
@@ -115,13 +153,14 @@ TaskWidget* MakeTaskWidget(QString nme, Window* window, std::vector<QString> tod
 }
 
 bigTaskWidget* TaskWidget::toBigWidget() {
-    // Copy all the todos over by their name
-    std::vector<QString> strtodos;
-    for (auto t : todos) {
-        strtodos.push_back(t->name);
-    }
     // Create the new widget, ensuring all the appropriate construction functions are called
-    bigTaskWidget* newWid = new bigTaskWidget(name, wind, strtodos, nullptr);
+    bigTaskWidget* newWid = new bigTaskWidget(name, wind, {}, nullptr);
+    // Copy all the todos over
+    for (auto t : todos) {
+        newWid->todos.push_back(new TodoGraphicObject(t->getname(), true, newWid));
+        newWid->todos.back()->checkbox->setChecked(t->checkbox->isChecked());
+    }
+    // Run the rest of the setup
     newWid->parent = this;
     newWid->updateChildren();
     newWid->makePath();
@@ -191,6 +230,20 @@ void TaskWidget::updateChildren(bool prepare, bool updateAll) {
         QString txt = static_cast<myText*>(extras[0])->toPlainText();
         static_cast<myText*>(parent->extras[0])->setPlainText(txt);
         parent->name = txt;
+
+        unsigned int idx;
+        for (idx = 0; idx < todos.size(); idx++) {
+            if (parent->todos.size() > idx) {
+                parent->todos[idx]->setName(todos[idx]->getname());
+                parent->todos[idx]->checkbox->setChecked(todos[idx]->checkbox->isChecked());
+            } else {
+                parent->todos.push_back(new TodoGraphicObject(todos[idx]->getname(), false, parent));
+            }
+        }
+        for (;idx < parent->todos.size();) {
+            delete parent->todos.back();
+            parent->todos.pop_back();
+        }
 
         parent->updateChildren();
         parent->updatePath(); // Fix height

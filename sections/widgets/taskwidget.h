@@ -9,6 +9,7 @@
 #include <QGraphicsTextItem>
 #include <qgraphicsproxywidget.h>
 #include <qlineedit.h>
+#include <QCheckBox>
 
 class bigTaskWidget; // Forward reference
 class TaskWidget; // Forward reference
@@ -23,7 +24,7 @@ public:
 signals:
     void clicked();
 protected:
-    void mousePressEvent(QMouseEvent *);
+    void focusOutEvent(QFocusEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *);
 private:
     bool enabled;
@@ -39,7 +40,20 @@ class TodoGraphicObject : public QGraphicsProxyWidget {
 public:
     TodoGraphicObject(QString nme, bool editable, TaskWidget* parent);
 
-    QString name;
+    QString getname();
+    void setName(QString newName);
+
+    QCheckBox* checkbox;
+
+public slots:
+    void updateParentlab(QString str);
+    void updateParentchk(int state);
+
+private:
+    bool editable;
+    TaskWidget* parent;
+
+    MyLabel* label;
 };
 
 /*!
