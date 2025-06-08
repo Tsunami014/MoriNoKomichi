@@ -310,7 +310,7 @@ void TaskWidget::updateChildren(bool prepare, bool updateAll) {
 
     // Just add the rest of the todos one at a time underneath
     QRectF bbx = txt->boundingRect();
-    unsigned int y = padding*2 + bbx.height()/10;
+    unsigned int y = padding*2;
     txt->setPos(QPoint((width-bbx.width())/2 + 10, y));
 
     y += bbx.height() + padding;
@@ -345,10 +345,18 @@ void TaskWidget::updatePath() {
     // Set the new path to the old path but with the position differing by a good ratio
     QSizeF nsze = boundingRect().size();
     float diffX = nsze.width() / pureSze.width();
-    float diffY = nsze.height() / pureSze.height();
+    float origHei = pureSze.height();
+    float newHei = nsze.height();
     for (int idx = 0; idx < path.elementCount(); idx++) {
         QPointF point = purePath.elementAt(idx);
-        path.setElementPositionAt(idx, point.x()*diffX, point.y()*diffY);
+        float fromTop = origHei - point.y();
+        int y;
+        if (abs(point.y()) < abs(fromTop)) {
+            y = point.y();
+        } else {
+            y = newHei - fromTop;
+        }
+        path.setElementPositionAt(idx, point.x()*diffX, y);
     }
 }
 
