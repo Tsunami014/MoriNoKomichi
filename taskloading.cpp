@@ -55,17 +55,18 @@ std::array<std::vector<TaskWidget*>, 4> getSections(Window* wind) {
         // If the user is new, give them some example tasks to get used to the program first
         std::array<std::vector<TaskWidget*>, 4> sections = {
             std::vector{ // This is needed for no aparent reason
-                MakeTaskWidget("Get used to the main view", wind, {"Scroll or shift-scroll", "(Space/middle click)+mouse drag to pan", "Ctrl+scroll to zoom"})
+                MakeTaskWidget("Get used to the main view", wind, {"Scroll or shift-scroll", "Space+mouse click and drag to pan", "Middle click and drag to pan", "Ctrl+scroll to zoom"}),
+                MakeTaskWidget("Check out the tutorial", wind, {"Do the tasks to the right", "Do the tasks below", "Do the tasks in the bottom right corner"})
             },
             {
                 MakeTaskWidget("Click on tasks to edit them", wind, {"Click on this task!", "Click the black overlay or back button to go back"}),
                 MakeTaskWidget("Add a new task", wind, {"Press the plus button to add a new task", "Give it a good title and select a section!"}),
-                MakeTaskWidget("Rename a task", wind, {"Press on a task again", "Click on the title", "Change it to whatever you want!", "Click out to exit"}),
+                MakeTaskWidget("Rename a task", wind, {"Click on a task", "Click on the title", "Change it to whatever you want!", "Click out to exit"}),
                 MakeTaskWidget("Delete a task", wind, {"Click on a task", "Click on the title again", "Delete the entire title (backspace)"})
             },
             {
                 MakeTaskWidget("Add new subtasks", wind, {"Click on a task", "Write text in the box to the right", "Press enter to add the subtask!"}),
-                MakeTaskWidget("Rename subtasks", wind, {"Click on a task", "Double click on a task name", "Edit it!", "Click out of it again"}),
+                MakeTaskWidget("Rename subtasks", wind, {"Click on a task", "Double click on a sub-task name", "Change it to something else!", "Click out of it again"}),
                 MakeTaskWidget("Delete subtasks", wind, {"Click on a task", "Double click the name again", "Delete the entire name (backspace)"})
             },
             {
