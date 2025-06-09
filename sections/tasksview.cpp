@@ -3,6 +3,7 @@
 #include "widgets/graphicsviewcanvas.h"
 #include "sections.h"
 #include "../window.h"
+#include "../taskloading.h"
 
 #include <QPushButton>
 #include <QGraphicsView>
@@ -98,12 +99,16 @@ void updateTaskPoss(Window* wind) {
     scene->invalidate(scene->sceneRect(), QGraphicsScene::ForegroundLayer);
     scene->setSceneRect(scene->itemsBoundingRect());
     scene->update();
+
+    saveSections(wind);
 }
 
 void addItem(TaskWidget* it, uint8_t groupNum, Window* wind) {
     scene->addItem(it);
     groups[groupNum]->addToGroup(it);
     wind->sections[groupNum].push_back(it);
+
+    saveSections(wind);
 }
 
 void taskView(Window* wind) {

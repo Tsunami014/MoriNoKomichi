@@ -80,6 +80,7 @@ public:
     bigTaskWidget* toBigWidget();
 
     std::vector<TodoGraphicObject*> todos;
+    QString name;
 
     void updateChildren(bool prepare = true, bool updateAll = false);
 
@@ -111,7 +112,6 @@ protected:
     QPainterPath purePath;
 
 private:
-    QString name;
     Window* wind = nullptr;
     bool isHover = false;
     unsigned int lastHei = 0;

@@ -8,5 +8,6 @@
 #include "window.h"
 
 std::array<std::vector<TaskWidget*>, 4> getSections(Window* wind);
+void saveSections(Window* wind);
 
 #endif // TASKLOADING_H
