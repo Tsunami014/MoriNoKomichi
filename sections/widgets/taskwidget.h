@@ -43,6 +43,8 @@ public:
     QString getname();
     void setName(QString newName);
 
+    void setWidth(unsigned int width);
+
     QCheckBox* checkbox;
 
 public slots:

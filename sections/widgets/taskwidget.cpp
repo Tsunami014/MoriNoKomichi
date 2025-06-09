@@ -10,6 +10,7 @@
 #include <QLineEdit>
 #include <QGraphicsScene>
 #include <QGraphicsObject>
+#include <QGraphicsLayout>
 #include <QGraphicsProxyWidget>
 
 // See .h file for more docstrings
@@ -71,11 +72,13 @@ TodoGraphicObject::TodoGraphicObject(QString nme, bool iseditable, TaskWidget* t
                          this,     &TodoGraphicObject::updateParentchk);
     }
 
+    checkbox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
     // Add the things to the layout and widget
     layout->addWidget(checkbox);
     layout->addWidget(label);
     widget->setStyleSheet("QWidget { background: rgb(255, 235, 210); }");
-    widget->show();
     if (!iseditable) {
         widget->setCursor(Qt::PointingHandCursor);
         label->setCursor(Qt::PointingHandCursor);
@@ -84,6 +87,11 @@ TodoGraphicObject::TodoGraphicObject(QString nme, bool iseditable, TaskWidget* t
         label->setAttribute(Qt::WA_TransparentForMouseEvents, true);
     }
     setWidget(widget);
+}
+
+void TodoGraphicObject::setWidth(unsigned int width) {
+    QSizeF current = this->size();
+    this->resize(width, current.height());
 }
 
 void TodoGraphicObject::updateParentlab(QString str) {
@@ -315,6 +323,7 @@ void TaskWidget::updateChildren(bool prepare, bool updateAll) {
 
     y += bbx.height() + padding;
     for (auto t : todos) {
+        t->setWidth(width*0.8);
         QRectF tBbx = t->boundingRect();
         t->setPos(QPoint((width-tBbx.width())/2, y));
         y += tBbx.height() + padding;

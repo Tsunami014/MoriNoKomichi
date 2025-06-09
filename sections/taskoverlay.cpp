@@ -63,6 +63,7 @@ protected:
     void resizeEvent(QResizeEvent *event) override { // Update bg sizing on resize
         bigW->updateWidth(event->size().width());
         GraphicsViewCanvas::resizeEvent(event);
+        scene()->setSceneRect(scene()->itemsBoundingRect());
     }
     void zoom(int delta) {} // Remove zoom
 private:

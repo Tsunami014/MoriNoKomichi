@@ -64,7 +64,7 @@ std::array<std::vector<TaskWidget*>, 4> getSections(Window* wind) {
                 MakeTaskWidget("Delete a task", wind, {"Click on a task", "Click on the title again", "Delete the entire title (backspace)"})
             },
             {
-                MakeTaskWidget("Add new subtasks", wind, {"v a task", "Write text in the box to the right", "Press enter to add the subtask!"}),
+                MakeTaskWidget("Add new subtasks", wind, {"Click on a task", "Write text in the box to the right", "Press enter to add the subtask!"}),
                 MakeTaskWidget("Rename subtasks", wind, {"Click on a task", "Double click on a task name", "Edit it!", "Click out of it again"}),
                 MakeTaskWidget("Delete subtasks", wind, {"Click on a task", "Double click the name again", "Delete the entire name (backspace)"})
             },
