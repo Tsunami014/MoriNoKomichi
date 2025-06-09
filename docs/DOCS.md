@@ -128,9 +128,19 @@ BEGIN SetupView(tasks)
 END SetupView(tasks)
 ```
 ![FlowCharts.excalidraw](image-5.png)
+## Final evaluation
+The program currently meets all requirements set out to at least some degree. The system allows users to view, edit and delete tasks and subtasks stored in an external file as required by functional specification and requirement 1, and additionally the entire app is usable with a keyboard and mouse; satisfying functional requirement and specification 2. Unfortunately, there is still no error handling for uncaught errors; but the app was built with robustness in mind, so crashes should not be something that occurs with regular usage. Additionally, common points of error have been ironed out; for example, with file handling; if the file does not exist or an error occurred opening the file, it will not crash; and there is also no internet-dependant parts of the app. This all partially satisfies functional specification 3 and non-functional requirement 2.
+With regards to the non-functional requirements, the system also exceeds in most. The program starts up and loads items with an almost invisible delay; satisfying requirement and specification 1. Additionally, the system has *some* clear labels for placeholder text in the text boxes to partially satisfy non-functional requirement and specification 3, but could be improved with more labelling. Although, when users first start up the app it will be filled with a sample onboarding tasks list to teach the users how to use the app; which helps, but not as much as clear labels. And lastly; as stated in sprint 1's final evaluation, the UI follows a hierachial order through its use of overlays rather than separate pages - satisfying non-functional specification 2.
+
+The program now completes the use case perfectly; every functional element defined in the use case can be executed in the system. Additionally, it handles input and output mostly well. The only issue currently is a slight bug with QT handling space differently for the todos, as stated in sprint 1's final evaluation. Apart from that, all inputting and navigating works as expected.
+
+The program's readability, structure and maintainability has not improved since the last sprint, but nor has it gotten worse. The docstring usage and naming conventions could be improved as they are currently not standardised.
+
+Next sprint, I will improve docstrings and variable naming conventions to help readability and structure, in addition to fixing the space bug and adding clearer labels to the UI to help address the problems stopping the app from achieving all of its requirements and specifications.
 # Sprint 3
-In this sprint, we will design a UML class diagram.
+In this sprint, we will design a UML class diagram. Additionally, we will improve the variable names and add consistant docstrings to the entire codebase to make it more maintainable for the future. And lastly, we will fix small bugs to make the app the best it can be.
 ## UML class diagram
+
 ## Final evaluation
 Since nothing changed, this is redundant.
 # Sprint 4
