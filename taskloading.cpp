@@ -13,7 +13,7 @@ std::array<std::vector<TaskWidget*>, 4> readFrom(QTextStream& in, Window* wind) 
 
     std::array<std::vector<TaskWidget*>, 4> out;
 
-    auto tryAddTask = [sect, &tskName, &todos, wind, &out]() {
+    auto tryAddTask = [&sect, &tskName, &todos, wind, &out]() {
         if (tskName == "") { return; }
         out[sect].push_back(MakeTaskWidget(tskName, wind, todos));
         tskName = "";
