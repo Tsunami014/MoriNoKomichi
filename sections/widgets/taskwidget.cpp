@@ -13,8 +13,6 @@
 #include <QGraphicsLayout>
 #include <QGraphicsProxyWidget>
 
-// See .h file for more docstrings
-
 MyLabel::MyLabel(const QString& text, bool en, QWidget* parent)
     : QLineEdit(text, parent)
 {
@@ -30,7 +28,6 @@ MyLabel::MyLabel(const QString& text, bool en, QWidget* parent)
         setCursor(Qt::IBeamCursor);
     }
 }
-// When finished editing, become read-only again
 void MyLabel::focusOutEvent(QFocusEvent *event) {
     if (!isReadOnly()) {
         this->unsetCursor();
@@ -109,45 +106,45 @@ QString TodoGraphicObject::getname() {
 void TodoGraphicObject::setName(QString newName) {
     label->setText(newName);
 }
+bool TodoGraphicObject::getChecked() {
+    return checkbox->isChecked();
+}
+void TodoGraphicObject::setChecked(bool checked) {
+    checkbox->setChecked(checked);
+}
 
-/*!
-    \brief The title for taskwidgets
-*/
-class myText : public QGraphicsTextItem {
-public:
-    myText(const QString &text, TaskWidget* parent) : QGraphicsTextItem(text, parent) {
-        widparent = parent;
-    };
-protected:
-    bool event(QEvent *ev) override {
-        // If you pressed a key, update the sizing and positioning of all the elements
-        bool ret = QGraphicsTextItem::event(ev);
-        if (ev->type() == QEvent::KeyPress) {
-            QTimer::singleShot(0, this, [this](){
-                widparent->updateChildren(true, true);
-            });
-        }
-        return ret;
-    }
-private:
-    TaskWidget* widparent;
+
+MyText::MyText(const QString &text, TaskWidget* parent) : QGraphicsTextItem(text, parent) {
+    widparent = parent;
 };
+bool MyText::event(QEvent *ev) {
+    // Check if it's the right type of event
+    bool ret = QGraphicsTextItem::event(ev);
+    if (ev->type() == QEvent::KeyPress) {
+        // Update next frame
+        QTimer::singleShot(0, this, [this](){
+            widparent->updateChildren(true, true);
+        });
+    }
+    return ret;
+}
 
 
 TaskWidget::TaskWidget(QString nme, Window* window, std::vector<QString> inptodos, QGraphicsItem* parent, bool editable)
     : QGraphicsObject(parent)
 {
+    // Set some flags
     setAcceptHoverEvents(true);
     setAcceptedMouseButtons(Qt::LeftButton);
+    // Set some of the things from the params
     name = nme;
     wind = window;
 
     // Add a title
-    myText *it = new myText(nme, this);
+    title = new MyText(nme, this);
     // Try a bunch of good fonts for the title
-    it->setFont(getAFont({"Kalam", "Comic Neue", "Segoe Print", "Amatic SC", "DejaVu Sans Mono"}, 18));
-    it->show();
-    extras.push_back(it);
+    title->setFont(getAFont({"Kalam", "Comic Neue", "Segoe Print", "Amatic SC", "DejaVu Sans Mono"}, 18));
+    title->show();
 
     // Start us off with the specified todos
     for (auto str : inptodos) {
@@ -161,13 +158,13 @@ TaskWidget* MakeTaskWidget(QString nme, Window* window, std::vector<QString> tod
     return tw;
 }
 
-bigTaskWidget* TaskWidget::toBigWidget() {
+BigTaskWidget* TaskWidget::toBigWidget() {
     // Create the new widget, ensuring all the appropriate construction functions are called
-    bigTaskWidget* newWid = new bigTaskWidget(name, wind, {}, nullptr);
+    BigTaskWidget* newWid = new BigTaskWidget(name, wind, {}, nullptr);
     // Copy all the todos over
     for (auto t : todos) {
         newWid->todos.push_back(new TodoGraphicObject(t->getname(), true, newWid));
-        newWid->todos.back()->checkbox->setChecked(t->checkbox->isChecked());
+        newWid->todos.back()->setChecked(t->getChecked());
     }
     // Run the rest of the setup
     newWid->parent = this;
@@ -179,6 +176,7 @@ bigTaskWidget* TaskWidget::toBigWidget() {
 
 QRectF TaskWidget::boundingRect() const {
     unsigned int hei = lastHei;
+    // Ensure there's a minimum height to not get everything to turn to mush
     unsigned int minHei = 170;
     if (hei <= minHei) {
         hei = minHei + 1;
@@ -194,9 +192,7 @@ void TaskWidget::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
     if (!isHover) {
         // Set all transforms on children here
         QTransform transform = getExpansionTransform();
-        for (auto ex : extras) {
-            ex->setTransform(transform, true);
-        }
+        title->setTransform(transform, true);
         for (auto t : todos) {
             t->setTransform(transform, true);
         }
@@ -211,9 +207,7 @@ void TaskWidget::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
     if (isHover) {
         // Unset all transforms on children here by transforming them the opposite of what they were
         QTransform transform = getExpansionTransform().inverted();
-        for (auto ex : extras) {
-            ex->setTransform(transform, true);
-        }
+        title->setTransform(transform, true);
         for (auto t : todos) {
             t->setTransform(transform, true);
         }
@@ -239,9 +233,9 @@ struct TODOstate {
 void TaskWidget::updateChildren(bool prepare, bool updateAll) {
     if (prepare) { prepareGeometryChange(); }
 
-    if (parent != nullptr) { // This would be any bigTaskWidgets
+    if (parent != nullptr) { // This would be any BigTaskWidgets
         // Update parent's children so text gets updated!
-        QString txt = static_cast<myText*>(extras[0])->toPlainText();
+        QString txt = title->toPlainText();
         if (txt == "") {
             // Delete parent from sections
             for (auto& s : wind->sections) {
@@ -259,7 +253,7 @@ void TaskWidget::updateChildren(bool prepare, bool updateAll) {
             delete this;
             return;
         }
-        static_cast<myText*>(parent->extras[0])->setPlainText(txt);
+        title->setPlainText(txt);
         parent->name = txt;
 
         // Create a list of what the todos should be
@@ -267,7 +261,7 @@ void TaskWidget::updateChildren(bool prepare, bool updateAll) {
         for (unsigned int idx = 0; idx < todos.size(); idx++) {
             QString nme = todos[idx]->getname();
             if (nme != "") {
-                outtodos.push_back({nme, todos[idx]->checkbox->isChecked()});
+                outtodos.push_back({nme, todos[idx]->getChecked()});
             }
         }
         // Update existing todos or add new ones if not enough to match the outtodos list
@@ -279,14 +273,14 @@ void TaskWidget::updateChildren(bool prepare, bool updateAll) {
             } else {
                 todos.push_back(new TodoGraphicObject(outT.nme, false, parent));
             }
-            todos[idx]->checkbox->setChecked(outT.checked);
+            todos[idx]->setChecked(outT.checked);
 
             if (parent->todos.size() > idx) {
                 parent->todos[idx]->setName(outT.nme);
             } else {
                 parent->todos.push_back(new TodoGraphicObject(outT.nme, false, parent));
             }
-            parent->todos[idx]->checkbox->setChecked(outT.checked);
+            parent->todos[idx]->setChecked(outT.checked);
         }
         // Remove extra todos
         while (todos.size() > todoslen) {
@@ -305,21 +299,19 @@ void TaskWidget::updateChildren(bool prepare, bool updateAll) {
     }
 
     // Position the heading text in the correct spot and with the correct width
-    auto *txt = static_cast<myText*>(extras[0]);
-
-    txt->setTextWidth(-1);
+    title->setTextWidth(-1);
     qreal max = static_cast<qreal>(width - (padding)*2 - 90);
-    qreal min = qMin(max, txt->boundingRect().width());
+    qreal min = qMin(max, title->boundingRect().width());
     if (min < max) { // If text is smaller than width - padding*2, let it auto-resize - else, stick to the max defined
-        txt->setTextWidth(-1);
+        title->setTextWidth(-1);
     } else {
-        txt->setTextWidth(max);
+        title->setTextWidth(max);
     }
 
     // Just add the rest of the todos one at a time underneath
-    QRectF bbx = txt->boundingRect();
+    QRectF bbx = title->boundingRect();
     unsigned int y = padding*2;
-    txt->setPos(QPoint((width-bbx.width())/2 + 10, y));
+    title->setPos(QPoint((width-bbx.width())/2 + 10, y));
 
     y += bbx.height() + padding;
     for (auto t : todos) {
@@ -337,12 +329,13 @@ void TaskWidget::updateChildren(bool prepare, bool updateAll) {
 }
 
 QTransform TaskWidget::getExpansionTransform() {
+    // Make some variables
     QTransform transform;
     int hoverAmnt = 5;
     QRectF BBx = boundingRect();
     QPointF center = BBx.center();
 
-    // Transform so the centre is in the middle, scale out and transform back. So it should be scaling where the centre of scaling is the centre.
+    // Transform so the centre is in the middle, scale out and transform back. So the centre of scaling should be the centre of the graphic.
     transform.translate(center.x(), center.y());
     transform.scale(static_cast<qreal>(hoverAmnt*2) / BBx.width() + 1, static_cast<qreal>(hoverAmnt*2) / BBx.height() + 1);
     transform.translate(-center.x(), -center.y());
@@ -351,13 +344,18 @@ QTransform TaskWidget::getExpansionTransform() {
 }
 
 void TaskWidget::updatePath() {
-    // Set the new path to the old path but with the position differing by a good ratio
     QSizeF nsze = boundingRect().size();
+    // The x difference; a ratio
     float diffX = nsze.width() / pureSze.width();
+    // The y difference; find which end it's closest to and keep it the same distance away
+    // This ensures the top and bottom won't become stretched (e.g. if the top was at y=3, then the window was stretched heaps, it would be at y=34, and if the text starts at y=5 it would be bad)
     float origHei = pureSze.height();
     float newHei = nsze.height();
+
+    // Loop over all the points
     for (int idx = 0; idx < path.elementCount(); idx++) {
         QPointF point = purePath.elementAt(idx);
+        // Find the correct y
         float fromTop = origHei - point.y();
         int y;
         if (abs(point.y()) < abs(fromTop)) {
@@ -365,6 +363,7 @@ void TaskWidget::updatePath() {
         } else {
             y = newHei - fromTop;
         }
+        // Set the point on the path
         path.setElementPositionAt(idx, point.x()*diffX, y);
     }
 }
@@ -373,7 +372,7 @@ void TaskWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    painter->setRenderHint(QPainter::Antialiasing);
+    painter->setRenderHint(QPainter::Antialiasing); // Make it smooth
 
     // Apply a scaling to everything beyond this point if hovering
     QTransform prevTrans = painter->transform();
@@ -393,6 +392,7 @@ void TaskWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 }
 
 void TaskWidget::makePath() {
+    // Make some commonly used variables
     QRandomGenerator gen = getGen(name);
     int height = boundingRect().height() - (padding * 2);
 
@@ -402,11 +402,12 @@ void TaskWidget::makePath() {
     int8_t cornerOffRnd = 30;
 
     // First, start with taking each corner and randomly applying a 'tear' to it
+
+    // Corners specified like this to make the code into a loop instead of repetition
     struct Corner {
         bool x;
         bool y;
     };
-
     Corner ps1[4] = {
         Corner{false, false},
         Corner{true, false},
@@ -416,7 +417,7 @@ void TaskWidget::makePath() {
 
     std::vector<QPoint> ps;
     for (int8_t idx = 0; idx < 4; idx++) {
-        // Get position of the corner
+        // Get position of the corner based off of setup above
         int x;
         if (ps1[idx].x) {
             x = width-distortPad;
@@ -492,6 +493,7 @@ void TaskWidget::makePath() {
         }
         max -= cornerOffRnd*2;
         int minSpacing = max/10;
+
         // Continuously increase by a large amount, and while still within the bounds add a tear or bend
         while (true) {
             pos += gen.generate()%max;

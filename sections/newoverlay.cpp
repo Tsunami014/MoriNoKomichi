@@ -11,8 +11,16 @@
 #include <QLineEdit>
 #include <QPushButton>
 
-QLineEdit *le = nullptr; // To reference it in the buttons
+/*!
+    \brief The line edit for adding a new task
 
+    It's made static for the file so it can be referenced in the button click script
+*/
+static QLineEdit *le = nullptr;
+
+/*!
+    \brief The button onclick func - add the task to the right section (idx), update everything and go back
+*/
 void btnClick(uint8_t idx, Window* wind) {
     TaskWidget* newtw = MakeTaskWidget(le->text(), wind, {});
     addItem(newtw, idx, wind);
@@ -26,7 +34,7 @@ void newOverlay(Window* wind) {
     overlay->show();
 
     // Make the back button
-    svgBtnWidget *btn = new svgBtnWidget(":/assets/backBtn.svg", wind);
+    SvgBtnWidget *btn = new SvgBtnWidget(":/assets/backBtn.svg", wind);
     wind->connect(btn, &QPushButton::released, wind, [wind](){backFun(wind);});
     btn->show();
 

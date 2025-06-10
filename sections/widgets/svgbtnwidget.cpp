@@ -2,9 +2,7 @@
 
 #include <QPainter>
 
-// See .h file for docstrings
-
-svgBtnWidget::svgBtnWidget(QString path, QWidget *parent, int expandAmount)
+SvgBtnWidget::SvgBtnWidget(QString path, QWidget *parent, int expandAmount)
     : QPushButton(parent)
 {
     expandAmnt = expandAmount;
@@ -13,19 +11,22 @@ svgBtnWidget::svgBtnWidget(QString path, QWidget *parent, int expandAmount)
     setCursor(QCursor(Qt::PointingHandCursor));
 }
 
-bool svgBtnWidget::hitButton(const QPoint &pos) const {
+bool SvgBtnWidget::hitButton(const QPoint &pos) const {
+    // Make a new QImage
     QImage img(size(), QImage::Format_ARGB32_Premultiplied);
     img.fill(Qt::transparent);
 
+    // Paint the svg onto the image
     QPainter p(&img);
     svg->render(&p, rect());
     p.end();
 
+    // Find the colour at the pixel of the mouse
     QColor color = img.pixelColor(pos);
-    return color.alpha() != 0;
+    return color.alpha() != 0; // Find if it's transparent
 }
 
-void svgBtnWidget::mouseMoveEvent(QMouseEvent *event) {
+void SvgBtnWidget::mouseMoveEvent(QMouseEvent *event) {
     // Only show that you're touching it when your mouse is over the *svg*, not just the button itself
     if (hitButton(event->pos())) {
         setCursor(Qt::PointingHandCursor);
@@ -36,13 +37,13 @@ void svgBtnWidget::mouseMoveEvent(QMouseEvent *event) {
     }
     QPushButton::mouseMoveEvent(event);
 }
-void svgBtnWidget::leaveEvent(QEvent *event) {
+void SvgBtnWidget::leaveEvent(QEvent *event) {
     unsetCursor();
     touching = false;
     QPushButton::leaveEvent(event);
 }
 
-void svgBtnWidget::paintEvent(QPaintEvent *event) {
+void SvgBtnWidget::paintEvent(QPaintEvent *event) {
     QPainter painter;
     painter.begin(this);
     painter.setRenderHint(QPainter::Antialiasing);

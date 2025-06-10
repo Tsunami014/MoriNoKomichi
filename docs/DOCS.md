@@ -31,11 +31,11 @@ Main Flow:
 2. User adds a new task, system updates storage and displays tasks including new task
 3. User clicks on task, system shows large view of task
 4. User edits task name, system updates storage and updates storage and displays updated name
-5. User adds sub-tasks, system updates storage and displays updated task with new subtask
+5. User adds subtasks, system updates storage and displays updated task with new subtask
 6. User edits sub-task name, system updates storage and displays updated task with new subtask name
 7. User deletes sub-task, system updates storage and displays updated task with deleted sub-task
 8. User deletes task, system updates storage and displays tasks without deleted task
-Postconditions: Updated tasks and sub-tasks have been stored
+Postconditions: Updated tasks and subtasks have been stored
 ```
 ### Diagram
 ![UseCaseD.excalidraw](image-3.png)
@@ -87,7 +87,7 @@ This all proves that more than half of the requirements and specifications have 
 
 In relation to the use case, currently the user cannot create or remove tasks or subtasks, but can edit existing ones. Even so, the changes are not stored. This means that not much of the use case is currently completed. This is to be expected though, as the focus of sprint 1 is to create the UI, not the functionality.
 
-The program handles io as planned; allowing for editing task names and todo labels, and for checking and unchecking todos. The only area of improvement in this is handling the todo list items; how currently, you have to press and hold space to input a space (because of a feature in QT that is not desirable in my use case); this was fixed in one scenario, but not for the list items. Apart from that, everything works as expected.
+The program handles io as planned; allowing for editing task names and subtask labels, and for checking and unchecking subtasks. The only area of improvement in this is handling the subtask items; how currently, you have to press and hold space to input a space (because of a feature in QT that is not desirable in my use case); this was fixed in one scenario, but not for the list items. Apart from that, everything works as expected.
 
 My code is mostly readable, with comments and docstrings explaining hard to understand concepts in the code. It uses classes to store different widgets and elements in different classes to further improve the structure, and additionally most files have only one class in them. The files that do not either have one-off slightly modified base QT classes to modify its behaviour (these classes are always small, so do not impact the file's readability) or contain no classes and just helper functions that are used in other areas of the code (reused code creating better maintainability. Additionally, similar functions are grouped together; so you can view all important functions for a specific task, e.g. drawing, in the same file). The naming conventions used are mostly CamelCase, and usually containing small descriptions that are mostly self-explanatory. This isn't the best naming convention (especially when you consider that there are a few scenarios where I wrote using a different naming convention by mistake), but it's mostly readable by others through simple usage analysis if not documented already.
 
@@ -132,7 +132,7 @@ END SetupView(tasks)
 The program currently meets all requirements set out to at least some degree. The system allows users to view, edit and delete tasks and subtasks stored in an external file as required by functional specification and requirement 1, and additionally the entire app is usable with a keyboard and mouse; satisfying functional requirement and specification 2. Unfortunately, there is still no error handling for uncaught errors; but the app was built with robustness in mind, so crashes should not be something that occurs with regular usage. Additionally, common points of error have been ironed out; for example, with file handling; if the file does not exist or an error occurred opening the file, it will not crash; and there is also no internet-dependant parts of the app. This all partially satisfies functional specification 3 and non-functional requirement 2.
 With regards to the non-functional requirements, the system also exceeds in most. The program starts up and loads items with an almost invisible delay; satisfying requirement and specification 1. Additionally, the system has *some* clear labels for placeholder text in the text boxes to partially satisfy non-functional requirement and specification 3, but could be improved with more labelling. Although, when users first start up the app it will be filled with a sample onboarding tasks list to teach the users how to use the app; which helps, but not as much as clear labels. And lastly; as stated in sprint 1's final evaluation, the UI follows a hierachial order through its use of overlays rather than separate pages - satisfying non-functional specification 2.
 
-The program now completes the use case perfectly; every functional element defined in the use case can be executed in the system. Additionally, it handles input and output mostly well. The only issue currently is a slight bug with QT handling space differently for the todos, as stated in sprint 1's final evaluation. Apart from that, all inputting and navigating works as expected.
+The program now completes the use case perfectly; every functional element defined in the use case can be executed in the system. Additionally, it handles input and output mostly well. The only issue currently is a slight bug with QT handling space differently for the subtasks, as stated in sprint 1's final evaluation. Apart from that, all inputting and navigating works as expected.
 
 The program's readability, structure and maintainability has not improved since the last sprint, but nor has it gotten worse. The docstring usage and naming conventions could be improved as they are currently not standardised.
 

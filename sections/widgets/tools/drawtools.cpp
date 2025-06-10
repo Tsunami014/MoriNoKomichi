@@ -1,7 +1,7 @@
 #include "drawtools.h"
 
 QRandomGenerator getGen(QString seed) {
-    std::hash<QString> h;
+    std::hash<QString> h; // Hash the string to get a unique value for that string seed
     return QRandomGenerator(static_cast<uint32_t>(h(seed)));
 }
 
@@ -19,6 +19,7 @@ float randDec(QRandomGenerator gen) {
 void continuePath(QPainterPath* pth, std::vector<QPoint> ps, QRandomGenerator gen, int mayhem) {
     QPointF curPos = pth->currentPosition();
 
+    // Run through each point, creating a line that's slightly wonky
     for (QPoint& p : ps) {
         switch (gen.generate()%4) {
         case 0: // Line

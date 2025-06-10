@@ -6,13 +6,23 @@
 #include <QDir>
 #include <QDebug>
 
+/*! \brief Get the save file location. This is located in the app data, OS specific */
+QString getPath() {
+    QString path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    QDir().mkpath(path);
+    QString fullpth = path + "/savedata";
+    return fullpth;
+}
+
+/*! \brief Read from a text stream of a file, decoding the info contained within */
 std::array<std::vector<TaskWidget*>, 4> readFrom(QTextStream& in, Window* wind) {
-    uint8_t sect = 0; // So if something bad happens it won't crash
+    // Initialisation
+    uint8_t sect = 0;
     QString tskName = "";
     std::vector<QString> todos;
-
     std::array<std::vector<TaskWidget*>, 4> out;
 
+    // Lambda to add tasks; if a task was specified, add it and clear task cache
     auto tryAddTask = [&sect, &tskName, &todos, wind, &out]() {
         if (tskName == "") { return; }
         out[sect].push_back(MakeTaskWidget(tskName, wind, todos));
@@ -20,39 +30,44 @@ std::array<std::vector<TaskWidget*>, 4> readFrom(QTextStream& in, Window* wind) 
         todos.clear();
     };
 
+    // Read lines one at a time until out of lines
     QString line = in.readLine();
     while (!line.isNull()) {
-        QChar typ = line[0];
-        QString rest = line.mid(1).replace("\x01", "\n").replace("\\x01", "\x01");
+        QChar typ = line[0]; // First character in line determines it's purpose
+        QString rest = line.mid(1).replace("\x01", "\n").replace("\\x01", "\x01"); // Decode line (fix newlines)
 
         switch (typ.unicode()) {
-            case 't':
+            case 't': // Task
                 tryAddTask();
                 tskName = rest;
                 break;
-            case 's':
+            case 's': // Sub-task
                 todos.push_back(rest);
                 break;
-            default:
+            default: // A section number
                 tryAddTask();
                 sect = typ.digitValue();
+                if (sect > 3) { // Just in case
+                    qDebug() << "Specified section " << sect << " is too big! Expected 0-3! Adding to section 0 instead.";
+                    sect = 0;
+                }
                 break;
         }
 
         line = in.readLine();
     }
 
+    tryAddTask(); // For that last task
+
     return out;
 }
 
 std::array<std::vector<TaskWidget*>, 4> getSections(Window* wind) {
-    QString path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-    QDir().mkpath(path);
-    QString fullpth = path + "/savedata";
+    QString fullpth = getPath();
     QFile file(fullpth);
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        // If the user is new, give them some example tasks to get used to the program first
+        // If the user is new (no file exists), give them some example tasks to get used to the program first
         std::array<std::vector<TaskWidget*>, 4> sections = {
             std::vector{ // This is needed for no aparent reason
                 MakeTaskWidget("Get used to the main view", wind, {"Scroll or shift-scroll", "Space+mouse click and drag to pan", "Middle click and drag to pan", "Ctrl+scroll to zoom"}),
@@ -78,14 +93,17 @@ std::array<std::vector<TaskWidget*>, 4> getSections(Window* wind) {
         return sections;
     }
 
+    // Else read from the file as normal
     QTextStream in(&file);
     return readFrom(in, wind);
 }
 
-QString fixStr(QString str) { //< Ensure no task name can conflict with the file data
+/*! \brief Ensure no task name can conflict with the file data */
+QString fixStr(QString str) {
     return str.replace("\x01", "\\x01").replace("\n", "\x01");
 }
 
+/*! \brief Write task data to a file stream */
 void writeTo(QTextStream& out, std::array<std::vector<TaskWidget*>, 4> sects) {
     // Loop through each section and put it on the file
     for (uint8_t idx = 0; idx < 4; idx++) {
@@ -94,23 +112,22 @@ void writeTo(QTextStream& out, std::array<std::vector<TaskWidget*>, 4> sects) {
         for (auto task : sects[idx]) {
             out << "t" << fixStr(task->name) << "\n";
             // Loop through each tub-task in the task and put it on the file
-            for (auto sub_t : task->todos) {
-                out << "s" << fixStr(sub_t->getname()) << "\n";
+            for (auto subT : task->todos) {
+                out << "s" << fixStr(subT->getname()) << "\n";
             }
         }
     }
 }
 
 void saveSections(Window* wind) {
-    QString path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-    QDir().mkpath(path);
-    QString fullpth = path + "/savedata";
+    QString fullpth = getPath();
     QFile file(fullpth);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) { // This should never fail (as it's writing to a new file if not exists), but we need to check every possibility
         qDebug() << "Failed writing to file at " << fullpth << "!";
         return;
     }
 
+    // Write to file
     QTextStream out(&file);
     writeTo(out, wind->sections);
     qDebug() << "Wrote to file at " << fullpth << "!";

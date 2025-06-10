@@ -1,5 +1,5 @@
 #include "widgets/taskwidget.h"
-#include "widgets/bigtaskwidget.h" // It is used plz no one remove this line
+#include "widgets/bigtaskwidget.h"
 #include "widgets/svgbtnwidget.h"
 #include "widgets/graphicsviewcanvas.h"
 #include "sections.h"
@@ -12,14 +12,16 @@
 #include <QTextCursor>
 #include <QLineEdit>
 
-// We create our own graphics view for multiple reasons:
-// 1. To have a transparent background; where on click, it goes back to the previous screen
-// 2. Because the space key has issues
-// 3. So resizing the window affects the big task widget display
-// 4. To remove horizontal scrolling and zoom
+/*
+We create our own graphics view for multiple reasons:
+    1. To have a transparent background; where on click, it goes back to the previous screen
+    2. Because the space key has issues
+    3. So resizing the window affects the big task widget display
+    4. To remove horizontal scrolling and zoom
+*/
 class NewGraphicsView : public GraphicsViewCanvas {
 public:
-    NewGraphicsView(QGraphicsScene* scene, bigTaskWidget* wid, Window* window)
+    NewGraphicsView(QGraphicsScene* scene, BigTaskWidget* wid, Window* window)
     : GraphicsViewCanvas(scene, window) {
         wind = window;
         bigW = wid;
@@ -28,7 +30,9 @@ public:
     }
 
 protected:
-    void mousePressEvent(QMouseEvent* event) override { // If click on bg, run the click func (goes back to prev page)
+    /*! \brief If click on bg, run the click func (goes back to prev page) */
+    void mousePressEvent(QMouseEvent* event) override {
+        // Ensure that if you click on not the bg it doesn't go back and handles the click appropriately
         QPointF scenePos = mapToScene(event->pos());
         QGraphicsItem* item = scene()->itemAt(scenePos, transform());
 
@@ -42,6 +46,8 @@ protected:
     bool event(QEvent *ev) override {
         // As the space key for some reason does not like being passed to the text items,
         // We have to manually insert the space ourselves.
+
+        // Ensure the event is the specific type we want to catch, for the specific type of parent
         if (ev->type() == QEvent::KeyPress) {
             auto *keyEv = static_cast<QKeyEvent*>(ev);
             if (keyEv->key() == Qt::Key_Space) {
@@ -57,21 +63,27 @@ protected:
         return QGraphicsView::event(ev);
 
     }
-    void offsetPos(int x, int y) override { // Remove x scrolling
+    /*! \brief Remove x scrolling */
+    void offsetPos(int x, int y) override {
         GraphicsViewCanvas::offsetPos(0, y);
     }
-    void resizeEvent(QResizeEvent *event) override { // Update bg sizing on resize
+    /*! \brief Update bg sizing on resize */
+    void resizeEvent(QResizeEvent *event) override {
         bigW->updateWidth(event->size().width());
         GraphicsViewCanvas::resizeEvent(event);
         scene()->setSceneRect(scene()->itemsBoundingRect());
     }
-    void zoom(int delta) {} // Remove zoom
+    /*! \brief Remove zoom */
+    void zoom(int delta) {}
 private:
+    /*! \brief The parent Window */
     Window* wind;
-    bigTaskWidget* bigW = nullptr;
+    /*! \brief The big task widget to feed the spaces into */
+    BigTaskWidget* bigW = nullptr;
 };
 
-void addNewSubtask(Window* wind, bigTaskWidget* bigW, QString txt) {
+/*! \brief A function to add new subtasks, used by the buttons */
+void addNewSubtask(Window* wind, BigTaskWidget* bigW, QString txt) {
     bigW->todos.push_back(new TodoGraphicObject(txt, true, bigW));
     bigW->updateChildren(true, true);
 }
@@ -81,21 +93,22 @@ void taskOverlay(Window* wind, TaskWidget* task) {
     OverlayWid *overlay = new OverlayWid(wind);
     overlay->show();
 
-    // Make the graphics scene with the big task widget
+    // Make the graphics scene with a generated big task widget
     QGraphicsScene* scene = new QGraphicsScene();
-    bigTaskWidget* bigW = task->toBigWidget();
+    BigTaskWidget* bigW = task->toBigWidget();
     scene->addItem(bigW);
     NewGraphicsView *view = new NewGraphicsView(scene, bigW, wind);
     view->show();
 
     // Make the back btn
-    svgBtnWidget *btn = new svgBtnWidget(":/assets/backBtn.svg", wind);
+    SvgBtnWidget *btn = new SvgBtnWidget(":/assets/backBtn.svg", wind);
     wind->connect(btn, &QPushButton::released, wind, [wind](){backFun(wind);});
     btn->show();
 
     // Make the add sub-task input box
     QLineEdit* newSubtask = new QLineEdit(wind);
     newSubtask->setPlaceholderText("New subtask");
+    // Run the new subtask func on enter pressed
     QObject::connect(newSubtask, &QLineEdit::returnPressed, [wind, bigW, newSubtask](){
         addNewSubtask(wind, bigW, newSubtask->text());
         newSubtask->setText("");

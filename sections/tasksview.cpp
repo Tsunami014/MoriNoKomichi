@@ -13,9 +13,7 @@
 #include <QtMath>
 #include <array>
 
-/*!
-    \brief A QGraphicsItemGroup but with a fixed bounding box
-*/
+/*! \brief A QGraphicsItemGroup but with a bounding box that actually works! */
 class BetterGroup : public QGraphicsItemGroup {
 public:
     BetterGroup(QGraphicsItem *parent = nullptr) : QGraphicsItemGroup(parent) {}
@@ -27,12 +25,13 @@ public:
     }
 };
 
+// Some static vars for this file
+/*! \brief The graphical groups that the task widgets go in */
 static BetterGroup* groups[4];
+/*! \brief The graphics scene the groups go in */
 static QGraphicsScene* scene = nullptr;
 
-/*!
-    \brief Update the positioning of all the tasks and groups
-*/
+/*! \brief Update the positioning of all the tasks and groups */
 void updatePoss(std::array<std::vector<TaskWidget*>, 4> sections, BetterGroup* groups[4]) {
     const int sectPadding = 50;
     qreal sectWid = 0;
@@ -144,7 +143,7 @@ void taskView(Window* wind) {
     wind->wids.push_back(Widget{view, QPoint(0, 0), QSize(100, 100)});
 
 
-    svgBtnWidget *btn = new svgBtnWidget(":/assets/newBtn.svg", wind);
+    SvgBtnWidget *btn = new SvgBtnWidget(":/assets/newBtn.svg", wind);
     wind->connect(btn, &QPushButton::released, wind, [wind](){newOverlay(wind);});
     btn->show();
     wind->wids.push_back(Widget{btn, QPoint(91, 91), QSize(8, 8), HEIGHT});

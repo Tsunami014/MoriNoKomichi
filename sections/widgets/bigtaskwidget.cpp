@@ -5,26 +5,27 @@
 
 #include <QGraphicsTextItem>
 
-bigTaskWidget::bigTaskWidget(QString nme, Window* window, std::vector<QString> inptodos, QGraphicsItem *parent)
+BigTaskWidget::BigTaskWidget(QString nme, Window* window, std::vector<QString> inptodos, QGraphicsItem *parent)
     :TaskWidget(nme, window, inptodos, parent, true)
 {
+    // Set some flags
     setAcceptHoverEvents(false);
     setAcceptedMouseButtons(Qt::NoButton);
+    title->setTextInteractionFlags(Qt::TextEditorInteraction);
 
-    auto *it = static_cast<QGraphicsTextItem*>(extras[0]);
-    it->setTextInteractionFlags(Qt::TextEditorInteraction);
-    QFont newFont = it->font();
+    // Copy the font (no other way ): ) and change the font size (then set the font)
+    QFont newFont = title->font();
     newFont.setPointSize(24);
-    it->setFont(newFont);
+    title->setFont(newFont);
 }
 
-void bigTaskWidget::updateWidth(int newWid) {
+void BigTaskWidget::updateWidth(int newWid) {
     prepareGeometryChange();
-    width = newWid - (padding * 2);
+    width = newWid - (padding * 2); // Set the new width!
 
     updatePath();
 
-    updateChildren(false);
+    updateChildren(false); // No need to prepare geometry change again
 
     update();
 }

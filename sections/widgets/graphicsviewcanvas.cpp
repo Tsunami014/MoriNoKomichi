@@ -1,7 +1,9 @@
 #include "graphicsviewcanvas.h"
-#include "qapplication.h"
+
+#include <QApplication>
 #include <QScrollBar>
-#include <QtCore/qmath.h>
+#include <qmath.h>
+
 GraphicsViewCanvas::GraphicsViewCanvas(QGraphicsScene *scene, QWidget *parent)
     : QGraphicsView(scene, parent) {
     setMouseTracking(true);
@@ -10,30 +12,33 @@ GraphicsViewCanvas::GraphicsViewCanvas(QGraphicsScene *scene, QWidget *parent)
     connect(pollTimer, &QTimer::timeout, this, &GraphicsViewCanvas::mousePoll);
 }
 
-void GraphicsViewCanvas::offsetPos(int x, int y) { // Use this instead of regular methods so subclasses can override it
+void GraphicsViewCanvas::offsetPos(int x, int y) { // Uses this instead of regular methods so subclasses can override it
     horizontalScrollBar()->setValue(horizontalScrollBar()->value() + x);
     verticalScrollBar()->setValue(verticalScrollBar()->value() + y);
 }
 
-void GraphicsViewCanvas::gotoTopLeft() { // Override values to set to top left
+void GraphicsViewCanvas::gotoTopLeft() {
     horizontalScrollBar()->setValue(0);
     verticalScrollBar()->setValue(0);
 }
 
-// Constantly poll the mouse for mouse buttons pressed and mouse positioning. Only runs when needed.
 void GraphicsViewCanvas::startMousePoll() {
+    // If it's the first requirement (the poll wasn't running before), start the poll
     if (pollRequires++ == 0) {
         lastMousePos = mapFromGlobal(QCursor::pos());
         pollTimer->start(16); // ~60 FPS
     }
 }
 void GraphicsViewCanvas::endMousePoll() {
+    // If it's the last requirement, stop the poll
     if (--pollRequires == 0) {
         pollTimer->stop();
         unsetCursor();
     }
 }
 void GraphicsViewCanvas::mousePoll() {
+    // Even though the poll is running, that doesn't mean the canvas should move with the mouse (e.g. with just pressing space)
+    // So it has to re-check the buttons pressed
     QPoint mousePos = mapFromGlobal(QCursor::pos());
     Qt::MouseButtons btns = QApplication::mouseButtons();
     if (btns & Qt::LeftButton || btns & Qt::MiddleButton) {

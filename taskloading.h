@@ -7,7 +7,15 @@
 #include "sections/widgets/taskwidget.h"
 #include "window.h"
 
+/*!
+    \brief Get the sections and tasks
+
+    This function reads from a file if exists; and if not, returns some default onboarding tasks.
+*/
 std::array<std::vector<TaskWidget*>, 4> getSections(Window* wind);
+/*!
+    \brief Save the tasks to a file
+*/
 void saveSections(Window* wind);
 
 #endif // TASKLOADING_H
