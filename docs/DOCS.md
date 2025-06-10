@@ -140,8 +140,13 @@ Next sprint, I will improve docstrings and variable naming conventions to help r
 # Sprint 3
 In this sprint, we will design a UML class diagram. Additionally, we will improve the variable names and add consistant docstrings to the entire codebase to make it more maintainable for the future. And lastly, we will fix small bugs to make the app the best it can be.
 ## UML class diagram
-
+![UMLClassD.excalidraw](image-6.png)
 ## Final evaluation
-Since nothing changed, this is redundant.
+Since most of the code wasn't changed, this is mostly redundant. The only things that aren't are about code structure.
+
+After this sprint's clean-up, the codebase is much neater and consistant; with good comment and docstring usage consistantly present in every file. Additionally, all variables and functions now follow a consistant naming convention using CamelCase, and some large files have been broken into smaller files for simplicity.
+So all in all, currently the codebase is very easily readable and maintainable due to the well-documented functions and many comments throughout the files.
+
+In the next stage of development, the last bugs will be fixed and features enhanced; completing all the requirements and specifications, whilst keeping the readability of the codebase.
 # Sprint 4
 In this sprint, we will add final touches and polish off the program, ensuring it's exactly as required.
