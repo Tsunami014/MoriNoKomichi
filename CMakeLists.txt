@@ -52,6 +52,7 @@ else()
         ${PROJECT_WIDGETS}
         ${PROJECT_RESOURCES}
         ${PROJECT_TOOLS}
+        sections/widgets/todographicobject.h sections/widgets/todographicobject.cpp
     )
 endif()
 
