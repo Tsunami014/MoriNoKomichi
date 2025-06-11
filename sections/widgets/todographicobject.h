@@ -45,6 +45,9 @@ public:
     /*! \brief Set the width of this todo properly */
     void setWidth(unsigned int width);
 
+    /*! \brief Add text to the label at the cursor */
+    void addText(QString txt);
+
 public slots:
     /*!
         \brief Get the parent to update children
@@ -61,9 +64,9 @@ private:
     bool editable;
     TaskWidget* parent;
 
-    // The internal QWidgets making up this object
-    TodoLabel* label;
+    // The internal checkbox making up this object
     QCheckBox* checkbox;
+    TodoLabel* label;
 };
 
 #endif // TODOGRAPHICOBJECT_H

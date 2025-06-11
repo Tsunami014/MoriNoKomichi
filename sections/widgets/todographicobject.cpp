@@ -81,11 +81,20 @@ void TodoGraphicObject::setWidth(unsigned int width) {
 
 void TodoGraphicObject::updateParentlab(QString str) {
     Q_UNUSED(str);
+    // Ensure cursor stays in the same spot
+    int cpos = label->cursorPosition();
     parent->updateChildren(true, true);
+    label->setCursorPosition(cpos);
 }
 void TodoGraphicObject::updateParentchk(int state) {
     Q_UNUSED(state);
     parent->updateChildren();
+}
+
+void TodoGraphicObject::addText(QString txt) {
+    int pos = label->cursorPosition();
+    label->insert(txt);
+    label->setCursorPosition(pos + txt.length());
 }
 
 QString TodoGraphicObject::getname() {

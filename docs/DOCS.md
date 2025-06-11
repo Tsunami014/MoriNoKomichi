@@ -163,8 +163,8 @@ To fix it, the entire positioning system would need to be updated; but only the 
 Currently, the sections are not very distinguishable; and the buttons stating which numbered section to add a task to, while being in the correct quadrant, may still confuse some. To enable for a better experience, the sections should be coloured different, easily distinguishable colours. I will only have to add these new graphics objects into a new file and add their constructors to the existing tasks view, shouldn't require any more tweaking.
 ### Limited zoom
 The zooming would need to be limited to a max zoom of the entire area, and an apropriate minimum zoom. This would allow for users to not get lost scrolling in/out to infinity and panicking when they can't get back. Apart from these simple changes to the graphics canvas, nothing else is necessary to integrate this new feature.
-### Fix task inputting
-Currently, the task inputting doesn't allow for an input of space. This bug would be easy to fix; just modifying some of the base classes (some of the graphics scene classes) to pass the space event directly like what I already have for another part of the UI.
+### Fix todo label space issue
+Currently, the todo label doesn't allow for an input of a single space. This bug would be easy to fix; just modifying some of the base classes (some of the graphics scene classes) to pass the space event directly like what I already have for another part of the UI.
 ### Improve UI design of some elements
 Some elements, specifically including the new task overlay elements, are bland. This fix would not affect anything else and would make the app look more natural and have everything connected.
 ## Updated charts

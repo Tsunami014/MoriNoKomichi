@@ -61,9 +61,15 @@ protected:
             if (keyEv->key() == Qt::Key_Space) {
                 auto *item = scene()->focusItem();
                 if (item && item->type() == QGraphicsTextItem::Type) {
+                    // The title text boxes
                     auto *txtItem = static_cast<QGraphicsTextItem*>(item);
                     txtItem->textCursor().insertText(" ");
                     bigW->updateChildren(true, true); // Don't forget to update the children!
+                    return true;
+                } else if (item && item->type() == QGraphicsProxyWidget::Type) {
+                    // The todo items - update their label!
+                    auto *proxyItem = static_cast<TodoGraphicObject*>(item);
+                    proxyItem->addText(" ");
                     return true;
                 }
             }
