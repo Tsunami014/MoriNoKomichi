@@ -1,6 +1,7 @@
 #include "widgets/taskwidget.h"
 #include "widgets/svgbtnwidget.h"
 #include "widgets/graphicsviewcanvas.h"
+#include "widgets/sectionbgwidget.h"
 #include "sections.h"
 #include "../window.h"
 #include "../taskloading.h"
@@ -27,12 +28,12 @@ public:
 
 // Some static vars for this file
 /*! \brief The graphical groups that the task widgets go in */
-static BetterGroup* groups[4];
+static std::array<QGraphicsItemGroup*, 4> groups;
 /*! \brief The graphics scene the groups go in */
 static QGraphicsScene* scene = nullptr;
 
 /*! \brief Update the positioning of all the tasks and groups */
-void updatePoss(std::array<std::vector<TaskWidget*>, 4> sections, BetterGroup* groups[4]) {
+void updatePoss(std::array<std::vector<TaskWidget*>, 4> sections, std::array<QGraphicsItemGroup*, 4> groups) {
     const int sectPadding = 50;
     qreal sectWid = 0;
     qreal sectHei = 0;
@@ -93,7 +94,8 @@ void updatePoss(std::array<std::vector<TaskWidget*>, 4> sections, BetterGroup* g
 }
 
 void updateTaskPoss(Window* wind) {
-    updatePoss(wind->sections, groups);
+    updatePoss(wind->sections, groups); // Update tasks
+
     // Update the entire scene so nothing is looking smudged
     scene->invalidate(scene->sceneRect(), QGraphicsScene::ForegroundLayer);
     scene->setSceneRect(scene->itemsBoundingRect());
@@ -108,6 +110,7 @@ void addItem(TaskWidget* it, uint8_t groupNum, Window* wind) {
     wind->sections[groupNum].push_back(it);
 
     saveSections(wind);
+    // No need to call updateTaskPoss here, is called after this in cases where this is used
 }
 
 void taskView(Window* wind) {
@@ -122,10 +125,18 @@ void taskView(Window* wind) {
         group->setAcceptHoverEvents(false);
         group->setAcceptedMouseButtons(Qt::NoButton);
 
+        // Add section BG widget attached to group
+        SectionBgWidget* sectBg = new SectionBgWidget(i, &groups);
+        scene->addItem(sectBg);
+        sectBg->show();
+
+        // Add tasks to group
         for (TaskWidget* tsk : wind->sections[i]) {
             scene->addItem(tsk);
             group->addToGroup(tsk);
         }
+
+        // Add group to list and scene
         groups[i] = group;
 
         scene->addItem(group);

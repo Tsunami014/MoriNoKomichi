@@ -159,10 +159,10 @@ To accomplish this, all that is needed is to modify the task updation scripts to
 Currently, the new task button is in an awkward position, not exactly in the corner.
 
 To fix it, the entire positioning system would need to be updated; but only the values of the positions would need to be modified. Positions will still be the same, but instead of being from 0-100% of the screen where setting it to 100% would end up offscreen, the positions would be 0-100% of the *available space*; where 100% gets you flush with the edge of the screen. This also means widgets become centred; making it much more convenient to position them. This will allow for much better positioning.
-### Coloured sections and limited zoom
-Currently, the sections are not very distinguishable; and the buttons stating which numbered section to add a task to, while being in the correct quadrant, may still confuse some. To enable for a better experience, the sections should be coloured different, easily distinguishable colours. This will not affect any other part of the existing code, except for zooming.
-
-As to add these coloured sections would require adding UI elements that don't scale to infinity, the zooming would need to be limited to a max zoom of the entire area. This would additionally allow for users to not get lost scrolling out to infinity and panicking when they can't get back. Apart from these changes, nothing else is necessary to integrate this new feature.
+### Coloured sections
+Currently, the sections are not very distinguishable; and the buttons stating which numbered section to add a task to, while being in the correct quadrant, may still confuse some. To enable for a better experience, the sections should be coloured different, easily distinguishable colours. I will only have to add these new graphics objects into a new file and add their constructors to the existing tasks view, shouldn't require any more tweaking.
+### Limited zoom
+The zooming would need to be limited to a max zoom of the entire area, and an apropriate minimum zoom. This would allow for users to not get lost scrolling in/out to infinity and panicking when they can't get back. Apart from these simple changes to the graphics canvas, nothing else is necessary to integrate this new feature.
 ### Fix task inputting
 Currently, the task inputting doesn't allow for an input of space. This bug would be easy to fix; just modifying some of the base classes (some of the graphics scene classes) to pass the space event directly like what I already have for another part of the UI.
 ### Improve UI design of some elements
