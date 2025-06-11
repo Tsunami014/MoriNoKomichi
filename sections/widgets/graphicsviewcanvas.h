@@ -22,6 +22,9 @@ public:
     /*! \brief Move the view to the top left */
     void gotoTopLeft();
 
+    /*! \brief Checks to ensure the zoom is in-bounds */
+    void checkZoom();
+
 protected:
     /*!
         \brief Offset the position of the canvas display

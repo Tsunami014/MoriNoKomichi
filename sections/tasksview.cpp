@@ -31,6 +31,8 @@ public:
 static std::array<QGraphicsItemGroup*, 4> groups;
 /*! \brief The graphics scene the groups go in */
 static QGraphicsScene* scene = nullptr;
+/*! \brief The graphics view for the scene */
+static GraphicsViewCanvas* view = nullptr;
 
 /*! \brief Update the positioning of all the tasks and groups */
 void updatePoss(std::array<std::vector<TaskWidget*>, 4> sections, std::array<QGraphicsItemGroup*, 4> groups) {
@@ -101,6 +103,9 @@ void updateTaskPoss(Window* wind) {
     scene->setSceneRect(scene->itemsBoundingRect());
     scene->update();
 
+    // Check canvas scroll based on the new size
+    view->checkZoom();
+
     saveSections(wind);
 }
 
@@ -148,7 +153,7 @@ void taskView(Window* wind) {
 
     // Add the widgets to the screen
 
-    GraphicsViewCanvas *view = new GraphicsViewCanvas(scene, wind);
+    view = new GraphicsViewCanvas(scene, wind);
     view->show();
     view->gotoTopLeft();
     wind->wids.push_back(Widget{view, QPoint(0, 0), QSize(100, 100)});

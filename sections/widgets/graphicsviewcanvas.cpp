@@ -90,7 +90,35 @@ void GraphicsViewCanvas::zoom(int delta) {
     }
     double factor = qPow(1.2, delta/qAbs(delta));
     scale(factor, factor);
+    checkZoom();
 }
+void GraphicsViewCanvas::checkZoom() {
+    qreal currentScale = transform().m11();
+
+    QRectF sceneRect = scene()->sceneRect();
+    QSizeF viewportSize = viewport()->size();
+
+    if (sceneRect.isEmpty()) {
+        if (currentScale != 1) { // Scale back to regular size
+            scale(1/currentScale, 1/currentScale);
+        }
+        return; // Do not scale
+    }
+
+    // Find scale ratios
+    qreal scaleX = viewportSize.width() / sceneRect.width();
+    qreal scaleY = viewportSize.height() / sceneRect.height();
+
+    // Choose the larger one to ensure the entire scene stays within the view (remember these are in 0.xxx)
+    qreal min = std::max(scaleX, scaleY);
+
+    // Get what the scale *should* be
+    qreal shouldBe = std::min(std::max(currentScale, min), 100.0);
+    if (currentScale != shouldBe) { // Only change if there's a difference
+        scale(shouldBe/currentScale, shouldBe/currentScale);
+    }
+}
+
 void GraphicsViewCanvas::wheelEvent(QWheelEvent *event) {
     if (event->modifiers() & Qt::ControlModifier) {
         QPoint delta = event->angleDelta();
