@@ -62,12 +62,12 @@ void newOverlay(Window* wind) {
     }
     wind->wids.push_back(Widget{overlay, QPoint(0, 0), QSize(100, 100)});
     wind->wids.push_back(Widget{btn, QPoint(1, 1), QSize(8, 8), HEIGHT});
-    wind->wids.push_back(Widget{le, QPoint(35, 47), QSize(30, 6)});
+    wind->wids.push_back(Widget{le, QPoint(50, 50), QSize(30, 6)});
     // The 4 buttons need to be in different spots
-    wind->wids.push_back(Widget{btns[0], QPoint(10, 15), QSize(20, 10)});
-    wind->wids.push_back(Widget{btns[1], QPoint(70, 15), QSize(20, 10)});
-    wind->wids.push_back(Widget{btns[2], QPoint(10, 75), QSize(20, 10)});
-    wind->wids.push_back(Widget{btns[3], QPoint(70, 75), QSize(20, 10)});
+    wind->wids.push_back(Widget{btns[0], QPoint(20, 20), QSize(20, 10)});
+    wind->wids.push_back(Widget{btns[1], QPoint(80, 20), QSize(20, 10)});
+    wind->wids.push_back(Widget{btns[2], QPoint(20, 80), QSize(20, 10)});
+    wind->wids.push_back(Widget{btns[3], QPoint(80, 80), QSize(20, 10)});
 
     wind->resizeElms(); // Update all the positionings!
 }

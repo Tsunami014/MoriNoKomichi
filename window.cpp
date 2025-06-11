@@ -40,7 +40,7 @@ void Window::resizeElms() {
         }
         // Set geometry (also find new x and y positions)
         wid.wid->setGeometry(
-            wid.position.x()*widPerc, wid.position.y()*heiPerc,
+            wid.position.x()*(widPerc - (width/100.0f)), wid.position.y()*(heiPerc - (height/100.0f)),
             width, height
         );
     }

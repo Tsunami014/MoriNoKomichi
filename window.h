@@ -23,7 +23,7 @@ enum SizeAspect {
 /*!
     \brief A positioned widget
     
-    Positioned using my positioning; percent of screen.
+    Positioned using my positioning; percent of screen the widget is able to be on. This means to be in exactly touching the edge you would be at 100% or 0% (depending on which edge)
 
     Coordinates can be floats or ints.
 

@@ -141,10 +141,10 @@ void taskOverlay(Window* wind, TaskWidget* task) {
     rmWids->push_back(btn2);
     rmWids->push_back(newSubtask);
     wind->wids.push_back(Widget{overlay, QPoint(0, 0), QSize(100, 100)});
-    wind->wids.push_back(Widget{view, QPoint(25, 0), QSize(50, 100)});
+    wind->wids.push_back(Widget{view, QPoint(50, 0), QSize(50, 100)});
     wind->wids.push_back(Widget{btn, QPoint(1, 1), QSize(8, 8), HEIGHT});
-    wind->wids.push_back(Widget{btn2, QPoint(88, 6), QSize(8, 8), HEIGHT});
-    wind->wids.push_back(Widget{newSubtask, QPoint(81, 47), QSize(18, 6)});
+    wind->wids.push_back(Widget{btn2, QPoint(99, 1), QSize(8, 8), HEIGHT});
+    wind->wids.push_back(Widget{newSubtask, QPoint(95, 50), QSize(18, 6)});
 
     wind->resizeElms(); // Update all the positionings!
 }

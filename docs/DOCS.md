@@ -158,7 +158,7 @@ To accomplish this, all that is needed is to modify the task updation scripts to
 ### Fix the new task button layout
 Currently, the new task button is in an awkward position, not exactly in the corner.
 
-To fix it, the entire positioning system would need to be updated; but not in a way to affect the rest of the code. Positions will still be the same, but instead of being from 0-100% of the screen where setting it to 100% would end up offscreen, the positions would be 0-100% of the *available space*; where 100% gets you flush with the edge of the screen. This will allow for much better positions, and because of the way the widgets are currently being placed, should not affect anything else.
+To fix it, the entire positioning system would need to be updated; but only the values of the positions would need to be modified. Positions will still be the same, but instead of being from 0-100% of the screen where setting it to 100% would end up offscreen, the positions would be 0-100% of the *available space*; where 100% gets you flush with the edge of the screen. This also means widgets become centred; making it much more convenient to position them. This will allow for much better positioning.
 ### Coloured sections and limited zoom
 Currently, the sections are not very distinguishable; and the buttons stating which numbered section to add a task to, while being in the correct quadrant, may still confuse some. To enable for a better experience, the sections should be coloured different, easily distinguishable colours. This will not affect any other part of the existing code, except for zooming.
 

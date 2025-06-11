@@ -146,5 +146,5 @@ void taskView(Window* wind) {
     SvgBtnWidget *btn = new SvgBtnWidget(":/assets/newBtn.svg", wind);
     wind->connect(btn, &QPushButton::released, wind, [wind](){newOverlay(wind);});
     btn->show();
-    wind->wids.push_back(Widget{btn, QPoint(91, 91), QSize(8, 8), HEIGHT});
+    wind->wids.push_back(Widget{btn, QPoint(99, 99), QSize(8, 8), HEIGHT});
 }
