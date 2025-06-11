@@ -11,6 +11,11 @@
 #include <QLineEdit>
 #include <QPushButton>
 
+/*! \brief A list of all the names of the colours for each section */
+static QString colourNames[4] = {
+    "red", "green", "blue", "yellow"
+};
+
 /*!
     \brief The line edit for adding a new task
 
@@ -47,7 +52,7 @@ void newOverlay(Window* wind) {
     // Add the 4 buttons!
     QPushButton* btns[4];
     for (uint8_t i = 0; i < 4; i++) {
-        QString txt = QString("Add to section %1").arg(i+1);
+        QString txt = QString("Add to the %1 section").arg(colourNames[i]);
         btns[i] = new QPushButton(txt, wind);
         QObject::connect(btns[i], &QPushButton::released, [i, wind](){ btnClick(i, wind); });
         btns[i]->show();

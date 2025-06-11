@@ -71,7 +71,7 @@ std::array<std::vector<TaskWidget*>, 4> getSections(Window* wind) {
         std::array<std::vector<TaskWidget*>, 4> sections = {
             std::vector{ // This is needed for no aparent reason
                 MakeTaskWidget("Get used to the main view", wind, {"Scroll or shift-scroll", "Space+mouse click and drag to pan", "Middle click and drag to pan", "Ctrl+scroll to zoom"}),
-                MakeTaskWidget("Check out the tutorial", wind, {"Do the tasks to the right", "Do the tasks below", "Do the tasks in the bottom right corner"})
+                MakeTaskWidget("Check out the tutorial", wind, {"Do the tasks in the green section", "Do the tasks in the blue section", "Do the tasks in the yellow section"})
             },
             {
                 MakeTaskWidget("Click on tasks to edit them", wind, {"Click on this task!", "Click the black overlay or back button to go back"}),

@@ -289,10 +289,10 @@ void TaskWidget::makePath() {
     QRandomGenerator gen = getGen(name);
     int height = boundingRect().height() - (padding * 2);
 
-    // Make polygon
-    int8_t distortPad = 10;
-    int8_t mayhem = 5;
-    int8_t cornerOffRnd = 30;
+    // Some preset vars
+    int8_t distortPad = 10; //< The padding for the distortion of points
+    int8_t mayhem = 5; //< The amount of warping to the lines (how curved the RNG will go up to)
+    int8_t cornerOffRnd = 30; //< The (random) offset for torn corners; the larger the number, the larger the corner tear.
 
     // First, start with taking each corner and randomly applying a 'tear' to it
 
