@@ -166,7 +166,16 @@ The zooming would need to be limited to a max zoom of the entire area, and an ap
 ### Fix todo label space issue
 Currently, the todo label doesn't allow for an input of a single space. This bug would be easy to fix; just modifying some of the base classes (some of the graphics scene classes) to pass the space event directly like what I already have for another part of the UI.
 ### Improve UI design of some elements
-Some elements, specifically including the new task overlay elements, are bland. This fix would not affect anything else and would make the app look more natural and have everything connected.
+Some elements are still the defaults; and are bland. This fix would not affect anything else and would make the app look more natural and have everything connected.
+Specifically, I will make some buttons to replace the 'add task to section' ones. These can be hard-coded svgs, as I already have the class for an svg button and there's only 4 - so it isn't that big a deal.
+Also, the text boxes will need to be updated. I will add a textbox QWidget class which auto-generates a border using functions I already have and then add a textbox on top with an invisible border; and when focussed, the fancy border is highlighted.
+### Add a help menu
+Currently, the onboarding is great; but if you have already deleted the onboarding tasks, you may forget how to do things that aren't obvious (e.g. delete a subtask). So, I will add another button in the top-right corner of the main screen for a 'help' page containing all this info. This is instead of adding extra labels as previously mentioned in final evaluations; as I believe labels will make things cluttered for no reason; as they would just be 'tips' on how to do things instead of helpful descriptions; as pretty much everything in the app is already self-explanatory. So only a help page is needed.
+Additionally, the help menu will have the file path of the save file; so you can select and copy the file location to find it easily to back it up or export.
+### Add the ability to change a task's section
+Currently, once you create a task it's stuck in that section. So, I will add some buttons to change the task's section. These could be the svg buttons that say 'add to xxx section' in a compact (not spread out) grid in the bottom left corner of the task display, with their own callbacks. This would be added to the task overlay function without changing anything else. The widget's current section button will just be hidden; so when it changes the hidden and shown objects just toggle.
+### Re-order tasks
+Currently the tasks are stuck in the order you create them in. I will instead make a text box for inputting a number which is the tasks priority; the higher the priority, the higher on the list it will be. I will have to create the number input box, a callback for it to change the task priority which includes a sorting function and lastly saving the priorities to the file (which also wouldn't change anything else, just add to what's already there)
 ## Updated charts
 Since none of these changes affect the main structure or organisation of the code (being only focussed on minor UX upgrades and fixes), the structure chart and class diagrams can be left untouched.
 ## Final final evaluation
