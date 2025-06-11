@@ -60,6 +60,10 @@ public:
 
     void updateChildren(bool prepare = true, bool updateAll = false);
 
+signals:
+    /*! \brief This is sent after the class has just been updated from resizing and such */
+    void updating();
+
 protected:
     /*! \brief Only handle mouse events if collides with path */
     QPainterPath shape() const override;
@@ -80,9 +84,7 @@ protected:
     /*! \brief The path of the border */
     QPainterPath path;
     /*!
-        \brief Set the new path to the old path but with the position differing
-
-        DOES NOT COPY THE PATH; just tweaks the points' positions.
+        \brief Makes a new path if necessary (if sizes differ)
     */
     void updatePath();
 
@@ -91,9 +93,8 @@ protected:
 
     TaskWidget* parent = nullptr;
 
-    // Keeps track of the path as it was when first created to handle updates to the size
-    QSizeF pureSze;
-    QPainterPath purePath;
+    // Keeps track of the size as it was when first created to not update all the time
+    QSizeF lastSze;
 
 private:
     Window* wind = nullptr;

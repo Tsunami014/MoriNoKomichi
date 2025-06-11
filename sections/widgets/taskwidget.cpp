@@ -130,8 +130,7 @@ void TaskWidget::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
 
 void TaskWidget::mousePressEvent(QGraphicsSceneMouseEvent* event) {} // Needs to not be the default or else release won't be called
 void TaskWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
-    isHover = false;
-    unsetCursor();
+    hoverLeaveEvent(nullptr); // This does all the unsetting of the cursor etc. for us
     taskOverlay(wind, this);
 }
 
@@ -179,11 +178,13 @@ void TaskWidget::updateChildren(bool prepare, bool updateAll) {
         while (todos.size() > todoslen) {
             todos.back()->setParent(nullptr);
             todos.back()->deleteLater();
+            todos.back()->hide();
             todos.pop_back();
         }
         while (parent->todos.size() > todoslen) {
             parent->todos.back()->setParent(nullptr);
             parent->todos.back()->deleteLater();
+            parent->todos.back()->hide();
             parent->todos.pop_back();
         }
 
@@ -218,6 +219,8 @@ void TaskWidget::updateChildren(bool prepare, bool updateAll) {
 
     if (prepare) { update(); }
 
+    emit updating();
+
     if (updateAll) { updateTaskPoss(wind); }
 }
 
@@ -238,26 +241,9 @@ QTransform TaskWidget::getExpansionTransform() {
 
 void TaskWidget::updatePath() {
     QSizeF nsze = boundingRect().size();
-    // The x difference; a ratio
-    float diffX = nsze.width() / pureSze.width();
-    // The y difference; find which end it's closest to and keep it the same distance away
-    // This ensures the top and bottom won't become stretched (e.g. if the top was at y=3, then the window was stretched heaps, it would be at y=34, and if the text starts at y=5 it would be bad)
-    float origHei = pureSze.height();
-    float newHei = nsze.height();
-
-    // Loop over all the points
-    for (int idx = 0; idx < path.elementCount(); idx++) {
-        QPointF point = purePath.elementAt(idx);
-        // Find the correct y
-        float fromTop = origHei - point.y();
-        int y;
-        if (abs(point.y()) < abs(fromTop)) {
-            y = point.y();
-        } else {
-            y = newHei - fromTop;
-        }
-        // Set the point on the path
-        path.setElementPositionAt(idx, point.x()*diffX, y);
+    if (nsze != lastSze) {
+        lastSze = nsze;
+        makePath();
     }
 }
 
@@ -415,7 +401,6 @@ void TaskWidget::makePath() {
     // Make path
     path = genPath(ps, gen, true, mayhem);
 
-    // Save the pure path
-    purePath = path;
-    pureSze = boundingRect().size();
+    // Save the last size
+    lastSze = boundingRect().size();
 }

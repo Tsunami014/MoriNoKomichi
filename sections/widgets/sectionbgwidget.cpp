@@ -37,6 +37,10 @@ void SectionBgWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
 }
 
 void SectionBgWidget::makePath() {
+    if (lastSze.width() == 0 || lastSze.height() == 0) { // Just in case of an empty section
+        pth.clear();
+        return;
+    }
     // Initialisation
     QRandomGenerator gen = QRandomGenerator();
     std::vector<QPoint> edgesps[4];
@@ -44,9 +48,9 @@ void SectionBgWidget::makePath() {
     uint8_t wh = 1; //< Width or Height - 1 for going horizontal (width), 0 for going vertical (height)
 
     // Set some vars
-    int maxJump = 10;
-    int padding = 5+gen.generate()%10;
-    int cornerCut = 20;
+    int maxJump = 10; //< The maximum distance a new point can be generated
+    int padding = 5+gen.generate()%10; //< The padding between the path and the edge of the bounding box
+    int cornerCut = 20; //< How much random offset to start with; can make corners more smooth
 
     // For each edge
     for (uint8_t i = 0; i < 4; i++) {

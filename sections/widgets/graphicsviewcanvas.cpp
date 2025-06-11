@@ -110,7 +110,7 @@ void GraphicsViewCanvas::checkZoom() {
     qreal scaleY = viewportSize.height() / sceneRect.height();
 
     // Choose the larger one to ensure the entire scene stays within the view (remember these are in 0.xxx)
-    qreal min = std::max(scaleX, scaleY);
+    qreal min = std::min(std::max(scaleX, scaleY), 1.0); // Also you should never be forced to zoom in closer than 1x zoom
 
     // Get what the scale *should* be
     qreal shouldBe = std::min(std::max(currentScale, min), 100.0);

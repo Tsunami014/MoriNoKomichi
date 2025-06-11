@@ -16,17 +16,25 @@
 We create our own graphics view for multiple reasons:
     1. To have a transparent background; where on click, it goes back to the previous screen
     2. Because the space key has issues
-    3. So resizing the window affects the big task widget display
-    4. To remove horizontal scrolling and zoom
+    3. So resizing the window updates the big task widget display
+    4. So resizing of the big task widget updates the display
+    5. To remove horizontal scrolling and zoom
 */
 class NewGraphicsView : public GraphicsViewCanvas {
 public:
     NewGraphicsView(QGraphicsScene* scene, BigTaskWidget* wid, Window* window)
     : GraphicsViewCanvas(scene, window) {
+        // Some vars to set that make this class special
         wind = window;
         bigW = wid;
         setStyleSheet("background: transparent");
         setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        QObject::connect(bigW, &TaskWidget::updating, this, &NewGraphicsView::updateRect); // Ensure on big task widget update it updates the bbx of this view
+    }
+
+    /*! \brief Updates the scene rect based off of the childrens' bounding boxes */
+    void updateRect() {
+        scene()->setSceneRect(scene()->itemsBoundingRect());
     }
 
 protected:
@@ -71,7 +79,7 @@ protected:
     void resizeEvent(QResizeEvent *event) override {
         bigW->updateWidth(event->size().width());
         GraphicsViewCanvas::resizeEvent(event);
-        scene()->setSceneRect(scene()->itemsBoundingRect());
+        updateRect();
     }
     /*! \brief Remove zoom */
     void zoom(int delta) {}
