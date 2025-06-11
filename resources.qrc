@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>assets/backBtn.svg</file>
         <file>assets/newBtn.svg</file>
+        <file>assets/binBtn.svg</file>
     </qresource>
 </RCC>

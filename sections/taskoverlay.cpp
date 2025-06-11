@@ -105,6 +105,25 @@ void taskOverlay(Window* wind, TaskWidget* task) {
     wind->connect(btn, &QPushButton::released, wind, [wind](){backFun(wind);});
     btn->show();
 
+    // Make the delete btn
+    SvgBtnWidget *btn2 = new SvgBtnWidget(":/assets/binBtn.svg", wind);
+    // On click delete the task and go back
+    wind->connect(btn2, &QPushButton::released, wind, [wind, task](){
+        // Delete task from sections
+        for (auto& s : wind->sections) {
+            auto result = std::find(s.begin(), s.end(), task);
+            if (result != std::end(s)) {
+                s.erase(result);
+                break;
+            }
+        }
+
+        backFun(wind); // Remove overlay
+        delete task; // Delete
+        updateTaskPoss(wind); // And update!
+    });
+    btn2->show();
+
     // Make the add sub-task input box
     QLineEdit* newSubtask = new QLineEdit(wind);
     newSubtask->setPlaceholderText("New subtask");
@@ -119,10 +138,12 @@ void taskOverlay(Window* wind, TaskWidget* task) {
     rmWids->push_back(overlay);
     rmWids->push_back(view);
     rmWids->push_back(btn);
+    rmWids->push_back(btn2);
     rmWids->push_back(newSubtask);
     wind->wids.push_back(Widget{overlay, QPoint(0, 0), QSize(100, 100)});
     wind->wids.push_back(Widget{view, QPoint(25, 0), QSize(50, 100)});
     wind->wids.push_back(Widget{btn, QPoint(1, 1), QSize(8, 8), HEIGHT});
+    wind->wids.push_back(Widget{btn2, QPoint(88, 6), QSize(8, 8), HEIGHT});
     wind->wids.push_back(Widget{newSubtask, QPoint(81, 47), QSize(18, 6)});
 
     wind->resizeElms(); // Update all the positionings!

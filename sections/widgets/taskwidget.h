@@ -22,6 +22,8 @@ public:
 protected:
     /*! \brief If you pressed a key, update the sizing and positioning of all the elements */
     bool event(QEvent *ev) override;
+    /*! \brief For always having the dotted line when interactable */
+    void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget) override;
 private:
     TaskWidget* widparent;
 };

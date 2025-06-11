@@ -27,6 +27,17 @@ bool TitleText::event(QEvent *ev) {
     }
     return ret;
 }
+void TitleText::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
+    if (textInteractionFlags() & Qt::TextEditorInteraction) { // Only show dotted outline if interactable
+        painter->setPen(QPen (QColor(100, 100, 100), 1, Qt::DashDotLine));
+        painter->drawRect(boundingRect());
+    }
+    QGraphicsTextItem::paint(painter, option, widget);
+}
 
 
 TaskWidget::TaskWidget(QString nme, Window* window, std::vector<QString> inptodos, QGraphicsItem* parent, bool editable)
@@ -135,25 +146,8 @@ void TaskWidget::updateChildren(bool prepare, bool updateAll) {
     if (parent != nullptr) { // This would be any BigTaskWidgets
         // Update parent's children so text gets updated!
         QString txt = title->toPlainText();
-        if (txt == "") {
-            // Delete parent from sections
-            for (auto& s : wind->sections) {
-                auto result = std::find(s.begin(), s.end(), parent);
-                if (result != std::end(s)) {
-                    s.erase(result);
-                    break;
-                }
-            }
-            // Remove overlay
-            backFun(wind);
-            // Delete, update and return
-            delete parent;
-            updateTaskPoss(wind);
-            delete this;
-            return;
-        }
-        title->setPlainText(txt);
         parent->name = txt;
+        parent->title->setPlainText(txt);
 
         // Create a list of what the todos should be
         std::vector<TODOstate> outtodos;
