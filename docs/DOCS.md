@@ -150,3 +150,24 @@ So all in all, currently the codebase is very easily readable and maintainable d
 In the next stage of development, the last bugs will be fixed and features enhanced; completing all the requirements and specifications, whilst keeping the readability of the codebase.
 # Sprint 4
 In this sprint, we will add final touches and polish off the program, ensuring it's exactly as required.
+## Potential enhancements
+### Delete button for tasks
+Currently, to delete a task you just backspace the entire name. The downfalls with this method are the abruptness of the deletion and the accidental deletion when a user wants to edit the name. So, adding a delete button for the tasks will help ensure deleting tasks is more purposeful instead of accidental and help users remember how to delete tasks in the first place.
+
+To accomplish this, all that is needed is to modify the task updation scripts to delete the task removal and move it to the onclick of a new button.
+### Fix the new task button layout
+Currently, the new task button is in an awkward position, not exactly in the corner.
+
+To fix it, the entire positioning system would need to be updated; but not in a way to affect the rest of the code. Positions will still be the same, but instead of being from 0-100% of the screen where setting it to 100% would end up offscreen, the positions would be 0-100% of the *available space*; where 100% gets you flush with the edge of the screen. This will allow for much better positions, and because of the way the widgets are currently being placed, should not affect anything else.
+### Coloured sections and limited zoom
+Currently, the sections are not very distinguishable; and the buttons stating which numbered section to add a task to, while being in the correct quadrant, may still confuse some. To enable for a better experience, the sections should be coloured different, easily distinguishable colours. This will not affect any other part of the existing code, except for zooming.
+
+As to add these coloured sections would require adding UI elements that don't scale to infinity, the zooming would need to be limited to a max zoom of the entire area. This would additionally allow for users to not get lost scrolling out to infinity and panicking when they can't get back. Apart from these changes, nothing else is necessary to integrate this new feature.
+### Fix task inputting
+Currently, the task inputting doesn't allow for an input of space. This bug would be easy to fix; just modifying some of the base classes (some of the graphics scene classes) to pass the space event directly like what I already have for another part of the UI.
+### Improve UI design of some elements
+Some elements, specifically including the new task overlay elements, are bland. This fix would not affect anything else and would make the app look more natural and have everything connected.
+## Updated charts
+Since none of these changes affect the main structure or organisation of the code (being only focussed on minor UX upgrades and fixes), the structure chart and class diagrams can be left untouched.
+## Final final evaluation
+
