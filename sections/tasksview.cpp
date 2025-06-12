@@ -34,6 +34,8 @@ static std::array<QGraphicsItemGroup*, 4> groups;
 static QGraphicsScene* scene = nullptr;
 /*! \brief The graphics view for the scene */
 static GraphicsViewCanvas* view = nullptr;
+/*! \brief The text only present when there are no tasks */
+static QGraphicsTextItem* mtTxt = nullptr;
 
 /*! \brief Update the positioning of all the tasks and groups */
 void updatePoss(std::array<std::vector<TaskWidget*>, 4> sections, std::array<QGraphicsItemGroup*, 4> groups) {
@@ -43,11 +45,14 @@ void updatePoss(std::array<std::vector<TaskWidget*>, 4> sections, std::array<QGr
 
     groups[1]->setPos(0, 0);
 
+    bool isTasks = false; //< If there is a task or not
+
     // Update all groups
     for (int i = 0;i < 4;i++) {
         std::vector<unsigned int> heights = {2, 2};
         // Update all tasks in this group
         for (TaskWidget* tsk : sections[i]) {
+            isTasks = true;
             uint16_t idx = 0;
             unsigned int curMin = 0;
             for (uint16_t i = 0; i < heights.size(); i++) {
@@ -94,6 +99,12 @@ void updatePoss(std::array<std::vector<TaskWidget*>, 4> sections, std::array<QGr
 
     // Update the group 1 after to have the correct x value
     groups[1]->setPos(sectWid, 0);
+
+    if (isTasks) {
+        mtTxt->hide();
+    } else {
+        mtTxt->show();
+    }
 }
 
 void updateTaskGroup(TaskWidget* tsk, uint8_t newGroupNum, Window* wind) {
@@ -149,9 +160,9 @@ void removeItem(TaskWidget* tsk, Window* wind) {
             // Erase from groups
             s.erase(result);
             groups[idx]->removeFromGroup(tsk);
+            delete tsk;
             // Update and return!
             updateTaskPoss(wind);
-            delete tsk;
             return;
         }
     }
@@ -161,8 +172,11 @@ void removeItem(TaskWidget* tsk, Window* wind) {
 }
 
 void taskView(Window* wind) {
+    delete scene; // In case of reset
     scene = new QGraphicsScene();
     scene->setBackgroundBrush(QBrush(QColor(250, 230, 200)));
+    mtTxt = new QGraphicsTextItem("You have no tasks!");
+    scene->addItem(mtTxt);
 
     // Add items to groups, and everything to the screen
     for (int i = 0;i < 4;i++) {
