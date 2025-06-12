@@ -270,6 +270,11 @@ void TaskWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     painter->setTransform(prevTrans);
 }
 
+/*! \brief Get a random decimal: `1.{0-5}` */
+float randDec(QRandomGenerator gen) {
+    return 1+(gen.generate()%5)/10;
+}
+
 void TaskWidget::makePath() {
     // Make some commonly used variables
     QRandomGenerator gen = getGen(name);

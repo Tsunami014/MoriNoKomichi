@@ -1,4 +1,5 @@
 #include "widgets/svgbtnwidget.h"
+#include "widgets/inputwidget.h"
 #include "widgets/taskwidget.h"
 #include "sections.h"
 #include "../window.h"
@@ -8,7 +9,6 @@
 #include <QGraphicsScene>
 #include <QApplication>
 #include <QTextCursor>
-#include <QLineEdit>
 #include <QPushButton>
 
 /*!
@@ -39,7 +39,7 @@ void newOverlay(Window* wind) {
     btn->show();
 
     // Add the text input
-    le = new QLineEdit(wind);
+    le = new InputWidget(wind);
     le->setPlaceholderText("New task name");
     le->show();
     le->setFocus();

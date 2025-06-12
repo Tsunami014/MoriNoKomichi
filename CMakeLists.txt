@@ -54,6 +54,7 @@ else()
         ${PROJECT_TOOLS}
         sections/widgets/todographicobject.h sections/widgets/todographicobject.cpp
         sections/widgets/sectionbgwidget.h sections/widgets/sectionbgwidget.cpp
+        sections/widgets/inputwidget.h sections/widgets/inputwidget.cpp
     )
 endif()
 

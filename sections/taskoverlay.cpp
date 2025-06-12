@@ -2,6 +2,7 @@
 #include "widgets/bigtaskwidget.h"
 #include "widgets/svgbtnwidget.h"
 #include "widgets/graphicsviewcanvas.h"
+#include "widgets/inputwidget.h"
 #include "sections.h"
 #include "../window.h"
 
@@ -10,7 +11,6 @@
 #include <QGraphicsScene>
 #include <QApplication>
 #include <QTextCursor>
-#include <QLineEdit>
 
 /*
 We create our own graphics view for multiple reasons:
@@ -139,7 +139,7 @@ void taskOverlay(Window* wind, TaskWidget* task) {
     btn2->show();
 
     // Make the add sub-task input box
-    QLineEdit* newSubtask = new QLineEdit(wind);
+    InputWidget* newSubtask = new InputWidget(wind);
     newSubtask->setPlaceholderText("New subtask");
     // Run the new subtask func on enter pressed
     QObject::connect(newSubtask, &QLineEdit::returnPressed, [wind, bigW, newSubtask](){

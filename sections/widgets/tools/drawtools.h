@@ -9,8 +9,11 @@
 QRandomGenerator getGen(QString seed);
 /*! \brief Move a point by a random amount */
 QPoint distort(QPoint p, QPoint offset, QRandomGenerator gen, int distortPad = 10, int padding = 0);
-/*! \brief Get a random decimal: `1.{0-5}` */
-float randDec(QRandomGenerator gen);
+
+/*!
+    \brief Create a path of roughly a rectangle, with distorted points, rounded edges and a rough path for the edges
+*/
+QPainterPath* roughRect(QRandomGenerator gen, QSize thisSze, int padding, int corner_radius);
 
 /*!
     \brief Generate a path to add onto the end of a preexisting path
