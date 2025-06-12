@@ -3,5 +3,9 @@
         <file>assets/backBtn.svg</file>
         <file>assets/newBtn.svg</file>
         <file>assets/binBtn.svg</file>
+        <file>assets/addTo0.svg</file>
+        <file>assets/addTo1.svg</file>
+        <file>assets/addTo2.svg</file>
+        <file>assets/addTo3.svg</file>
     </qresource>
 </RCC>

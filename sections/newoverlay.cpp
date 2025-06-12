@@ -11,11 +11,6 @@
 #include <QLineEdit>
 #include <QPushButton>
 
-/*! \brief A list of all the names of the colours for each section */
-static QString colourNames[4] = {
-    "red", "green", "blue", "yellow"
-};
-
 /*!
     \brief The line edit for adding a new task
 
@@ -50,10 +45,10 @@ void newOverlay(Window* wind) {
     le->setFocus();
 
     // Add the 4 buttons!
-    QPushButton* btns[4];
+    SvgBtnWidget* btns[4];
     for (uint8_t i = 0; i < 4; i++) {
-        QString txt = QString("Add to the %1 section").arg(colourNames[i]);
-        btns[i] = new QPushButton(txt, wind);
+        QString pth = QString(":/assets/addTo%1.svg").arg(i);
+        btns[i] = new SvgBtnWidget(pth, wind);
         QObject::connect(btns[i], &QPushButton::released, [i, wind](){ btnClick(i, wind); });
         btns[i]->show();
     }
@@ -69,10 +64,10 @@ void newOverlay(Window* wind) {
     wind->wids.push_back(Widget{btn, QPoint(1, 1), QSize(8, 8), HEIGHT});
     wind->wids.push_back(Widget{le, QPoint(50, 50), QSize(30, 6)});
     // The 4 buttons need to be in different spots
-    wind->wids.push_back(Widget{btns[0], QPoint(20, 20), QSize(20, 10)});
-    wind->wids.push_back(Widget{btns[1], QPoint(80, 20), QSize(20, 10)});
-    wind->wids.push_back(Widget{btns[2], QPoint(20, 80), QSize(20, 10)});
-    wind->wids.push_back(Widget{btns[3], QPoint(80, 80), QSize(20, 10)});
+    wind->wids.push_back(Widget{btns[0], QPoint(15, 20), QSize(15, 15)});
+    wind->wids.push_back(Widget{btns[1], QPoint(85, 20), QSize(15, 15)});
+    wind->wids.push_back(Widget{btns[2], QPoint(15, 80), QSize(15, 15)});
+    wind->wids.push_back(Widget{btns[3], QPoint(85, 80), QSize(15, 15)});
 
     wind->resizeElms(); // Update all the positionings!
 }

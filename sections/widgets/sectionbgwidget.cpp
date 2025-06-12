@@ -5,10 +5,10 @@
 
 /*! \brief The 4 colours for the 4 sections */
 static QColor COLS[4] = {
-    {250, 220, 210},
-    {225, 255, 200},
-    {230, 210, 255},
-    {255, 240, 180},
+    {240, 210, 200},
+    {215, 245, 190},
+    {220, 200, 245},
+    {245, 230, 170},
 };
 
 SectionBgWidget::SectionBgWidget(uint8_t sect, std::array<QGraphicsItemGroup*, 4>* pgroups, QGraphicsItem* parent) : QGraphicsObject(parent) {
