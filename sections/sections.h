@@ -42,10 +42,15 @@ void newOverlay(Window* wind);                     // Located in newoverlay.cpp
 /*! \brief The overlay for inspecting a task and editing things (e.g. name, subtasks, etc.) */
 void taskOverlay(Window* wind, TaskWidget* task);  // Located in taskoverlay.cpp
 
+// Located in taskoverlay.cpp
+/*! \brief Update the group of a task to a different one */
+void updateTaskGroup(TaskWidget* tsk, uint8_t newGroupNum, Window* wind);
 /*! \brief Update the positions of all the tasks, and then refresh it */
-void updateTaskPoss(Window* wind);                 // Located in taskoverlay.cpp
+void updateTaskPoss(Window* wind);
 /*! \brief Add a taskwidget to a specific group */
-void addItem(TaskWidget* it, uint8_t groupNum, Window* wind); // Located in taskoverlay.cpp
+void addItem(TaskWidget* it, uint8_t groupNum, Window* wind);
+/*! \brief Remove a taskwidget */
+void removeItem(TaskWidget* tsk, Window* wind);
 
 
 /*!

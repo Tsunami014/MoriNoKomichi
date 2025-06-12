@@ -11,6 +11,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsItem>
 #include <QGraphicsItemGroup>
+#include <QDebug>
 #include <QtMath>
 #include <array>
 
@@ -95,6 +96,28 @@ void updatePoss(std::array<std::vector<TaskWidget*>, 4> sections, std::array<QGr
     groups[1]->setPos(sectWid, 0);
 }
 
+void updateTaskGroup(TaskWidget* tsk, uint8_t newGroupNum, Window* wind) {
+    // Find existing group num of task
+    for (uint8_t idx = 0; idx < 4; idx++) {
+        auto& s = wind->sections[idx];
+        auto result = std::find(s.begin(), s.end(), tsk);
+        if (result != s.end()) {
+            // Erase from existing groups and add to new ones
+            // Window groups
+            s.erase(result);
+            wind->sections[newGroupNum].push_back(tsk);
+            // Scene groups
+            groups[idx]->removeFromGroup(tsk);
+            groups[newGroupNum]->addToGroup(tsk);
+            // Update and return!
+            updateTaskPoss(wind);
+            return;
+        }
+    }
+
+    qWarning("Could not find group of specified task!");
+}
+
 void updateTaskPoss(Window* wind) {
     updatePoss(wind->sections, groups); // Update tasks
 
@@ -116,6 +139,25 @@ void addItem(TaskWidget* it, uint8_t groupNum, Window* wind) {
 
     saveSections(wind);
     // No need to call updateTaskPoss here, is called after this in cases where this is used
+}
+void removeItem(TaskWidget* tsk, Window* wind) {
+    // Find existing group num of task
+    for (uint8_t idx = 0; idx < 4; idx++) {
+        auto& s = wind->sections[idx];
+        auto result = std::find(s.begin(), s.end(), tsk);
+        if (result != s.end()) {
+            // Erase from groups
+            s.erase(result);
+            groups[idx]->removeFromGroup(tsk);
+            // Update and return!
+            updateTaskPoss(wind);
+            delete tsk;
+            return;
+        }
+    }
+
+    qWarning("Could not find group of specified task!");
+    delete tsk;
 }
 
 void taskView(Window* wind) {

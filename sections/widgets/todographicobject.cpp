@@ -14,6 +14,9 @@ TodoLabel::TodoLabel(const QString& text, bool en, QWidget* parent)
 
     if (en) {
         setCursor(Qt::IBeamCursor);
+    } else {
+        // Do not allow to select at all when not enabled
+        connect(this, &QLineEdit::selectionChanged, [this](){ setSelection(0, 0); });
     }
 }
 void TodoLabel::focusOutEvent(QFocusEvent *event) {

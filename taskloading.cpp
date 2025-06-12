@@ -49,7 +49,7 @@ std::array<std::vector<TaskWidget*>, 4> readFrom(QTextStream& in, Window* wind) 
                 tryAddTask();
                 sect = typ.digitValue();
                 if (sect > 3) { // Just in case
-                    qDebug() << "Specified section " << sect << " is too big! Expected 0-3! Adding to section 0 instead.";
+                    qCritical() << "Specified section " << sect << " is too big! Expected 0-3! Adding to section 0 instead.";
                     sect = 0;
                 }
                 break;
@@ -124,7 +124,7 @@ void saveSections(Window* wind) {
     QString fullpth = getPath();
     QFile file(fullpth);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) { // This should never fail (as it's writing to a new file if not exists), but we need to check every possibility
-        qDebug() << "Failed writing to file at " << fullpth << "!";
+        qWarning() << "Failed writing to file at " << fullpth << "!";
         return;
     }
 
