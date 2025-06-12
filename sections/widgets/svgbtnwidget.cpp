@@ -9,6 +9,11 @@ SvgBtnWidget::SvgBtnWidget(QString path, QWidget *parent, int expandAmount)
     svg = new QSvgRenderer(QString(path));
     setMouseTracking(true);
     setCursor(QCursor(Qt::PointingHandCursor));
+    // These buttons are always deleted/blocked after pressed, so we can deset the cursor here
+    connect(this, &QPushButton::released, [this](){
+        touching = false;
+        unsetCursor();
+    });
 }
 
 bool SvgBtnWidget::hitButton(const QPoint &pos) const {

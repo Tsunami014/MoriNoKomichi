@@ -153,14 +153,21 @@ void taskView(Window* wind) {
 
     // Add the widgets to the screen
 
+    // Canvas for displaying tasks
     view = new GraphicsViewCanvas(scene, wind);
     view->show();
-    view->gotoTopLeft();
+    view->gotoTopLeft(); // Initialise at top left instead of centre
     wind->wids.push_back(Widget{view, QPoint(0, 0), QSize(100, 100)});
 
-
+    // New task button
     SvgBtnWidget *btn = new SvgBtnWidget(":/assets/newBtn.svg", wind);
     wind->connect(btn, &QPushButton::released, wind, [wind](){newOverlay(wind);});
     btn->show();
     wind->wids.push_back(Widget{btn, QPoint(99, 99), QSize(8, 8), HEIGHT});
+
+    // Help button
+    SvgBtnWidget *btn2 = new SvgBtnWidget(":/assets/helpBtn.svg", wind);
+    wind->connect(btn2, &QPushButton::released, wind, [wind](){helpOverlay(wind);});
+    btn2->show();
+    wind->wids.push_back(Widget{btn2, QPoint(99, 1), QSize(8, 8), HEIGHT});
 }

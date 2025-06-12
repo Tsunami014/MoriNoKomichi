@@ -32,7 +32,7 @@ void TitleText::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    if (textInteractionFlags() & Qt::TextEditorInteraction) { // Only show dotted outline if interactable
+    if (textInteractionFlags() & Qt::TextEditable) { // Only show dotted outline if editable
         painter->setPen(QPen (QColor(100, 100, 100), 1, Qt::DashDotLine));
         painter->drawRect(boundingRect());
     }
@@ -47,7 +47,6 @@ TaskWidget::TaskWidget(QString nme, Window* window, std::vector<QString> inptodo
     setAcceptHoverEvents(true);
     setAcceptedMouseButtons(Qt::LeftButton);
     // Set some of the things from the params
-    name = nme;
     wind = window;
 
     // Add a title
@@ -70,7 +69,7 @@ TaskWidget* MakeTaskWidget(QString nme, Window* window, std::vector<QString> tod
 
 BigTaskWidget* TaskWidget::toBigWidget() {
     // Create the new widget, ensuring all the appropriate construction functions are called
-    BigTaskWidget* newWid = new BigTaskWidget(name, wind, {}, nullptr);
+    BigTaskWidget* newWid = new BigTaskWidget(title->toPlainText(), wind, {}, nullptr);
     // Copy all the todos over
     for (auto t : todos) {
         newWid->todos.push_back(new TodoGraphicObject(t->getname(), true, newWid));
@@ -145,7 +144,6 @@ void TaskWidget::updateChildren(bool prepare, bool updateAll) {
     if (parent != nullptr) { // This would be any BigTaskWidgets
         // Update parent's children so text gets updated!
         QString txt = title->toPlainText();
-        parent->name = txt;
         parent->title->setPlainText(txt);
 
         // Create a list of what the todos should be
@@ -277,7 +275,7 @@ float randDec(QRandomGenerator gen) {
 
 void TaskWidget::makePath() {
     // Make some commonly used variables
-    QRandomGenerator gen = getGen(name);
+    QRandomGenerator gen = getGen(title->toPlainText());
     int height = boundingRect().height() - (padding * 2);
 
     // Some preset vars

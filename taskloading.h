@@ -7,6 +7,9 @@
 #include "sections/widgets/taskwidget.h"
 #include "window.h"
 
+/*! \brief Get the save file location. This is located in the app data, OS specific */
+QString getPath(bool filename = true);
+
 /*!
     \brief Get the sections and tasks
 

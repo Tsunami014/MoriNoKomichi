@@ -55,8 +55,10 @@ public:
     */
     BigTaskWidget* toBigWidget();
 
+    /*! \brief The title of the task */
+    TitleText* title = nullptr;
+    /*! \brief The todos in the task */
     std::vector<TodoGraphicObject*> todos;
-    QString name;
 
     void updateChildren(bool prepare = true, bool updateAll = false);
 
@@ -87,9 +89,6 @@ protected:
         \brief Makes a new path if necessary (if sizes differ)
     */
     void updatePath();
-
-    /*! \brief The title of the task */
-    TitleText* title = nullptr;
 
     TaskWidget* parent = nullptr;
 

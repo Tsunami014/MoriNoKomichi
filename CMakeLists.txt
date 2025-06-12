@@ -22,12 +22,16 @@ set(PROJECT_SOURCES
     sections/tasksview.cpp
     sections/newoverlay.cpp
     sections/taskoverlay.cpp
+    sections/helpoverlay.cpp
 )
 set(PROJECT_WIDGETS
     sections/widgets/taskwidget.h sections/widgets/taskwidget.cpp
     sections/widgets/svgbtnwidget.h sections/widgets/svgbtnwidget.cpp
     sections/widgets/graphicsviewcanvas.h sections/widgets/graphicsviewcanvas.cpp
     sections/widgets/bigtaskwidget.h sections/widgets/bigtaskwidget.cpp
+    sections/widgets/todographicobject.h sections/widgets/todographicobject.cpp
+    sections/widgets/sectionbgwidget.h sections/widgets/sectionbgwidget.cpp
+    sections/widgets/inputwidget.h sections/widgets/inputwidget.cpp
 )
 set(PROJECT_TOOLS
     sections/widgets/tools/drawtools.h sections/widgets/tools/drawtools.cpp
@@ -52,9 +56,6 @@ else()
         ${PROJECT_WIDGETS}
         ${PROJECT_RESOURCES}
         ${PROJECT_TOOLS}
-        sections/widgets/todographicobject.h sections/widgets/todographicobject.cpp
-        sections/widgets/sectionbgwidget.h sections/widgets/sectionbgwidget.cpp
-        sections/widgets/inputwidget.h sections/widgets/inputwidget.cpp
     )
 endif()
 

@@ -6,12 +6,13 @@
 #include <QDir>
 #include <QDebug>
 
-/*! \brief Get the save file location. This is located in the app data, OS specific */
-QString getPath() {
+QString getPath(bool filename) {
     QString path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
     QDir().mkpath(path);
-    QString fullpth = path + "/savedata";
-    return fullpth;
+    if (!filename) {
+        return path;
+    }
+    return path + "/savedata";
 }
 
 /*! \brief Read from a text stream of a file, decoding the info contained within */
@@ -110,7 +111,7 @@ void writeTo(QTextStream& out, std::array<std::vector<TaskWidget*>, 4> sects) {
         out << idx << "\n";
         // Loop through each task in the section and put it on the file
         for (auto task : sects[idx]) {
-            out << "t" << fixStr(task->name) << "\n";
+            out << "t" << fixStr(task->title->toPlainText()) << "\n";
             // Loop through each tub-task in the task and put it on the file
             for (auto subT : task->todos) {
                 out << "s" << fixStr(subT->getname()) << "\n";
