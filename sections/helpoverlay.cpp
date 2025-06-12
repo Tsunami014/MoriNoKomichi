@@ -5,6 +5,7 @@
 
 #include <QDesktopServices>
 #include <QTextDocument>
+#include <QMessageBox>
 #include <QTextLayout>
 #include <QTextBlock>
 
@@ -63,16 +64,30 @@ void helpOverlay(Window* wind) {
     QObject::connect(bigW->title, &QGraphicsTextItem::linkActivated, [wind](const QString txt){
         if (txt == "tskStorageFile") {
             QDesktopServices::openUrl(QUrl("file:///" + getPath(false)));
-        } else if (txt == "del") {
-            QTimer::singleShot(0, [wind](){ // Delay so QT can finish what it's doing before the reset
-                writeBlank();     // Delete file contents
-                wind->mainView(); // Start again from scratch
-            });
-        } else if (txt == "repl") {
-            QTimer::singleShot(0, [wind](){
-                QFile::remove(getPath()); // Delete file to force using onboarding tasks
-                wind->mainView();         // Start again from scratch
-            });
+        } else {
+            QMessageBox msgBox;
+            msgBox.setText("ARE YOU SURE YOU WANT TO DELETE ALL YOUR TASKS?");
+            QString xtra = "";
+            if (txt == "ret") {
+                xtra = " and replace them with the defaults";
+            }
+            msgBox.setInformativeText("This will delete ALL YOUR TASKS"+xtra+". THIS CANNOT BE UNDONE (unless you've backed up your tasks file)");
+            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            msgBox.setDefaultButton(QMessageBox::No);
+            if (msgBox.exec() == QMessageBox::No) {
+                return;
+            }
+            if (txt == "del") {
+                QTimer::singleShot(0, [wind](){ // Delay so QT can finish what it's doing before the reset
+                    writeBlank();     // Delete file contents
+                    wind->mainView(); // Start again from scratch
+                });
+            } else {
+                QTimer::singleShot(0, [wind](){
+                    QFile::remove(getPath()); // Delete file to force using onboarding tasks
+                    wind->mainView();         // Start again from scratch
+                });
+            }
         }
     });
     // Add the new big widget to the scene
