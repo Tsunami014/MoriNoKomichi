@@ -13,12 +13,17 @@ QString getPath(bool filename = true);
 /*!
     \brief Get the sections and tasks
 
-    This function reads from a file if exists; and if not, returns some default onboarding tasks.
+    This function reads from the file if exists; and if not, returns some default onboarding tasks.
 */
 std::array<std::vector<TaskWidget*>, 4> getSections(Window* wind);
 /*!
-    \brief Save the tasks to a file
+    \brief Save the tasks to the file
 */
 void saveSections(Window* wind);
+
+/*!
+    \brief Delete all contents of file
+*/
+void writeBlank();
 
 #endif // TASKLOADING_H

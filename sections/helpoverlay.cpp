@@ -27,7 +27,16 @@ R"(<table width="100%" cellspacing="0"><tr><td align="center">)" // Table hack t
         "<li>Delete a subtask by double clicking to edit the name in the expanded task view and deleting the entire name</li>"
     "</ul><h2>Task storage location</h2>"
         "If you want to use a backup tool or import/export your tasks, all you need to look at is the task storage file.<br>"
-        "(For you) it is located at <a href=\"hi\">$1</a>."
+        "(For you) it is located at <a href=\"tskStorageFile\">$1</a>. (Click to open file explorer)"
+    "<h2>Some reset functions</h2>"
+        "<b>THESE WILL DELETE YOUR ENTIRE TASKS DATABASE WITHOUT QUESTION</b><br>"
+        "Therefore, I have hidden them where you have to scroll down."
+        "<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>"
+        "<h1>ARE YOU SURE YOU WANT TO DELETE ALL YOUR TASKS?</h1>"
+        "<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>"
+        "(Click to perform action)<br>"
+        "<a href=\"del\"><b>Delete all tasks</b></a><br>"
+        "<a href=\"repl\"><b>Replace all tasks with defaults</b></a>"
 
 "</td></tr></table>"
 ).replace("$1", getPath()); // Show path
@@ -51,13 +60,26 @@ void helpOverlay(Window* wind) {
     newFont.setPointSize(18);
     bigW->title->setFont(newFont);
     // On click open the file explorer at this location
-    QObject::connect(bigW->title, &QGraphicsTextItem::linkActivated, [](){
-        QDesktopServices::openUrl(QUrl("file:///" + getPath(false)));
+    QObject::connect(bigW->title, &QGraphicsTextItem::linkActivated, [wind](const QString txt){
+        if (txt == "tskStorageFile") {
+            QDesktopServices::openUrl(QUrl("file:///" + getPath(false)));
+        } else if (txt == "del") {
+            QTimer::singleShot(0, [wind](){ // Delay so QT can finish what it's doing before the reset
+                writeBlank();     // Delete file contents
+                wind->mainView(); // Start again from scratch
+            });
+        } else if (txt == "repl") {
+            QTimer::singleShot(0, [wind](){
+                QFile::remove(getPath()); // Delete file to force using onboarding tasks
+                wind->mainView();         // Start again from scratch
+            });
+        }
     });
     // Add the new big widget to the scene
     scene->addItem(bigW);
     NewGraphicsView *view = new NewGraphicsView(scene, bigW, wind);
     view->show();
+    view->gotoTopLeft();
 
     // Make the back btn
     SvgBtnWidget *btn = new SvgBtnWidget(":/assets/backBtn.svg", wind);

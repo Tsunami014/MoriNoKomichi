@@ -28,6 +28,7 @@ void taskOverlay(Window* wind, TaskWidget* task) {
     scene->addItem(bigW);
     NewGraphicsView *view = new NewGraphicsView(scene, bigW, wind);
     view->show();
+    view->gotoTopLeft();
 
     // Make the back btn
     SvgBtnWidget *btn = new SvgBtnWidget(":/assets/backBtn.svg", wind);

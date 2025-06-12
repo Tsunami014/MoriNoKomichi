@@ -52,6 +52,9 @@ public:
     /*! \brief Resize all the elements according to the screen size */
     void resizeElms();
 
+    /*! \brief Create the main tasks view, destroying everything if exists and starting from scratch */
+    void mainView();
+
     /*!
         \brief The 4 sections that tasks are added to
 
@@ -60,9 +63,6 @@ public:
     std::array<std::vector<TaskWidget*>, 4> sections;
 
 protected:
-    /*! \brief Delete all widgets */
-    void reset();
-
     /*! \brief Just a wrapper for the `resizeElms` func */
     void resizeEvent(QResizeEvent *event);
 };

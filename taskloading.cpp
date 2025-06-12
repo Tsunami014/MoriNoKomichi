@@ -133,3 +133,13 @@ void saveSections(Window* wind) {
     writeTo(out, wind->sections);
     qDebug() << "Wrote to file at " << fullpth << "!";
 }
+
+void writeBlank() {
+    QString fullpth = getPath();
+    QFile file(fullpth);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) { // This should never fail (as it's writing to a new file if not exists), but we need to check every possibility
+        qWarning() << "Failed opening file to delete contents at " << fullpth << "!";
+        return;
+    }
+    qDebug() << "Deleted file contents at " << fullpth << "!";
+}

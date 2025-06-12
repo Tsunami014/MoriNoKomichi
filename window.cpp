@@ -13,12 +13,23 @@ Window::Window() {
     resize(900, 600);
     showMaximized();
 
+    // Display the main tasks menu
+    mainView();
+}
+
+void Window::mainView() {
+    // Delete all widgets
+    while (!wids.empty()) {
+        Widget wid = wids.back();
+        delete wid.wid;
+        wids.pop_back();
+    }
+
     // Get the tasks
     sections = getSections(this);
 
-    // Display the main tasks menu
-    taskView(this);
-    resizeElms(); // Update all the tasks to fit
+    taskView(this); // Launch tasks view
+    resizeElms();   // Update all the tasks to fit
 }
 
 void Window::resizeEvent(QResizeEvent *event) { resizeElms(); }
@@ -43,14 +54,5 @@ void Window::resizeElms() {
             wid.position.x()*(widPerc - (width/100.0f)), wid.position.y()*(heiPerc - (height/100.0f)),
             width, height
         );
-    }
-}
-
-void Window::reset() {
-    // Delete all widgets
-    while (!wids.empty()) {
-        Widget wid = wids.back();
-        delete wid.wid;
-        wids.pop_back();
     }
 }
