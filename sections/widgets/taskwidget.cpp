@@ -60,8 +60,9 @@ TaskWidget::TaskWidget(QString nme, Window* window, std::vector<QString> inptodo
         todos.push_back(new TodoGraphicObject(str, editable, this));
     }
 }
-TaskWidget* MakeTaskWidget(QString nme, Window* window, std::vector<QString> todos, QGraphicsItem* parent) {
+TaskWidget* MakeTaskWidget(QString nme, Window* window, std::vector<QString> todos, int16_t priority, QGraphicsItem* parent) {
     TaskWidget* tw = new TaskWidget(nme, window, todos, parent, false);
+    tw->priority = priority;
     tw->updateChildren();
     tw->makePath();
     return tw;

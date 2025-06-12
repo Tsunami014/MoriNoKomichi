@@ -10,6 +10,8 @@
 #include <QGraphicsScene>
 #include <QApplication>
 #include <QTextCursor>
+#include <QDoubleValidator>
+#include <QLabel>
 
 /*! \brief A function to add new subtasks, used by the buttons */
 void addNewSubtask(Window* wind, BigTaskWidget* bigW, QString txt) {
@@ -48,11 +50,25 @@ void taskOverlay(Window* wind, TaskWidget* task) {
     InputWidget* newSubtask = new InputWidget(wind);
     newSubtask->setPlaceholderText("New subtask");
     // Run the new subtask func on enter pressed
-    QObject::connect(newSubtask, &QLineEdit::returnPressed, [wind, bigW, newSubtask](){
+    QObject::connect(newSubtask, &QLineEdit::returnPressed, [wind, bigW, &newSubtask](){
         addNewSubtask(wind, bigW, newSubtask->text());
         newSubtask->setText("");
     });
     newSubtask->show();
+
+    // Make the priority input box
+    InputWidget* priority = new InputWidget(wind);
+    priority->setValidator(new QDoubleValidator(-1000, 1000, 2, wind)); // Only allow inputting numbers
+    priority->setText(QString::number(task->priority)); // Set initial priority
+    priority->setPlaceholderText("0"); // 0 if not entered anything
+    // Apply priority and run sort func on keypress
+    QObject::connect(priority, &QLineEdit::textChanged, [wind, task, &priority](){
+        task->priority = priority->text().toInt();
+    });
+    priority->show();
+    QLabel* priorityLab = new QLabel("Priority:", wind);
+    priorityLab->setFont(QFont(bigW->title->font().family(), 18));
+    priorityLab->show();
 
     // Find section number of task
     auto sect = std::make_shared<uint8_t>(255);
@@ -87,6 +103,7 @@ void taskOverlay(Window* wind, TaskWidget* task) {
     rmWids->push_back(btn);
     rmWids->push_back(btn2);
     rmWids->push_back(newSubtask);
+    rmWids->push_back(priority);
     for (auto btn : *btns) {
         rmWids->push_back(btn);
     }
@@ -94,7 +111,9 @@ void taskOverlay(Window* wind, TaskWidget* task) {
     wind->wids.push_back(Widget{view, QPoint(50, 0), QSize(50, 100)});
     wind->wids.push_back(Widget{btn, QPoint(1, 1), QSize(8, 8), HEIGHT});
     wind->wids.push_back(Widget{btn2, QPoint(99, 1), QSize(8, 8), HEIGHT});
-    wind->wids.push_back(Widget{newSubtask, QPoint(95, 50), QSize(18, 6)});
+    wind->wids.push_back(Widget{newSubtask, QPoint(95, 40), QSize(18, 6)});
+    wind->wids.push_back(Widget{priorityLab, QPoint(95, 55), QSize(18, 6)});
+    wind->wids.push_back(Widget{priority, QPoint(95, 60), QSize(18, 6)});
     // The 4 buttons need to be in different spots
     wind->wids.push_back(Widget{(*btns)[0], QPoint(5, 84), QSize(10, 10)});
     wind->wids.push_back(Widget{(*btns)[1], QPoint(16, 84), QSize(10, 10)});

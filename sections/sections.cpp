@@ -1,7 +1,9 @@
 #include "sections.h"
 #include "widgets/graphicsviewcanvas.h"
 #include "widgets/bigtaskwidget.h"
+
 #include <QPainter>
+#include <QDebug>
 
 OverlayWid::OverlayWid(Window* window) : QWidget(window) {
     wind = window;
@@ -26,32 +28,30 @@ void removeOverlay(Window* wind, std::vector<QWidget*>* wids) {
     if (wids->empty()) {
         return;
     }
-    // Go through each widget in the window
-    for (int i = wind->wids.size()-1; i >= 0; i--) {
-        auto wid = wind->wids[i].wid;
-        int start = wids->size()-1;
-        // Go through each widget in the list provided
-        for (int j = start; j >= 0; j--) {
-            if (wids->at(j) == wid) { // If the widget is the same:
-                // Ensure that if the widget is at the back, use the much faster pop_back operation; else use the .erase
-                if (j == start) {
-                    delete wids->back();
-                    wids->pop_back();
-                } else {
-                    delete wids->at(j);
-                    wids->erase(wids->begin() + j);
-                }
-                if (i == wind->wids.size()-1) {
+
+    unsigned int start = wids->size()-1;
+    // Go through each widget in the list provided in reverse order (higher likelihood for user to have put them in order so we can use the fast .pop_back instead)
+    for (unsigned int i = start; i >= 0; i--) {
+        QWidget* toFindWid = (*wids)[i];
+        unsigned int start2 = wind->wids.size()-1;
+        bool found = false;
+        // Have to use manual loop as the wind->wids is a vector of Widgets which *contain* QWidgets
+        for (unsigned int j = start2; j >= 0; j--) {
+            if (wind->wids[j].wid == toFindWid) {
+                /*if (j == start2) { // Use faster operation if possible
                     wind->wids.pop_back();
-                } else {
-                    wind->wids.erase(wind->wids.begin() + j);
-                }
+                } else {*/
+                qDebug() << j << "," << wind->wids.size();
+                    wind->wids.erase(wind->wids.begin()+j);
+                //}
+                found = true;
                 break;
             }
         }
-        if (wids->empty()) {
-            break;
+        if (!found) {
+            qCritical() << "Couldn't find element " << i << " in window widgets to delete!";
         }
+        //delete (*wids)[i];
     }
     wids->clear();
     wind->resizeElms();

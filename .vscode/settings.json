@@ -5,10 +5,9 @@
         "*.ldtk": "json",
         ".format": "yaml",
         "README": "markdown",
-        "qgraphicsscene": "cpp",
-        "qwidget": "cpp",
+        "qpainter": "cpp",
         "qapplication": "cpp",
         "qtextcursor": "cpp",
-        "qpainter": "cpp"
+        "qpushbutton": "cpp"
     }
 }

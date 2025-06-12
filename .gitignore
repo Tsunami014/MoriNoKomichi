@@ -56,3 +56,6 @@ compile_commands.json
 # Other stuff
 build/*
 e2e.log
+
+# I HATE VSCODE
+.vscode/settings.json

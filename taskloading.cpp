@@ -20,13 +20,14 @@ std::array<std::vector<TaskWidget*>, 4> readFrom(QTextStream& in, Window* wind) 
     // Initialisation
     uint8_t sect = 0;
     QString tskName = "";
+    int16_t tskPriority = -1;
     std::vector<QString> todos;
     std::array<std::vector<TaskWidget*>, 4> out;
 
     // Lambda to add tasks; if a task was specified, add it and clear task cache
-    auto tryAddTask = [&sect, &tskName, &todos, wind, &out]() {
+    auto tryAddTask = [&sect, &tskName, &todos, wind, &out, &tskPriority]() {
         if (tskName == "") { return; }
-        out[sect].push_back(MakeTaskWidget(tskName, wind, todos));
+        out[sect].push_back(MakeTaskWidget(tskName, wind, todos, tskPriority));
         tskName = "";
         todos.clear();
     };
@@ -41,6 +42,14 @@ std::array<std::vector<TaskWidget*>, 4> readFrom(QTextStream& in, Window* wind) 
             case 't': // Task
                 tryAddTask();
                 tskName = rest;
+                // Next line is priority
+                line = in.readLine();
+                if (line.isNull()) {
+                    qCritical() << "Expected priority on line after task, found EOF! Using priority -1.";
+                    tskPriority = -1;
+                } else {
+                    tskPriority = line.toInt();
+                }
                 break;
             case 's': // Sub-task
                 todos.push_back(rest);
@@ -112,6 +121,7 @@ void writeTo(QTextStream& out, std::array<std::vector<TaskWidget*>, 4> sects) {
         // Loop through each task in the section and put it on the file
         for (auto task : sects[idx]) {
             out << "t" << fixStr(task->title->toPlainText()) << "\n";
+            out << QString::number(task->priority) << "\n"; // Add priority on next line
             // Loop through each tub-task in the task and put it on the file
             for (auto subT : task->todos) {
                 out << "s" << fixStr(subT->getname()) << "\n";

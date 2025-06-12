@@ -9,16 +9,20 @@ InputWidget::InputWidget(QWidget *parent) : QLineEdit(parent) {
 }
 
 void InputWidget::paintEvent(QPaintEvent *event) {
+    // Create the painter and colour the box
     QPainter painter(this);
     painter.setBrush({QColor(255, 235, 210)});
     painter.setPen({Qt::black, 5});
+    // If resized update the path
     QSize newSze = {width(), height()};
     if (newSze != lastSze) {
         lastSze = newSze;
         pth = roughRect(QRandomGenerator(), newSze, 5, 5);
     }
+    // Draw path
     painter.drawPath(*pth);
     painter.end();
 
+    // Draw the original lineedit on top (with transparent bg to not override the new box)
     QLineEdit::paintEvent(event);
 }

@@ -55,6 +55,8 @@ public:
     */
     BigTaskWidget* toBigWidget();
 
+    int16_t priority;
+
     /*! \brief The title of the task */
     TitleText* title = nullptr;
     /*! \brief The todos in the task */
@@ -112,7 +114,7 @@ private:
 
     Runs functions that need to be ran *after* initialisation, but are crucial for the class to work
 */
-TaskWidget* MakeTaskWidget(QString nme, Window* window, std::vector<QString> todos, QGraphicsItem* parent = nullptr);
+TaskWidget* MakeTaskWidget(QString nme, Window* window, std::vector<QString> todos, int16_t priority = 0, QGraphicsItem* parent = nullptr);
 
 
 #endif // TASKSVIEW_H

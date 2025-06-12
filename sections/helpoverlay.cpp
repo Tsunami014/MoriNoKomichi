@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QTextLayout>
 #include <QTextBlock>
+#include <QFile>
 
 /*! \brief The help screen is just another task widget with predefined help text that's not editable and slightly modified. Here's the widget. */
 static TaskWidget* helpTsk = nullptr;
