@@ -1,5 +1,5 @@
 # MoriNoKomichi
-A todo app which is just the best thing ever
+A simple yet effective todo app with a cute aesthetic. Named this way as this app will help you find your 'path' to success in a 'forest' of tasks!
 
 ## COMPILING AND RUNNING
 Ensure `cmake` is installed. Then, run the following:
@@ -13,7 +13,7 @@ And then in the `./build` folder, you should see an executable you can run to ru
 
 ## Some language used (mainly for developers)
 If it's too complex (which it probably won't be, but you never know) here are some important words:
-- `section`: one of the 4 sections tasks are placed in
+- `section`: one of the 4 sections tasks are placed in (coloured for your convenience, but for developer reference here are the numbers:)
 ```
 Section numbers:
 0 | 1

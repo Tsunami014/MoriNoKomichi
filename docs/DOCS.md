@@ -1,5 +1,5 @@
 # Mori no komichi (森の小道); Forest path
-A todo app with many, many features.
+A simple yet effective todo app with a cute aesthetic. Named this way as this app will help you find your 'path' to success in a 'forest' of tasks!
 
 Please note that the excalidraw diagrams included have images rendered for dark mode. Light mode is also supported, but requires you to open the excalidraw file yourself. This can also be helpful for diagrams that are quite large.
 

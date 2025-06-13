@@ -8,5 +8,6 @@
         <file>assets/addTo2.svg</file>
         <file>assets/addTo3.svg</file>
         <file>assets/helpBtn.svg</file>
+        <file>assets/icon.svg</file>
     </qresource>
 </RCC>

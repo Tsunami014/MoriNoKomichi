@@ -7,8 +7,9 @@
 #include <QScrollArea>
 
 Window::Window() {
-    // Create the window with a predefined title.
+    // Add a title and icon
     setWindowTitle(tr("森の小道 : Forest Path"));
+    QWidget::setWindowIcon(QIcon(":/assets/icon.svg"));
     // The resize then maximise ensures that on minimise the window will be the correct size, not some random incorrect value
     resize(900, 600);
     showMaximized();
