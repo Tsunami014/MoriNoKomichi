@@ -85,18 +85,22 @@ std::array<std::vector<TaskWidget*>, 4> getSections(Window* wind) {
             },
             {
                 MakeTaskWidget("Click on tasks to edit them", wind, {"Click on this task!", "Click the black overlay or back button to go back"}),
-                MakeTaskWidget("Add a new task", wind, {"Press the plus button to add a new task", "Give it a good title and select a section!"}),
-                MakeTaskWidget("Rename a task", wind, {"Click on a task", "Click on the title", "Change it to whatever you want!", "Click out to exit"}),
-                MakeTaskWidget("Delete a task", wind, {"Click on a task", "Click on the title again", "Delete the entire title (backspace)"})
+                MakeTaskWidget("Add a new task", wind, {"Press the plus button (bottom right) to add a new task", "Give it a good title and select a section!"}),
+                MakeTaskWidget("Rename a task", wind, {"Click on a task", "Click on the title", "Change it to whatever you want!"}),
+                MakeTaskWidget("Change task priority", wind, {"Click on a task", "Write a number in the box to the right labelled 'priority'", "Change it to different values for different tasks to see what happens"}),
+                MakeTaskWidget("Move a task", wind, {"Click on a task", "Click on a different section in the bottom left corner", "Try with different tasks with different sections!"}),
+                MakeTaskWidget("Delete a task", wind, {"Click on a task", "Click on the delete button"})
             },
             {
-                MakeTaskWidget("Add new subtasks", wind, {"Click on a task", "Write text in the box to the right", "Press enter to add the subtask!"}),
-                MakeTaskWidget("Rename subtasks", wind, {"Click on a task", "Double click on a sub-task name", "Change it to something else!", "Click out of it again"}),
+                MakeTaskWidget("Add new subtasks", wind, {"Click on a task", "Write text in the box labelled 'New subtask' (to the right)", "Press enter to add the subtask!", "Click anywhere to stop editing"}),
+                MakeTaskWidget("Rename subtasks", wind, {"Click on a task", "Double click on a sub-task name", "Change it to something else!", "Click anywhere to stop editing"}),
+                MakeTaskWidget("Toggle subtasks", wind, {"Click on a task", "Click on a checkbox to toggle it!", "Do this multiple times to test"}),
                 MakeTaskWidget("Delete subtasks", wind, {"Click on a task", "Double click the name again", "Delete the entire name (backspace)"})
             },
             {
                 MakeTaskWidget("The app autosaves whenever you make a change", wind, {"Close the app", "Come back again to see all your changes in place"}),
-                MakeTaskWidget("Have fun!", wind, {"Delete all the premade tasks", "Populate with your own projects", "Celebrate!"})
+                MakeTaskWidget("Look at the help menu", wind, {"Press the help button (top right)"}),
+                MakeTaskWidget("Have fun!", wind, {"Delete all the premade tasks (can use help menu)", "Populate with your own projects", "Have a great time! Made with <3 by Tsunami014"})
             }
         };
 
