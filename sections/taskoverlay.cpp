@@ -19,6 +19,37 @@ void addNewSubtask(Window* wind, BigTaskWidget* bigW, QString txt) {
     bigW->updateChildren(true, true);
 }
 
+/*! \brief Override the double validator class to not allow numbers greater than the maximum */
+class MyValidator : public QDoubleValidator { // Thanks to https://stackoverflow.com/questions/19571033/allow-entry-in-qlineedit-only-within-range-of-qdoublevalidator !
+public:
+    MyValidator(double bottom, double top, int decimals, QObject * parent) : QDoubleValidator(bottom, top, decimals, parent) {}
+
+    QValidator::State validate(QString &s, int &i) const {
+        if (s.isEmpty() || s == "-") {
+            return QValidator::Intermediate;
+        }
+
+        QChar decimalPoint = locale().decimalPoint();
+
+        if(s.indexOf(decimalPoint) != -1) {
+            int charsAfterPoint = s.length() - s.indexOf(decimalPoint) - 1;
+
+            if (charsAfterPoint > decimals()) {
+                return QValidator::Invalid;
+            }
+        }
+
+        bool ok;
+        double d = locale().toDouble(s, &ok);
+
+        if (ok && d >= bottom() && d <= top()) {
+            return QValidator::Acceptable;
+        } else {
+            return QValidator::Invalid;
+        }
+    }
+};
+
 void taskOverlay(Window* wind, TaskWidget* task) {
     // Make the overlay
     OverlayWid *overlay = new OverlayWid(wind);
@@ -58,12 +89,17 @@ void taskOverlay(Window* wind, TaskWidget* task) {
 
     // Make the priority input box
     InputWidget* priority = new InputWidget(wind);
-    priority->setValidator(new QDoubleValidator(-1000, 1000, 2, wind)); // Only allow inputting numbers
+    priority->setValidator(new MyValidator(-999, 999, 2, wind)); // Only allow inputting numbers
     priority->setText(QString::number(task->priority)); // Set initial priority
     priority->setPlaceholderText("0"); // 0 if not entered anything
     // Apply priority and run sort func on keypress
-    QObject::connect(priority, &QLineEdit::textChanged, [wind, task, &priority](){
-        task->priority = priority->text().toInt();
+    QObject::connect(priority, &QLineEdit::textChanged, [wind, task, priority](){
+        if (priority->text() == "" || priority->text() == "-") {
+            task->priority = 0;
+        } else {
+            task->priority = priority->text().toInt();
+        }
+        updateTaskPoss(wind);
     });
     priority->show();
     QLabel* priorityLab = new QLabel("Priority:", wind);
@@ -103,6 +139,7 @@ void taskOverlay(Window* wind, TaskWidget* task) {
     rmWids->push_back(btn);
     rmWids->push_back(btn2);
     rmWids->push_back(newSubtask);
+    rmWids->push_back(priorityLab);
     rmWids->push_back(priority);
     for (auto btn : *btns) {
         rmWids->push_back(btn);

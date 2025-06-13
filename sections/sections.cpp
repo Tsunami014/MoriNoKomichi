@@ -31,27 +31,26 @@ void removeOverlay(Window* wind, std::vector<QWidget*>* wids) {
 
     unsigned int start = wids->size()-1;
     // Go through each widget in the list provided in reverse order (higher likelihood for user to have put them in order so we can use the fast .pop_back instead)
-    for (unsigned int i = start; i >= 0; i--) {
+    for (unsigned int i = start; i <= start; i--) {
         QWidget* toFindWid = (*wids)[i];
         unsigned int start2 = wind->wids.size()-1;
         bool found = false;
         // Have to use manual loop as the wind->wids is a vector of Widgets which *contain* QWidgets
         for (unsigned int j = start2; j >= 0; j--) {
             if (wind->wids[j].wid == toFindWid) {
-                /*if (j == start2) { // Use faster operation if possible
+                if (j == start2) { // Use faster operation if possible
                     wind->wids.pop_back();
-                } else {*/
-                qDebug() << j << "," << wind->wids.size();
+                } else {
                     wind->wids.erase(wind->wids.begin()+j);
-                //}
+                }
                 found = true;
                 break;
             }
         }
+        toFindWid->deleteLater();
         if (!found) {
             qCritical() << "Couldn't find element " << i << " in window widgets to delete!";
         }
-        //delete (*wids)[i];
     }
     wids->clear();
     wind->resizeElms();

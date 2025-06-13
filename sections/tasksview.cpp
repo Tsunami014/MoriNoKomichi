@@ -130,6 +130,9 @@ void updateTaskGroup(TaskWidget* tsk, uint8_t newGroupNum, Window* wind) {
 }
 
 void updateTaskPoss(Window* wind) {
+    // Resort all the tasks BEFORE updating
+    sortTasks(wind);
+
     updatePoss(wind->sections, groups); // Update tasks
 
     // Update the entire scene so nothing is looking smudged
@@ -169,6 +172,15 @@ void removeItem(TaskWidget* tsk, Window* wind) {
 
     qWarning("Could not find group of specified task!");
     delete tsk;
+}
+
+void sortTasks(Window* wind) {
+    for (uint8_t i = 0; i < 4; i++) {
+        std::sort(wind->sections[i].begin(), wind->sections[i].end(),
+                  // Compare priorities
+                  [](TaskWidget* a, TaskWidget* b) { return a->priority > b->priority; }
+        );
+    }
 }
 
 void taskView(Window* wind) {

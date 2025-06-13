@@ -51,6 +51,8 @@ void updateTaskPoss(Window* wind);
 void addItem(TaskWidget* it, uint8_t groupNum, Window* wind);
 /*! \brief Remove a taskwidget */
 void removeItem(TaskWidget* tsk, Window* wind);
+/*! \brief Sort all the sections of taskwidgets based off their priority */
+void sortTasks(Window* wind);
 
 
 /*!
