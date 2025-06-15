@@ -29,10 +29,8 @@ public:
             return QValidator::Intermediate;
         }
 
-        QChar decimalPoint = locale().decimalPoint();
-
-        if(s.indexOf(decimalPoint) != -1) {
-            int charsAfterPoint = s.length() - s.indexOf(decimalPoint) - 1;
+        if(s.indexOf(".") != -1) {
+            int charsAfterPoint = s.length() - s.indexOf(".") - 1;
 
             if (charsAfterPoint > decimals()) {
                 return QValidator::Invalid;
@@ -81,7 +79,7 @@ void taskOverlay(Window* wind, TaskWidget* task) {
     InputWidget* newSubtask = new InputWidget(wind);
     newSubtask->setPlaceholderText("New subtask");
     // Run the new subtask func on enter pressed
-    QObject::connect(newSubtask, &QLineEdit::returnPressed, [wind, bigW, &newSubtask](){
+    QObject::connect(newSubtask, &QLineEdit::returnPressed, [wind, bigW, newSubtask](){
         addNewSubtask(wind, bigW, newSubtask->text());
         newSubtask->setText("");
     });
