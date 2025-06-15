@@ -1,7 +1,13 @@
 # MoriNoKomichi
 A simple yet effective todo app with a cute aesthetic. Named this way as this app will help you find your 'path' to success in a 'forest' of tasks!
 
-## COMPILING AND RUNNING
+## Features
+- Add tasks
+- Add subtasks (or todo items) to the tasks
+- 4 sections to add your tasks to
+- A cute interface!
+
+## Compiling and running
 Ensure `cmake` is installed. Then, run the following:
 ```bash
 mkdir ./build
